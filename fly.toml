@@ -15,6 +15,6 @@ primary_region = 'jnb'
   processes = ['app']
 
 [[vm]]
-  memory = '256MB'
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
