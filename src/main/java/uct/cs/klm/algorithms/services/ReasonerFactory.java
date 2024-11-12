@@ -5,7 +5,7 @@ public class ReasonerFactory {
     return switch (type) {
       case "rational" -> new RationalReasonerImpl();
       case "lexical" -> new LexicalReasonerImpl();
-      case "relevant" -> new RationalReasonerImpl();
+      case "relevant" -> new RelevantReasonerImpl();
       default -> throw new IllegalArgumentException("Unknown reasoner: " + type);
     };
   }
