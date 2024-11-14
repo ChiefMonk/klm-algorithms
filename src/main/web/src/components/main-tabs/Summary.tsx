@@ -14,6 +14,7 @@ import {
   BaseRankModel,
   LexicalEntailmentModel,
   RationalEntailmentModel,
+  RelevantEntailmentModel,
 } from "@/lib/models";
 
 interface SummaryProps {
@@ -21,6 +22,7 @@ interface SummaryProps {
   baseRank: BaseRankModel | null;
   rationalEntailment: RationalEntailmentModel | null;
   lexicalEntailment: LexicalEntailmentModel | null;
+  relevantEntailment: RelevantEntailmentModel | null;
 }
 
 function Summary({
@@ -28,6 +30,7 @@ function Summary({
   baseRank,
   rationalEntailment,
   lexicalEntailment,
+  relevantEntailment,
 }: SummaryProps): JSX.Element {
   return (
     <Card className="w-full h-full">
@@ -36,12 +39,13 @@ function Summary({
         <CardDescription>Summary of entailment algorithms.</CardDescription>
       </CardHeader>
       <CardContent>
-        {!isLoading && baseRank && rationalEntailment && lexicalEntailment && (
+        {!isLoading && baseRank && rationalEntailment && lexicalEntailment && relevantEntailment && (
           <div className="space-y-6">
             <QueryInputContainer
               knowledgeBase={rationalEntailment.knowledgeBase}
               queryFormula={rationalEntailment.queryFormula}
             />
+
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Entailment Results
@@ -49,6 +53,7 @@ function Summary({
               <EntailmentTable
                 rationalEntailment={rationalEntailment}
                 lexicalEntailment={lexicalEntailment}
+                relevantEntailment={relevantEntailment}
               />
             </div>
             <div>
@@ -57,19 +62,29 @@ function Summary({
               </h4>
               <RankingTable ranking={baseRank.ranking} />
             </div>
+
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Final Ranks
               </h4>
+              
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">
                 Rational Closure
               </h5>
               <RankingTable ranking={rationalEntailment.remainingRanks} />
+
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">
                 Lexicographic Closure
               </h5>
               <RankingTable ranking={lexicalEntailment.remainingRanks} />
+
+              <h5 className="text-sm text-muted-foreground mt-2 font-medium">
+                Relevant Closure
+              </h5>
+              <RankingTable ranking={relevantEntailment.remainingRanks} />
+
             </div>
+
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Time Taken
@@ -78,12 +93,13 @@ function Summary({
                 baseRank={baseRank}
                 rationalEntailment={rationalEntailment}
                 lexicalEntailment={lexicalEntailment}
+                relevantEntailment={relevantEntailment}
               />
             </div>
           </div>
         )}
         {!isLoading &&
-          !(baseRank && rationalEntailment && lexicalEntailment) && (
+          !(baseRank && rationalEntailment && lexicalEntailment && relevantEntailment) && (
             <NoResults />
           )}
         {isLoading && <ResultSkeleton />}

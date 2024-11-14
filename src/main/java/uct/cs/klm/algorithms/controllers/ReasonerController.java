@@ -2,21 +2,26 @@ package uct.cs.klm.algorithms.controllers;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
+import io.javalin.http.Context;
 import uct.cs.klm.algorithms.models.BaseRank;
 import uct.cs.klm.algorithms.models.ErrorResponse;
 import uct.cs.klm.algorithms.services.ReasonerFactory;
 import uct.cs.klm.algorithms.services.ReasonerService;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 
-import io.javalin.http.Context;
+public class ReasonerController 
+{
 
-public class ReasonerController {
-
-  public static void getEntailment(Context ctx) {
+  public static void getEntailment(Context ctx) 
+  {
     String reasonerType = ctx.pathParam("reasoner");
     String formula = ctx.pathParam("queryFormula");
+    
+    System.out.println("ReasonerType: " + reasonerType);
+    System.out.println("Formula: " + formula);
 
-    try {
+    try 
+    {
       DefeasibleParser parser = new DefeasibleParser();
       PlFormula queryFormula = parser.parseFormula(formula);
       BaseRank baseRank = ctx.bodyAsClass(BaseRank.class);
@@ -25,13 +30,16 @@ public class ReasonerController {
       ctx.status(200);
       ctx.json(reasoner.getEntailment(baseRankCopy, queryFormula));
 
-    } catch (IllegalArgumentException e) {
+    } 
+    catch (IllegalArgumentException e) 
+    {
       ctx.status(400);
       ctx.json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
-    } catch (Exception e) {
+    } 
+    catch (Exception e) 
+    {
       ctx.status(400);
       ctx.json(new ErrorResponse(400, "Bad Request", "Invalid query formula: " + formula));
     }
   }
-
 }

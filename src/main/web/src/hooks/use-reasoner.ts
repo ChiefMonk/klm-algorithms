@@ -63,11 +63,18 @@ function useReasoner() {
     if (queryInput?.knowledgeBase && queryInput.queryFormula) {
       try {
         const baseRank = await api.fetchBaseRank(queryInput.knowledgeBase);
+
         const rationalEntailment = await api.fetchRationalEntailment(
           queryInput.queryFormula,
           baseRank
         );
+
         const lexicalEntailment = await api.fetchLexicalEntailment(
+          queryInput.queryFormula,
+          baseRank
+        );
+
+        const relevantEntailment = await api.fetchRelevantEntailment(
           queryInput.queryFormula,
           baseRank
         );
@@ -76,6 +83,7 @@ function useReasoner() {
           baseRank,
           rationalEntailment,
           lexicalEntailment,
+          relevantEntailment,
         };
         setQueryResult(data);
         saveQueryResult(data);

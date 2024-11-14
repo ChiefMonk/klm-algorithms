@@ -61,11 +61,13 @@ const timesColumns: ColumnDef<TimesResult>[] = [
 interface EntailmentTableProps {
   rationalEntailment: EntailmentModel;
   lexicalEntailment: EntailmentModel;
+  relevantEntailment: EntailmentModel;
 }
 
 function EntailmentTable({
   rationalEntailment,
   lexicalEntailment,
+  relevantEntailment,
 }: EntailmentTableProps) {
   const getResult = ({ entailed, queryFormula }: EntailmentModel) => {
     return entailed
@@ -84,6 +86,10 @@ function EntailmentTable({
           algorithm: "Lexicographic Closure",
           result: getResult(lexicalEntailment),
         },
+        {
+          algorithm: "Relevant Closure",
+          result: getResult(relevantEntailment),
+        },
       ]}
     />
   );
@@ -93,12 +99,14 @@ interface TimesTableProps {
   baseRank: BaseRankModel;
   rationalEntailment: EntailmentModel;
   lexicalEntailment: EntailmentModel;
+  relevantEntailment: EntailmentModel;
 }
 
 function TimesTable({
   baseRank,
   rationalEntailment,
   lexicalEntailment,
+  relevantEntailment,
 }: TimesTableProps) {
   const roundOff = (value: number) => {
     return (Math.round(value * 10000) / 10000).toString();
@@ -115,6 +123,10 @@ function TimesTable({
         {
           algorithm: "Lexicographic Closure",
           timeTaken: roundOff(lexicalEntailment.timeTaken),
+        },
+        {
+          algorithm: "Relevant Closure",
+          timeTaken: roundOff(relevantEntailment.timeTaken),
         },
       ]}
     />

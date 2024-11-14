@@ -107,7 +107,7 @@ class BaseRankModel {
 
 enum EntailmentType {
   Unknown = 0,
-  RationlClosure,
+  RationalClosure,
   LexicographicClosure,
   RelevantClosure, 
 }
@@ -198,7 +198,7 @@ abstract class EntailmentModel {
  */
 class RationalEntailmentModel extends EntailmentModel {
   constructor(obj: RationalEntailment) {
-    super({ ...obj, type: EntailmentType.RationlClosure });
+    super({ ...obj, type: EntailmentType.RationalClosure });
   }
 
   public get remainingRanks(): Ranking[] {

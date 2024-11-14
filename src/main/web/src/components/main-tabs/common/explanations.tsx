@@ -24,8 +24,8 @@ function RankCheck({
 
   let showNotEntailed: boolean = false;
 
-  if (type == EntailmentType.RationlClosure) {
-    showNotEntailed =
+  if (type == EntailmentType.RationalClosure) {
+    showNotEntailed = 
       rankNumber == removedRanking.length - 1 && remainingRanks.length > 1;
   }
 
@@ -35,6 +35,11 @@ function RankCheck({
       weakenedRanking.length > 0 &&
       rankNumber === weakenedRanking[weakenedRanking.length - 1].rankNumber &&
       remainingRanks.length > 1;
+  }
+
+  if (type == EntailmentType.RelevantClosure) {
+    showNotEntailed =
+      rankNumber == removedRanking.length - 1 && remainingRanks.length > 1;
   }
 
   const entireRankRemoved = !!removedRanking.find(
@@ -59,7 +64,11 @@ function RankCheck({
           </div>
           <div>
             <p>
-              {type == EntailmentType.RationlClosure ? "Remove " : "Refine "}
+              {type == EntailmentType.RationalClosure ? "Remove " : "Refine "}
+              rank <Formula formula={`R_{${rankNumber}}`} />
+            </p>
+            <p>
+              {type == EntailmentType.RelevantClosure ? "Remove " : "Refine "}
               rank <Formula formula={`R_{${rankNumber}}`} />
             </p>
             {type == EntailmentType.LexicographicClosure && (
@@ -180,19 +189,21 @@ export function Explanation({ entailment, className }: ExplanationProps) {
 
   return (
     <div className={className}>
+
       <p>
         Check whether the ranks entail <Formula formula={entailment.negation} />
         . If they do,{" "}
-        {entailment.type == EntailmentType.RationlClosure ? "remove" : "refine"}{" "}
+        {entailment.type == EntailmentType.RationalClosure ? "remove" : "refine"}{" "}
         the lowest rank finite <Formula formula="R_i" />. If they don't we stop
         the process of{" "}
-        {entailment.type == EntailmentType.RationlClosure
+        {entailment.type == EntailmentType.RationalClosure
           ? "removing"
           : "refining"}{" "}
         ranks.
       </p>
+
       <div className="text-center">
-        {entailment.type === EntailmentType.RationlClosure &&
+        {entailment.type === EntailmentType.RationalClosure &&
           entailment.removedRanking.map((value, index, array) => (
             <RankCheck
               key={index}

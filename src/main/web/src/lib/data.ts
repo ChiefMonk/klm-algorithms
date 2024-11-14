@@ -4,6 +4,7 @@ import {
   ErrorModel,
   LexicalEntailmentModel,
   RationalEntailmentModel,
+  RelevantEntailmentModel,
 } from "./models";
 
 const FORMULA_URL = "/api/query-formula";
@@ -114,6 +115,22 @@ const fetchLexicalEntailment = async (
   }
 };
 
+const fetchRelevantEntailment = async (
+  queryFormula: string,
+  baseRank: BaseRankModel
+) => {
+  try {
+    const response = await axios.post(
+      ENTAILMENT_URL("relevant", queryFormula),
+      baseRank.toObject()
+    );
+    return RelevantEntailmentModel.create(response.data);
+  } catch (error) {
+    throw getError(error);
+  }
+};
+
+
 export {
   fetchQueryFormula,
   createQueryFormula,
@@ -123,4 +140,5 @@ export {
   fetchBaseRank,
   fetchRationalEntailment,
   fetchLexicalEntailment,
+  fetchRelevantEntailment,
 };

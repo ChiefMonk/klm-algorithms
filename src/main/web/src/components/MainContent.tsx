@@ -4,6 +4,7 @@ import { Summary } from "./main-tabs/Summary";
 import { BaseRank } from "./main-tabs/BaseRank";
 import { RationalClosure } from "./main-tabs/RationalClosure";
 import { LexicographicClosure } from "./main-tabs/LexicographicClosure";
+import { RelevantClosure } from "./main-tabs/RelevantClosure";
 import { QueryInputs } from "./inputs/QueryInputs";
 import BarLoader from "react-spinners/BarLoader";
 
@@ -29,23 +30,28 @@ export function MainContent() {
           updateFormula={reasoner.updateFormula}
         />
         <Tabs defaultValue="summary">
-          <TabsList className="grid grid-cols-2 sm:grid-cols-4 flex-wrap h-auto space-y-1'">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-5 flex-wrap h-auto space-y-1'">
             <TabsTrigger value="summary">Summary</TabsTrigger>
             <TabsTrigger value="baseRank">Base Rank</TabsTrigger>
             <TabsTrigger value="rationaClosure">Rational Closure</TabsTrigger>
-            <TabsTrigger value="lexicographicClosure">
-              Lexicographic Closure
-            </TabsTrigger>
+            <TabsTrigger value="lexicographicClosure">Lexicographic Closure</TabsTrigger>
+            <TabsTrigger value="relevantClosure">Relevant Closure</TabsTrigger>
           </TabsList>
           <TabsContent value="summary">
             <Summary
               isLoading={reasoner.resultPending}
               baseRank={reasoner.queryResult?.baseRank || null}
+             
+              rationalEntailment={
+                reasoner.queryResult?.rationalEntailment || null
+              }
+
               lexicalEntailment={
                 reasoner.queryResult?.lexicalEntailment || null
               }
-              rationalEntailment={
-                reasoner.queryResult?.rationalEntailment || null
+
+              relevantEntailment={
+                reasoner.queryResult?.relevantEntailment || null
               }
             />
           </TabsContent>
@@ -68,6 +74,14 @@ export function MainContent() {
               isLoading={reasoner.resultPending}
               lexicalEntailment={
                 reasoner.queryResult?.lexicalEntailment || null
+              }
+            />
+          </TabsContent>
+          <TabsContent value="relevantClosure">
+            <RelevantClosure
+              isLoading={reasoner.resultPending}
+              relevantEntailment={
+                reasoner.queryResult?.relevantEntailment || null
               }
             />
           </TabsContent>

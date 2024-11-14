@@ -2,6 +2,7 @@ import {
   BaseRankModel,
   LexicalEntailmentModel,
   RationalEntailmentModel,
+  RelevantEntailmentModel,
 } from "@/lib/models";
 
 export type QueryInput = {
@@ -13,6 +14,7 @@ export type QueryResult = {
   baseRank: BaseRankModel;
   rationalEntailment: RationalEntailmentModel;
   lexicalEntailment: LexicalEntailmentModel;
+  relevantEntailment: RelevantEntailmentModel;
 };
 
 export const getQueryInput: () => QueryInput | null = () => {
@@ -30,10 +32,9 @@ export const getQueryResult: () => QueryResult | null = () => {
   if (obj != null) {
     return {
       baseRank: BaseRankModel.create(obj.baseRank),
-      rationalEntailment: RationalEntailmentModel.create(
-        obj.rationalEntailment
-      ),
+      rationalEntailment: RationalEntailmentModel.create(obj.rationalEntailment),
       lexicalEntailment: LexicalEntailmentModel.create(obj.lexicalEntailment),
+      relevantEntailment: RelevantEntailmentModel.create(obj.relevantEntailment),
     };
   }
   return null;
@@ -50,6 +51,7 @@ export const saveQueryResult: (data: QueryResult) => void = (data) => {
       baseRank: data.baseRank.toObject(),
       rationalEntailment: data.rationalEntailment.toObject(),
       lexicalEntailment: data.lexicalEntailment.toObject(),
+      relevantEntailment: data.relevantEntailment.toObject(),
     })
   );
 };

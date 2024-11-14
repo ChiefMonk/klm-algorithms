@@ -16,7 +16,7 @@ function Footer({ className }: FooterProps) {
         target="_blank"
       >
         <img src={github} alt="GitHub logo" className="w-6 mr-2" />
-        <span>KLM-Style Entailment and Explanation Algorithms</span>
+        <span>KLM-Style Entailment and Explanation Algorithms</span>      
       </a>
     </footer>
   );

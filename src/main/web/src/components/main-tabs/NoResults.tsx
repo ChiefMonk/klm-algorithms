@@ -11,7 +11,7 @@ export function NoResults() {
       </div>
       <div className="text-center">
         <h4 className="scroll-m-20 font-bold text-lg tracking-tight">
-          No Results Yet.
+          No results yet... please wait
         </h4>
         <p className="font-semibold text-muted-foreground">
           Please submit a query first.
