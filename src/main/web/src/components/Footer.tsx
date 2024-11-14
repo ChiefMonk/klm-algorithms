@@ -12,11 +12,11 @@ function Footer({ className }: FooterProps) {
     >
       <a
         className="font-semibold flex items-center hover:underline"
-        href="https://github.com/thabomoloi/extrc"
+        href="https://github.com/chiefmonk/klm-algorithms"
         target="_blank"
       >
         <img src={github} alt="GitHub logo" className="w-6 mr-2" />
-        <span>thabomoloi</span>
+        <span>KLM-Style Entailment and Explanation Algorithms</span>
       </a>
     </footer>
   );

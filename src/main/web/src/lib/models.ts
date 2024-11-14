@@ -27,6 +27,8 @@ type LexicalEntailment = EntailmentModelBase & {
   weakenedRanking: Ranking[];
 };
 
+type RelevantEntailment = EntailmentModelBase;
+
 type ErrorData = {
   code: number;
   description: string;
@@ -104,9 +106,10 @@ class BaseRankModel {
 }
 
 enum EntailmentType {
+  Unknown = 0,
   RationlClosure,
   LexicographicClosure,
-  NoTypeYet,
+  RelevantClosure, 
 }
 
 /**
@@ -114,7 +117,7 @@ enum EntailmentType {
  * which determines whether a query is entailed by a knowledge base.
  */
 abstract class EntailmentModel {
-  private _type: EntailmentType = EntailmentType.NoTypeYet;
+  private _type: EntailmentType = EntailmentType.Unknown;
   private _queryFormula: string;
   private _negation: string;
   private _knowledgeBase: string[];
@@ -263,6 +266,33 @@ class LexicalEntailmentModel extends EntailmentModel {
 }
 
 /**
+ * A specific type of entailment model based on rationality principles.
+ */
+class RelevantEntailmentModel extends EntailmentModel {
+  constructor(obj: RelevantEntailment) {
+    super({ ...obj, type: EntailmentType.RelevantClosure });
+  }
+
+  public get remainingRanks(): Ranking[] {
+    const ranks: Ranking[] = [];
+    const n = this.removedRanking.length;
+    const m = this.baseRanking.length;
+    for (let i = n; i < m; i++) {
+      ranks.push(this.baseRanking[i]);
+    }
+    return ranks;
+  }
+
+  public toObject(): RelevantEntailment {
+    return super.toObject();
+  }
+
+  public static create(obj: RelevantEntailment): RelevantEntailmentModel {
+    return new RelevantEntailmentModel(obj);
+  }
+}
+
+/**
  * Represents an error response with a code, description, and message.
  */
 class ErrorModel extends Error {
@@ -309,6 +339,7 @@ export {
   EntailmentModel,
   RationalEntailmentModel,
   LexicalEntailmentModel,
+  RelevantEntailmentModel,
   ErrorModel,
   EntailmentType,
 };
@@ -318,5 +349,6 @@ export type {
   EntailmentModelBase,
   RationalEntailment,
   LexicalEntailment,
+  RelevantEntailment,
   ErrorData,
 };

@@ -50,7 +50,9 @@ function useReasoner() {
       const data: QueryInput = { queryFormula, knowledgeBase };
       setQueryInput(data);
       saveQueryInput(data);
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       toastError(error);
     }
     setInputPending(false);

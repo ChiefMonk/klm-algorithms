@@ -22,8 +22,11 @@ function Header({ className }: HeaderProps) {
     >
       <div className="max-w-screen-xl flex items-center justify-between w-full ">
         <div className="flex items-center gap-2">
-          <NavLink to="/">
-            <Logo className="w-8" />
+          <NavLink to="/" className="flex items-center gap-2">
+            <Logo className="w-8" /> 
+            <span className="text-lg font-semibold">
+              Defeasible Reasoning: KLM-Style Entailment and Explanation Algorithms
+            </span>
           </NavLink>
         </div>
         <div>

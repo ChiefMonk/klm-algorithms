@@ -6,7 +6,7 @@ interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ src = logo, alt = "Logo", ...rest }) => {
+const Logo: React.FC<LogoProps> = ({ src = logo, alt = "KLM Logo", ...rest }) => {
   return <img src={src} alt={alt} {...rest} />;
 };
 
