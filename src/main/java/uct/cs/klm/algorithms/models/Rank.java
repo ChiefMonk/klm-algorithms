@@ -7,7 +7,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 /**
  * This class represents a ranked knowledge base.
  * 
- * @author Thabo Vincent Moloi
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  */
 public class Rank {
   /** Represents the rank number. */
