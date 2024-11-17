@@ -25,6 +25,12 @@ public class RationalJustificationService extends JustificationServiceBase imple
             Ranking remainingRanking,
             PlFormula query) 
     {
+        
+        if(remainingRanking.getKnowledgeBase().isEmpty())
+        {
+            return new KnowledgeBase();
+        }
+        
         SatSolver.setDefaultSolver(new Sat4jSolver());
         SatReasoner reasoner = new SatReasoner();
         
@@ -64,7 +70,12 @@ public class RationalJustificationService extends JustificationServiceBase imple
         List<KnowledgeBase> justifications = rootNode.getAllJustifications();
         
         for (KnowledgeBase justification : justifications)
+        {
             System.out.println(DisplayUtils.printJustificationAsCSV(justification));
+        }
+        
+        System.out.println("<<ALL justifications>>");
+        System.out.println(DisplayUtils.printJustificationAsCSV(rootNode.getJustification()));
         
         return rootNode.getJustification();
     }

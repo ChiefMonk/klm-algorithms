@@ -4,6 +4,9 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
+import java.util.*;
+import java.util.stream.*;
+
 // Base class for Entailment
 public abstract class Entailment {
   protected final KnowledgeBase knowledgeBase;
@@ -39,6 +42,30 @@ public abstract class Entailment {
   }
 
   public Ranking getBaseRanking() {
+    return baseRanking;
+  }
+  
+  public Ranking getEntailmentRanking() 
+  {
+    Ranking ranking = new Ranking();
+    
+    if(!getEntailed())
+    {
+        return ranking;
+    }
+     
+    for(Rank rank : getBaseRanking())
+    {
+        Optional<Rank> result = getRemovedRanking().stream()
+            .filter(p -> rank.getFormulas().equals(p.getFormulas()))
+            .findFirst();
+        
+        if(result == null)
+        {
+            ranking.add(rank);
+        }               
+    }
+    
     return baseRanking;
   }
 

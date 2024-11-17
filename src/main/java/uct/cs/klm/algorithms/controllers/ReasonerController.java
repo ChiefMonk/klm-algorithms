@@ -4,8 +4,11 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import io.javalin.http.Context;
 import uct.cs.klm.algorithms.enums.ReasonerType;
+import uct.cs.klm.algorithms.explanation.IJustificationService;
 import uct.cs.klm.algorithms.models.BaseRank;
+import uct.cs.klm.algorithms.models.Entailment;
 import uct.cs.klm.algorithms.models.ErrorResponse;
+import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.utils.ReasonerFactory;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 import uct.cs.klm.algorithms.services.IReasonerService;
@@ -57,9 +60,15 @@ public class ReasonerController
       PlFormula queryFormula = parser.parseFormula(formula);
       BaseRank baseRank = ctx.bodyAsClass(BaseRank.class);
       BaseRank baseRankCopy = new BaseRank(baseRank);
+      
       IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
+      Entailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
+      
+      IJustificationService justification = ReasonerFactory.createJustification(reasonerType);      
+      KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentRanking(), queryFormula);
+      
       ctx.status(200);
-      ctx.json(reasoner.getEntailment(baseRankCopy, queryFormula));
+      ctx.json(entailment);
 
     } 
     catch (IllegalArgumentException e) 
