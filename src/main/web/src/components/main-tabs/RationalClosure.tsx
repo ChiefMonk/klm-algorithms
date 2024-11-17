@@ -24,7 +24,7 @@ function RationalClosure({
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Rational Closure</CardTitle>
+        <CardTitle className="text-lg font-bold">The Rational Closure Entailment Algorithm</CardTitle>
         <CardDescription>
           Using rational closure algorithm to check for entailment.
         </CardDescription>

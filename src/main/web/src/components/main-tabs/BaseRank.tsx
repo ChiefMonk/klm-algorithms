@@ -26,9 +26,9 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Base Rank</CardTitle>
+        <CardTitle className="text-lg font-bold">The Base Rank Algorithm</CardTitle>
         <CardDescription>
-          Using base rank algorithm to create initial ranks.
+          Using the base rank algorithm to determine the initial ranks.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -41,10 +41,10 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
             />
             <div className="my-6 space-y-3">
               <p>
-                Let <Formula formula="\mathcal{K}_C" /> be the knowledge base of
-                all classical statements. Then,{" "}
+                If <Formula formula="\mathcal{K}_C" /> is the knowledge base of
+                all classical statements in <Formula formula="\mathcal{K}" />, then:{" "}
               </p>
-              <div className="text-center">
+              <div className="text-left ml-12">
                 <Kb name="\mathcal{K}_C" formulas={classical} set />
               </div>
               <div>
@@ -81,14 +81,14 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
                 <ul className="ml-8 list-disc ">
                   <li>
                     Finite rank:{" "}
-                    <Formula formula="R_i = *_i^\mathcal{K}\setminus *_{i+1}^\mathcal{K}" />{" "}
+                    <Formula formula="R_i =: *_i^\mathcal{K}\setminus *_{i+1}^\mathcal{K}" />{" "}
                     <span className="ml-4">
                       (for <Formula formula="0\leq i < n" />)
                     </span>
                   </li>
                   <li>
                     Infinite rank:{" "}
-                    <Formula formula="R_\infty = \mathcal{K}_C \cup *_\infty^\mathcal{K}" />
+                    <Formula formula="R_\infty =: \mathcal{K}_C \cup *_\infty^\mathcal{K}" />
                   </li>
                 </ul>
                 <RankingTable ranking={baseRank.ranking} />

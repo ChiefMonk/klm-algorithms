@@ -24,9 +24,7 @@ function LexicographicClosure({
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">
-          Lexicographic Closure
-        </CardTitle>
+        <CardTitle className="text-lg font-bold">The Lexicographic Closure Entailment Algorithm</CardTitle>
         <CardDescription>
           Using lexicographic closure algorithm to check for entailment.
         </CardDescription>

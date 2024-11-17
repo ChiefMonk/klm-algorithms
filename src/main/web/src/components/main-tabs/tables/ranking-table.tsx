@@ -14,7 +14,7 @@ const formulas = (label: string): ColumnDef<Ranking> => ({
     if (!label) return "Fomulas";
     return (
       <span>
-        Formulas (<TexFormula>{label}</TexFormula>)
+        Statements (<TexFormula>{label}</TexFormula>)
       </span>
     );
   },
@@ -114,8 +114,8 @@ function SequenceTable({
       filter={ranking.length != 0}
       caption={caption}
       filters={[
-        { id: "rankNumber", search: "Search index..." },
-        { id: "formulas", search: "Search formulas..." },
+        { id: "rankNumber", search: "filter index . . ." },
+        { id: "formulas", search: "filter statements . . ." },
       ]}
     />
   );

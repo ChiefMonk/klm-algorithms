@@ -58,7 +58,7 @@ interface KbProps {
 export function Kb({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
   return (
     <div className="line-clamp-1">
-      {set && <Formula formula={`${name}=\\{\\;`} />}
+      {set && <Formula formula={`${name} =: \\{\\;`} />}
       {formulas.map((formula, index, array) => (
         <span key={index}>
           <Formula formula={formula} />
@@ -75,5 +75,5 @@ interface QueryFormulaProps {
 }
 
 export function QueryFormula({ formula }: QueryFormulaProps) {
-  return <Formula formula={"\\alpha = " + formula} />;
+  return <Formula formula={"\\alpha =: " + formula} />;
 }

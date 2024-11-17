@@ -13,7 +13,8 @@ import uct.cs.klm.algorithms.services.FormulaService;
 
 import io.javalin.http.Context;
 
-public class FormulaController {
+public class FormulaController 
+{
   private final static FormulaService formulaService = new FormulaServiceImpl();
 
   public static void getQueryFormula(Context ctx) {

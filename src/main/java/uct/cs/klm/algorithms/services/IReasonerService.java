@@ -5,6 +5,6 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.BaseRank;
 import uct.cs.klm.algorithms.models.Entailment;
 
-public interface ReasonerService {
+public interface IReasonerService {
   public Entailment getEntailment(BaseRank baseRank, PlFormula queryFormula);
 }

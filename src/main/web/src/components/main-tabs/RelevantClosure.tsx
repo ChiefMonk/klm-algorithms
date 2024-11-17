@@ -24,7 +24,7 @@ function RelevantClosure({
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Relevant Closure</CardTitle>
+        <CardTitle className="text-lg font-bold">The Relevant Closure Entailment Algorithm</CardTitle>
         <CardDescription>
           Using relevant closure algorithm to check for entailment.
         </CardDescription>

@@ -9,14 +9,16 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 /**
  * This class represents a defeasible knowledge base of propositional formulae.
  * 
- * @author Thabo Vincent Moloi
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za
  */
 
-public class KnowledgeBase extends PlBeliefSet {
+public class KnowledgeBase extends PlBeliefSet 
+{
   /**
    * Creates new (empty) knowledge base.
    */
-  public KnowledgeBase() {
+  public KnowledgeBase() 
+  {
     super();
   }
 
@@ -25,7 +27,8 @@ public class KnowledgeBase extends PlBeliefSet {
    * 
    * @param formulas A set of formulas.
    */
-  public KnowledgeBase(Collection<? extends PlFormula> formulas) {
+  public KnowledgeBase(Collection<? extends PlFormula> formulas) 
+  {
     super(formulas);
   }
 
@@ -35,7 +38,8 @@ public class KnowledgeBase extends PlBeliefSet {
    * @param knowledgeBase Other knowledge base.
    * @return Knowledge base representing the union.
    */
-  public KnowledgeBase union(KnowledgeBase knowledgeBase) {
+  public KnowledgeBase union(KnowledgeBase knowledgeBase) 
+  {
     KnowledgeBase result = new KnowledgeBase(this);
     result.addAll(knowledgeBase);
     return result;
@@ -48,28 +52,39 @@ public class KnowledgeBase extends PlBeliefSet {
    * @param knowledgeBases Set of knowledge bases.
    * @return Knowledge base representing the union.
    */
-  public KnowledgeBase union(Collection<KnowledgeBase> knowledgeBases) {
+  public KnowledgeBase union(
+          Collection<KnowledgeBase> knowledgeBases) 
+  {
     KnowledgeBase result = new KnowledgeBase();
-    knowledgeBases.forEach(kb -> {
+    
+    knowledgeBases.forEach(kb -> 
+    {
       result.addAll(kb);
     });
+    
     return result;
   }
 
   /**
-   * Computes the intersection of this knowedge base and other knowledge
+   * Computes the intersection of this knowledge base and other knowledge
    * base.
    * 
    * @param knowledgeBase Other knowledge base.
    * @return Knowledge base representing the intersection.
    */
-  public KnowledgeBase intersection(KnowledgeBase knowledgeBase) {
+  public KnowledgeBase intersection(
+          KnowledgeBase knowledgeBase) 
+  {
     KnowledgeBase result = new KnowledgeBase();
-    this.forEach(formula -> {
-      if (knowledgeBase.contains(formula)) {
+    
+    this.forEach(formula -> 
+    {
+      if (knowledgeBase.contains(formula)) 
+      {
         result.add(formula);
       }
     });
+    
     return result;
   }
 
@@ -79,7 +94,8 @@ public class KnowledgeBase extends PlBeliefSet {
    * @param knowledgeBase other knowledge base.
    * @return Knowledge base representing the set difference.
    */
-  public KnowledgeBase difference(KnowledgeBase knowledgeBase) {
+  public KnowledgeBase difference(KnowledgeBase knowledgeBase) 
+  {
     KnowledgeBase result = new KnowledgeBase(this);
     result.removeAll(knowledgeBase);
     return result;
@@ -148,6 +164,13 @@ public class KnowledgeBase extends PlBeliefSet {
       }
     });
     return new KnowledgeBase[] { defeasible, classical };
+  }
+  
+  public KnowledgeBase remove(PlFormula formula) 
+  {
+    KnowledgeBase result = new KnowledgeBase(this);
+    result.formulas.remove(formula);
+    return result;
   }
 
   /**

@@ -48,7 +48,7 @@ function Summary({
 
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
-                Entailment Results
+                Entailment Algorithm Results
               </h4>
               <EntailmentTable
                 rationalEntailment={rationalEntailment}

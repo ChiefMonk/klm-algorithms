@@ -30,7 +30,8 @@ public class Ranking extends ArrayList<Rank> {
    * @param rankNumber    Rank number.
    * @param knowledgeBase Knowledge base of formulas.
    */
-  public void addRank(int rankNumber, KnowledgeBase knowledgeBase) {
+  public void addRank(int rankNumber, KnowledgeBase knowledgeBase) 
+  {
     this.add(new Rank(rankNumber, knowledgeBase));
   }
 
@@ -38,12 +39,28 @@ public class Ranking extends ArrayList<Rank> {
    * Get the rank given the rank number.
    * 
    * @param rankNumber Rank number.
+     * @return 
    */
-  public Rank getRank(int rankNumber) {
-    if (rankNumber == Integer.MAX_VALUE) {
+  public Rank getRank(int rankNumber) 
+  {
+    if (rankNumber == Integer.MAX_VALUE) 
+    {
       return this.get(this.size() - 1);
     }
+    
     return this.get(rankNumber);
+  }
+  
+  public KnowledgeBase getKnowledgeBase()
+  {
+      KnowledgeBase kb = new KnowledgeBase();
+      
+      for (Rank rank : this) 
+      {
+          kb.addAll(rank.getFormulas());
+      }
+      
+      return  kb;
   }
 
 }

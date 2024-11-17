@@ -27,5 +27,4 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   public KnowledgeBase getKnowledgeBase() {
     return getDefault();
   }
-
 }

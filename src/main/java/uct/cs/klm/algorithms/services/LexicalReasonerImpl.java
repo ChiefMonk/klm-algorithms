@@ -18,7 +18,7 @@ import uct.cs.klm.algorithms.models.LexicalEntailment;
 import uct.cs.klm.algorithms.models.Rank;
 import uct.cs.klm.algorithms.models.Ranking;
 
-public class LexicalReasonerImpl implements ReasonerService {
+public class LexicalReasonerImpl implements IReasonerService {
   private final SatReasoner reasoner;
 
   public LexicalReasonerImpl() {

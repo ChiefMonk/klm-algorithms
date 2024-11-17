@@ -101,8 +101,8 @@ export function RefinedRankingTable({
       data={data}
       filter={data.length != 0}
       filters={[
-        { id: "subsetSize", search: "Search subset size..." },
-        { id: "formulas", search: "Search formulas..." },
+        { id: "subsetSize", search: "filter subset size . . ." },
+        { id: "formulas", search: "filter statements . . ." },
       ]}
       caption={caption}
     />

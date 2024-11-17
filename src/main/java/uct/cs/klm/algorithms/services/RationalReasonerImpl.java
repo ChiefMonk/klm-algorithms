@@ -13,7 +13,7 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.Ranking;
 import uct.cs.klm.algorithms.models.RationalEntailment;
 
-public class RationalReasonerImpl implements ReasonerService {
+public class RationalReasonerImpl implements IReasonerService {
   private final SatReasoner reasoner;
 
   public RationalReasonerImpl() {
