@@ -76,22 +76,29 @@ export function FormulaCard({
       <Card>
         <CardHeader className="space-y-0 pb-4">
           <CardTitle className="font-semibold text-center">
-            Query Formula <Formula formula="(\alpha)" />
+            The Query Formula <Formula formula="(\alpha)" />
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
           {!editing && (
             <div className="w-full flex flex-col gap-4 items-center">
               <Formula formula={queryFormula} />
+              
+              <hr className="w-full max-w-sm border-t border-gray-300 my-[5px]" />
+
               <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
                 <Button
                   variant="secondary"
+                  size="default"   
+                  className="border border-light-blue-500"        
                   onClick={handleEdit}
                   disabled={isLoading}
                 >
                   Edit
                 </Button>
-                <Button onClick={handleQuerySubmit} disabled={isLoading}>
+                <Button 
+                  onClick={handleQuerySubmit} 
+                  disabled={isLoading}>
                   Query
                 </Button>
               </div>

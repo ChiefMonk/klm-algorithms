@@ -78,6 +78,10 @@ function useReasoner() {
           queryInput.queryFormula,
           baseRank
         );
+        
+        console.log('rationalEntailment: ' + rationalEntailment.justification.toString())
+        console.log('lexicalEntailment: ' + lexicalEntailment.justification.toString())
+        console.log('relevantEntailment: ' + relevantEntailment.justification.toString())
 
         const data: QueryResult = {
           baseRank,

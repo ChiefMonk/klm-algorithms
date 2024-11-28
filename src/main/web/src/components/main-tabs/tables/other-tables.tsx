@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 interface AlgorithmResult {
   algorithm: string;
   result: string;
+  justification: string;
 }
 
 interface TimesResult {
@@ -17,18 +18,28 @@ interface TimesResult {
 const entailmentColumns: ColumnDef<AlgorithmResult>[] = [
   {
     accessorKey: "algorithm",
-    header: "Algorithm",
+    header: "Inference Operator",
     cell: ({ row }) => row.getValue("algorithm"),
     meta: {
+      headerClassName: "min-w-[180px]",
       cellClassName: "whitespace-nowrap",
     },
   },
   {
     accessorKey: "result",
-    header: "Result",
+    header: "Entailment",
     cell: ({ row }) => <TexFormula>{row.getValue("result")}</TexFormula>,
+    meta: {     
+      headerClassName: "min-w-[180px]",
+      cellClassName: "whitespace-nowrap",
+    },
+  },
+  {
+    accessorKey: "justification",
+    header: "Justification",
+    cell: ({ row }) => <TexFormula>{row.getValue("justification")}</TexFormula>,
     meta: {
-      headerClassName: "w-full",
+      headerClassName: "w-full min-w-[180px]",
       cellClassName: "whitespace-nowrap",
     },
   },
@@ -74,6 +85,13 @@ function EntailmentTable({
       ? toTex("\\mathcal{K} \\vapprox " + queryFormula)
       : toTex("\\mathcal{K} \\nvapprox " + queryFormula);
   };
+
+  const getJustification = ({ entailed, justification }: EntailmentModel) => {
+    console.log("Final Justification: " + justification)
+    return entailed
+      ? toTex("\\mathcal{J} =: \\{ " + justification + " \\}")
+      : toTex("\\mathcal{J} =: \\{ \\}");
+  };
   return (
     <DataTable
       columns={entailmentColumns}
@@ -81,14 +99,17 @@ function EntailmentTable({
         {
           algorithm: "Rational Closure",
           result: getResult(rationalEntailment),
+          justification:  getJustification(rationalEntailment),
         },
         {
           algorithm: "Lexicographic Closure",
           result: getResult(lexicalEntailment),
+          justification: getJustification(lexicalEntailment),
         },
         {
           algorithm: "Relevant Closure",
           result: getResult(relevantEntailment),
+          justification: getJustification(relevantEntailment),
         },
       ]}
     />

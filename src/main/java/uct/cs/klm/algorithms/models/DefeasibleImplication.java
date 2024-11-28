@@ -9,7 +9,7 @@ import uct.cs.klm.algorithms.utils.Symbols;
 /**
  * This class models deasible implication of propositonal logic.
  * 
- * @author Thabo Vincent Moloi
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  */
 public class DefeasibleImplication extends Implication {
 

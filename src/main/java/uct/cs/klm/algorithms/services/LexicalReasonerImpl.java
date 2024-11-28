@@ -11,12 +11,12 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import uct.cs.klm.algorithms.models.BaseRank;
+import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.Entailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.LexicalEntailment;
-import uct.cs.klm.algorithms.models.Rank;
-import uct.cs.klm.algorithms.models.Ranking;
+import uct.cs.klm.algorithms.ranking.ModelRank;
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
 public class LexicalReasonerImpl implements IReasonerService {
   private final SatReasoner reasoner;
@@ -27,15 +27,15 @@ public class LexicalReasonerImpl implements IReasonerService {
   }
 
   @Override
-  public Entailment getEntailment(BaseRank baseRank, PlFormula queryFormula) {
+  public Entailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
 
     // Get inputs
     PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
     KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
-    Ranking baseRanking = baseRank.getRanking();
-    Ranking removedRanking = new Ranking();
-    Ranking weakenedRanking = new Ranking();
+    ModelRankCollection baseRanking = baseRank.getRanking();
+    ModelRankCollection removedRanking = new ModelRankCollection();
+    ModelRankCollection weakenedRanking = new ModelRankCollection();
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {
@@ -48,11 +48,11 @@ public class LexicalReasonerImpl implements IReasonerService {
 
       int m = baseRanking.get(i).getFormulas().size() - 1;
       KnowledgeBase weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
-      weakenedRanking.add(new Rank(i, weakenedRank));
+      weakenedRanking.add(new ModelRank(i, weakenedRank));
       while (reasoner.query(union.union(weakenedRank), negation) && m > 0) {
         m--;
         weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
-        weakenedRanking.add(new Rank(i, weakenedRank));
+        weakenedRanking.add(new ModelRank(i, weakenedRank));
       }
 
       if (m == 0) {
@@ -76,7 +76,7 @@ public class LexicalReasonerImpl implements IReasonerService {
         .build();
   }
 
-  private Disjunction weakenRank(Rank rank, int size) {
+  private Disjunction weakenRank(ModelRank rank, int size) {
     int n = rank.getFormulas().size();
     Object[] rankArray = rank.getFormulas().toArray();
     Disjunction weakenedRank = new Disjunction();

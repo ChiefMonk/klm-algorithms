@@ -7,10 +7,10 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import uct.cs.klm.algorithms.models.BaseRank;
+import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.Entailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.models.Ranking;
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.models.RationalEntailment;
 
 public class RationalReasonerImpl implements IReasonerService {
@@ -22,14 +22,13 @@ public class RationalReasonerImpl implements IReasonerService {
   }
 
   @Override
-  public Entailment getEntailment(BaseRank baseRank, PlFormula queryFormula) {
+  public Entailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
-
-    // Get inputs
+   
     PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
     KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
-    Ranking baseRanking = baseRank.getRanking();
-    Ranking removedRanking = new Ranking();
+    ModelRankCollection baseRanking = baseRank.getRanking();
+    ModelRankCollection removedRanking = new ModelRankCollection();
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {

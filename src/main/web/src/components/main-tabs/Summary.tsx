@@ -35,8 +35,8 @@ function Summary({
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Summary</CardTitle>
-        <CardDescription>Summary of entailment algorithms.</CardDescription>
+        <CardTitle className="text-lg font-bold">Summary of Results</CardTitle>
+        <CardDescription>A summary of entailment and justification algorithm results</CardDescription>
       </CardHeader>
       <CardContent>
         {!isLoading && baseRank && rationalEntailment && lexicalEntailment && relevantEntailment && (
@@ -48,7 +48,7 @@ function Summary({
 
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
-                Entailment Algorithm Results
+                Algorithm Results
               </h4>
               <EntailmentTable
                 rationalEntailment={rationalEntailment}

@@ -21,19 +21,20 @@ function QueryInputs({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {queryInput && (
-        <FormulaCard
-          isLoading={isLoading}
-          handleQuerySubmit={submitQuery}
-          queryFormula={queryInput.queryFormula}
-          updateFormula={updateFormula}
-        />
-      )}
-      {queryInput && (
         <KbCard
           isLoading={isLoading}
           knowledgeBase={queryInput.knowledgeBase}
           submitKnowledgeBase={submitKnowledgeBase}
           uploadKnowledgeBase={uploadKnowledgeBase}
+        />
+      )}
+
+      {queryInput && (
+        <FormulaCard
+          isLoading={isLoading}
+          handleQuerySubmit={submitQuery}
+          queryFormula={queryInput.queryFormula}
+          updateFormula={updateFormula}
         />
       )}
     </div>

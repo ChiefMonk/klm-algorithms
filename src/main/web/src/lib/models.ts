@@ -7,7 +7,7 @@ type BaseRanking = {
   knowledgeBase: string[];
   ranking: Ranking[];
   sequence: Ranking[];
-  timeTaken: number;
+  timeTaken: number; 
 };
 
 type EntailmentModelBase = {
@@ -18,6 +18,7 @@ type EntailmentModelBase = {
   baseRanking: Ranking[];
   timeTaken: number;
   removedRanking: Ranking[];
+  justification: string[];
   type: EntailmentType;
 };
 
@@ -43,7 +44,7 @@ class BaseRankModel {
   private _knowledgeBase: string[];
   private _ranking: Ranking[];
   private _sequence: Ranking[];
-  private _timeTaken: number;
+  private _timeTaken: number;  
 
   /**
    * Constructs new base rank model.
@@ -52,7 +53,7 @@ class BaseRankModel {
     this._knowledgeBase = knowledgeBase;
     this._ranking = ranking;
     this._sequence = sequence;
-    this._timeTaken = timeTaken;
+    this._timeTaken = timeTaken;  
   }
 
   /**
@@ -90,13 +91,13 @@ class BaseRankModel {
   public get timeTaken(): number {
     return this._timeTaken;
   }
-
+  
   public toObject(): BaseRanking {
     return {
       knowledgeBase: this._knowledgeBase,
       ranking: this._ranking,
       sequence: this._sequence,
-      timeTaken: this._timeTaken,
+      timeTaken: this._timeTaken,    
     };
   }
 
@@ -125,6 +126,7 @@ abstract class EntailmentModel {
   private _baseRanking: Ranking[];
   private _timeTaken: number;
   private _removedRanking: Ranking[];
+  private _justification: string[];
 
   constructor({
     queryFormula,
@@ -134,6 +136,7 @@ abstract class EntailmentModel {
     baseRanking,
     timeTaken,
     removedRanking,
+    justification,
     type,
   }: EntailmentModelBase) {
     this._queryFormula = queryFormula;
@@ -143,6 +146,7 @@ abstract class EntailmentModel {
     this._baseRanking = baseRanking ?? [];
     this._timeTaken = timeTaken;
     this._removedRanking = removedRanking ?? [];
+    this._justification = justification ?? [];
     this._type = type;
   }
 
@@ -177,6 +181,11 @@ abstract class EntailmentModel {
   public get timeTaken(): number {
     return this._timeTaken;
   }
+
+  public get justification(): string[] {
+    return this._justification;
+  }
+
   public abstract get remainingRanks(): Ranking[];
 
   public toObject(): EntailmentModelBase {
@@ -188,6 +197,7 @@ abstract class EntailmentModel {
       baseRanking: this._baseRanking,
       timeTaken: this._timeTaken,
       removedRanking: this._removedRanking,
+      justification: this._justification,
       type: this._type,
     };
   }
@@ -201,11 +211,14 @@ class RationalEntailmentModel extends EntailmentModel {
     super({ ...obj, type: EntailmentType.RationalClosure });
   }
 
-  public get remainingRanks(): Ranking[] {
+  public get remainingRanks(): Ranking[] 
+  {
     const ranks: Ranking[] = [];
     const n = this.removedRanking.length;
     const m = this.baseRanking.length;
-    for (let i = n; i < m; i++) {
+    
+    for (let i = n; i < m; i++) 
+    {
       ranks.push(this.baseRanking[i]);
     }
     return ranks;
@@ -215,7 +228,7 @@ class RationalEntailmentModel extends EntailmentModel {
     return super.toObject();
   }
 
-  public static create(obj: RationalEntailment): RationalEntailmentModel {
+  public static create(obj: RationalEntailment): RationalEntailmentModel {   
     return new RationalEntailmentModel(obj);
   }
 }
@@ -260,7 +273,10 @@ class LexicalEntailmentModel extends EntailmentModel {
     };
   }
 
-  public static create(obj: LexicalEntailment): LexicalEntailmentModel {
+  public static create(obj: LexicalEntailment): LexicalEntailmentModel 
+  {
+    console.log("1-Lexical Justification: " + obj.justification)
+
     return new LexicalEntailmentModel(obj);
   }
 }

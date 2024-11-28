@@ -70,6 +70,21 @@ export function Kb({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
   );
 }
 
+export function Just({ name = "\\mathcal{J}", formulas, set = false }: KbProps) {
+  return (
+    <div className="line-clamp-1">
+      {set && <Formula formula={`${name} =: \\{\\;`} />}
+      {formulas.map((formula, index, array) => (
+        <span key={index}>
+          <Formula formula={formula} />
+          {index < array.length - 1 && <Formula formula=",\;" />}
+        </span>
+      ))}
+      {set && <Formula formula="\;\}" />}
+    </div>
+  );
+}
+
 interface QueryFormulaProps {
   formula: string;
 }

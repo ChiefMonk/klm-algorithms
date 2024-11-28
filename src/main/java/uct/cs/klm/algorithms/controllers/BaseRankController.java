@@ -2,19 +2,19 @@ package uct.cs.klm.algorithms.controllers;
 
 import uct.cs.klm.algorithms.models.ErrorResponse;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.services.BaseRankService;
-import uct.cs.klm.algorithms.services.BaseRankServiceImpl;
+import uct.cs.klm.algorithms.ranking.BaseRankService;
 
 import io.javalin.http.Context;
+import uct.cs.klm.algorithms.ranking.IBaseRankService;
 
 public class BaseRankController {
-  private static final BaseRankService baseRankService = new BaseRankServiceImpl();
+  private static final IBaseRankService baseRankService = new BaseRankService();
 
   public static void getBaseRank(Context ctx) {
     try {
       KnowledgeBase kb = ctx.bodyAsClass(KnowledgeBase.class);
       ctx.status(200);
-      ctx.json(baseRankService.constructBaseRank(kb));
+      ctx.json(baseRankService.construct(kb));
     } catch (Exception e) {
       ctx.status(400);
       ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid"));

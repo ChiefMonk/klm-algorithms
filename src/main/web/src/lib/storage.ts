@@ -29,6 +29,7 @@ export const saveQueryInput: (data: QueryInput) => void = (data) => {
 export const getQueryResult: () => QueryResult | null = () => {
   const storedValue = localStorage.getItem("queryResult");
   const obj = storedValue ? JSON.parse(storedValue) : null;
+ 
   if (obj != null) {
     return {
       baseRank: BaseRankModel.create(obj.baseRank),

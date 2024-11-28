@@ -1,5 +1,7 @@
 package uct.cs.klm.algorithms.models;
 
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
+import uct.cs.klm.algorithms.ranking.ModelRank;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
@@ -11,10 +13,11 @@ import java.util.stream.*;
 public abstract class Entailment {
   protected final KnowledgeBase knowledgeBase;
   protected final PlFormula queryFormula;
-  protected final Ranking baseRanking;
+  protected final ModelRankCollection baseRanking;
   protected final boolean entailed;
   protected final double timeTaken;
-  protected final Ranking removedRanking;
+  protected final ModelRankCollection removedRanking;
+  protected KnowledgeBase justification;
 
   protected Entailment(EntailmentBuilder<?> builder) {
     this.knowledgeBase = builder.knowledgeBase;
@@ -23,6 +26,7 @@ public abstract class Entailment {
     this.entailed = builder.entailed;
     this.timeTaken = builder.timeTaken;
     this.removedRanking = builder.removedRanking;
+    this.justification = new KnowledgeBase();
   }
 
   public KnowledgeBase getKnowledgeBase() {
@@ -37,37 +41,49 @@ public abstract class Entailment {
     return queryFormula == null ? null : new Negation(((Implication) queryFormula).getFirstFormula());
   }
 
-  public Ranking getRemovedRanking() {
+  public ModelRankCollection getRemovedRanking() {
     return removedRanking;
   }
 
-  public Ranking getBaseRanking() {
+  public ModelRankCollection getBaseRanking() {
     return baseRanking;
   }
   
-  public Ranking getEntailmentRanking() 
+  public void setJustification(KnowledgeBase justification) 
   {
-    Ranking ranking = new Ranking();
-    
     if(!getEntailed())
     {
-        return ranking;
-    }
-     
-    for(Rank rank : getBaseRanking())
-    {
-        Optional<Rank> result = getRemovedRanking().stream()
-            .filter(p -> rank.getFormulas().equals(p.getFormulas()))
-            .findFirst();
-        
-        if(result == null)
-        {
-            ranking.add(rank);
-        }               
+        return;
     }
     
-    return baseRanking;
+    this.justification = justification;
   }
+  
+  public KnowledgeBase getJustification() 
+  {
+    return justification;
+  }
+  
+    public ModelRankCollection getEntailmentRanking() {
+        ModelRankCollection ranking = new ModelRankCollection();
+
+        if (!getEntailed()) {
+            return ranking;
+        }
+
+        for (ModelRank rank : getBaseRanking()) {
+            Optional<ModelRank> result = getRemovedRanking().stream()
+                    .filter(p -> rank.getFormulas().equals(p.getFormulas()))
+                    .findFirst();
+
+            // If the result is empty, add the rank to the ranking list
+            if (!result.isPresent()) {
+                ranking.add(rank);
+            }
+        }
+
+        return baseRanking;
+    }
 
   public boolean getEntailed() {
     return entailed;
@@ -81,12 +97,12 @@ public abstract class Entailment {
   public static abstract class EntailmentBuilder<T extends EntailmentBuilder<T>> {
     private KnowledgeBase knowledgeBase;
     private PlFormula queryFormula;
-    private Ranking baseRanking;
+    private ModelRankCollection baseRanking;
     private boolean entailed;
     private double timeTaken;
-    private Ranking removedRanking;
+    private ModelRankCollection removedRanking;
 
-    public T withRemovedRanking(Ranking removedRanking) {
+    public T withRemovedRanking(ModelRankCollection removedRanking) {
       this.removedRanking = removedRanking;
       return self();
     }
@@ -101,7 +117,7 @@ public abstract class Entailment {
       return self();
     }
 
-    public T withBaseRanking(Ranking baseRanking) {
+    public T withBaseRanking(ModelRankCollection baseRanking) {
       this.baseRanking = baseRanking;
       return self();
     }

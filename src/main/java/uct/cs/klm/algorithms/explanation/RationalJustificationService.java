@@ -3,6 +3,7 @@ package uct.cs.klm.algorithms.explanation;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
 import org.tweetyproject.logics.pl.sat.SatSolver;
@@ -11,7 +12,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.ModelHittingSetTree;
 import uct.cs.klm.algorithms.models.ModelNode;
-import uct.cs.klm.algorithms.models.Ranking;
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.utils.DisplayUtils;
 
 /**
@@ -22,7 +23,7 @@ public class RationalJustificationService extends JustificationServiceBase imple
 {
     @Override
     public KnowledgeBase computeJustification(
-            Ranking remainingRanking,
+            ModelRankCollection remainingRanking,
             PlFormula query) 
     {
         
@@ -66,15 +67,15 @@ public class RationalJustificationService extends JustificationServiceBase imple
             }
         }
 
-        System.out.println("<<ALL possible classical justifications>>");
-        List<KnowledgeBase> justifications = rootNode.getAllJustifications();
+        //System.out.println("<<ALL possible classical justifications>>");
+        //List<KnowledgeBase> justifications = rootNode.getAllJustifications();
         
-        for (KnowledgeBase justification : justifications)
-        {
-            System.out.println(DisplayUtils.printJustificationAsCSV(justification));
-        }
+       // for (KnowledgeBase justification : justifications)
+       // {
+        //    System.out.println(DisplayUtils.printJustificationAsCSV(justification));
+       // }
         
-        System.out.println("<<ALL justifications>>");
+        System.out.print("<<Justifications>> : ");
         System.out.println(DisplayUtils.printJustificationAsCSV(rootNode.getJustification()));
         
         return rootNode.getJustification();

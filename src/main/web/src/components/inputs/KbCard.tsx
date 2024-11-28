@@ -27,6 +27,10 @@ function KbCard({
     setState((prev) => ({ ...prev, editing: true, fromFile: true }));
   };
 
+  const handleGenerate = () => {
+    setState((prev) => ({ ...prev, editing: true, fromFile: true }));
+  };
+
   const handleReset = () => {
     setState((prev) => ({ ...prev, editing: false, fromFile: false }));
   };
@@ -35,28 +39,47 @@ function KbCard({
     <Card className="h-full">
       <CardHeader className="space-y-0 pb-4">
         <CardTitle className="text-center font-semibold">
-          Knowledge Base <Formula formula="(\mathcal{K})" />
+          The Knowledge Base <Formula formula="(\mathcal{K})" />
         </CardTitle>
       </CardHeader>
       <CardContent>
         {!state.editing && (
           <div className="w-full flex flex-col gap-4 items-center">
             <Kb formulas={knowledgeBase} />
-            <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
-              <Button
-                variant="outline"
-                onClick={handleUpload}
-                disabled={isLoading}
-              >
-                Upload
-              </Button>
-              <Button
-                variant="secondary"
+            
+            <hr className="w-full max-w-sm border-t border-gray-300 my-[5px]" />
+
+            <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
+            <Button
+                variant="secondary"  
+                size="default"   
+                className="border border-light-blue-500"           
                 onClick={handleEdit}
                 disabled={isLoading}
               >
                 Edit
               </Button>
+
+              <Button
+                variant="secondary"
+                size="default"   
+                className="border border-light-blue-500"
+                onClick={handleUpload}
+                disabled={isLoading}
+              >
+                Upload
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="default"  
+                className="border border-light-blue-500"
+                onClick={handleGenerate}
+                disabled={isLoading}
+              >
+                Generate
+              </Button>
+            
             </div>
           </div>
         )}
