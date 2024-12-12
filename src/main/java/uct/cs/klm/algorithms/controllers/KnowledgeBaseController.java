@@ -4,15 +4,15 @@ import java.util.List;
 
 import uct.cs.klm.algorithms.models.ErrorResponse;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.services.KnowledgeBaseService;
 import uct.cs.klm.algorithms.services.KnowledgeBaseServiceImpl;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
+import uct.cs.klm.algorithms.services.IKnowledgeBaseService;
 
 public class KnowledgeBaseController {
-  private final static KnowledgeBaseService kbService = new KnowledgeBaseServiceImpl();
+  private final static IKnowledgeBaseService kbService = new KnowledgeBaseServiceImpl();
 
   public static void getKnowledgeBase(Context ctx) {
     ctx.status(200);

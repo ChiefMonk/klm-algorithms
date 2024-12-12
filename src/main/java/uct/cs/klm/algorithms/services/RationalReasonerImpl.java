@@ -25,12 +25,19 @@ public class RationalReasonerImpl implements IReasonerService {
   public Entailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
    
-    PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
-    KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
     ModelRankCollection baseRanking = baseRank.getRanking();
+    PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());    
+    KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
+    
+    System.out.println("==>RationalReasoner");
+    System.out.println(String.format("BaseRanking: %s", baseRanking));
+    System.out.println(String.format("KnowledgeBase: %s", knowledgeBase));
+    System.out.println(String.format("Query: %s : %s", queryFormula, negation));
+       
     ModelRankCollection removedRanking = new ModelRankCollection();
 
     KnowledgeBase union = new KnowledgeBase();
+    
     baseRanking.forEach(rank -> {
       union.addAll(rank.getFormulas());
     });

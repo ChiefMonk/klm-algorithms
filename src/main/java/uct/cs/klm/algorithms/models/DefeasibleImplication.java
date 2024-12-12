@@ -7,7 +7,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.utils.Symbols;
 
 /**
- * This class models deasible implication of propositonal logic.
+ * This class models defeasible implication of propositional logic.
  * 
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  */
@@ -34,7 +34,7 @@ public class DefeasibleImplication extends Implication {
 
   @Override
   public String toString() {
-    return super.toString().replaceAll(Symbols.IMPLICATION(), Symbols.DEFEASIBLE_IMPLICATION());
+    return super.toString().replaceAll(Symbols.IMPLICATION, Symbols.DEFEASIBLE_IMPLICATION);
   }
 
 }

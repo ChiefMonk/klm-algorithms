@@ -17,7 +17,7 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <frontend.app.dir>${project.basedir}/src/main/web</frontend.app.dir>
-    <main.class>uct.cs.klm.algorithms.App</main.class>
+    <main.class>uct.cs.klm.algorithms.AppConsole</main.class>
     <node.version>v20.16.0</node.version>
     <pnpm.version>9.6.0</pnpm.version>
   </properties>

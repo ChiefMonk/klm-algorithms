@@ -2,27 +2,15 @@ package uct.cs.klm.algorithms.utils;
 
 public final class Symbols {
 
-  public static String IMPLICATION() {
-    return "=>";
-  }
+    public static final String IMPLICATION = "=>";
 
-  public static String DISJUNCTION() {
-    return "||";
-  }
+    public static final String DISJUNCTION = "||";
 
-  public static String CONJUNCTION() {
-    return "&&";
-  }
+    public static final String CONJUNCTION = "&&";
 
-  public static String EQUIVALENCE() {
-    return "<=>";
-  }
+    public static final String EQUIVALENCE = "<=>";
 
-  public static String NEGATION() {
-    return "!";
-  }
+    public static final String NEGATION = "!";
 
-  public static String DEFEASIBLE_IMPLICATION() {
-    return "~>";
-  }
+    public static final String DEFEASIBLE_IMPLICATION = "~>";
 }
