@@ -1,11 +1,8 @@
 package uct.cs.klm.algorithms.ranking;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -51,24 +48,7 @@ public class ModelBaseRank {
     }
     
     @Override
-    public String toString() {
-        int rankNumber = 1;
-
-        StringBuilder sb = new StringBuilder();
-        
-         ArrayList<ModelRank> ranks = (ArrayList<ModelRank>) ranking.stream()
-        .sorted(Comparator.comparing(ModelRank::getRankNumber).reversed())
-        .collect(Collectors.toList());
-
-        for (ModelRank rank : ranks) {
-           
-            sb.append(rank.getRankNumber()).append(": ");
-            sb.append(rank.getFormulas());   
-            sb.append("\n");
-            
-            rankNumber++;
-        }
-        
-        return sb.toString();
+    public String toString() {       
+       return getRanking().toString();
     }
 }

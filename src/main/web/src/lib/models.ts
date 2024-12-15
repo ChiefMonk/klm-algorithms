@@ -213,9 +213,9 @@ class RationalEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] 
   {
-    const ranks: Ranking[] = [];
-    const n = this.removedRanking.length;
-    const m = this.baseRanking.length;
+    const ranks: Ranking[] = [];   
+    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
     
     for (let i = n; i < m; i++) 
     {
@@ -250,9 +250,9 @@ class LexicalEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] {
     const ranks: Ranking[] = [];
-    const k = this.weakenedRanking.length;
-    const n = this.removedRanking.length;
-    const m = this.baseRanking.length;
+    const k = this.weakenedRanking != null ? this.weakenedRanking.length: 0;
+    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
 
     // Add Latest refined rank
     if (k != 0 && this.weakenedRanking[k - 1].rankNumber == n) {
@@ -291,8 +291,8 @@ class RelevantEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] {
     const ranks: Ranking[] = [];
-    const n = this.removedRanking.length;
-    const m = this.baseRanking.length;
+    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
     for (let i = n; i < m; i++) {
       ranks.push(this.baseRanking[i]);
     }

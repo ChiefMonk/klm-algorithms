@@ -1,5 +1,8 @@
 package uct.cs.klm.algorithms.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RelevantEntailment extends Entailment {
 
   private RelevantEntailment(RelevantEntailmentBuilder builder) {

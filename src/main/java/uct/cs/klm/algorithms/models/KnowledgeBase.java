@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
+import uct.cs.klm.algorithms.ranking.ModelRank;
 
 /**
  * This class represents a defeasible knowledge base of propositional formulae.
@@ -129,6 +130,20 @@ public class KnowledgeBase extends PlBeliefSet {
         });
         return result;
     }
+    
+    public KnowledgeBase materialisedKnowledgeBase() {
+        KnowledgeBase result = new KnowledgeBase();
+        this.forEach(formula -> {
+            if (formula instanceof DefeasibleImplication defeasibleImplication) {
+                result.add(new Implication(defeasibleImplication.getFormulas()));
+            }
+            else
+            {
+                 result.add(formula);
+            }
+        });
+        return result;
+    }
 
     /**
      * Convert the classical implication statements to defeasible implication.
@@ -168,6 +183,20 @@ public class KnowledgeBase extends PlBeliefSet {
         KnowledgeBase result = new KnowledgeBase(this);
         result.formulas.remove(formula);
         return result;
+    }
+    
+    public void removeAll(KnowledgeBase knowledgeBase) {
+        
+        KnowledgeBase result = new KnowledgeBase(this);
+        
+        for(PlFormula formula : knowledgeBase)
+        {
+            this.formulas.remove(formula);
+        }       
+    }
+    
+    public void removeAll(ModelRank rank) {        
+       removeAll(rank.getFormulas());
     }
 
     /**

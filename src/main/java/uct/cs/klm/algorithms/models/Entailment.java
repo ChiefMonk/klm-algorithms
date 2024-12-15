@@ -7,7 +7,6 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import java.util.*;
-import java.util.stream.*;
 
 // Base class for Entailment
 public abstract class Entailment {
@@ -17,6 +16,8 @@ public abstract class Entailment {
   protected final boolean entailed;
   protected final double timeTaken;
   protected final ModelRankCollection removedRanking;
+  protected final KnowledgeBase _entailmentKnowledgeBase;
+   
   protected KnowledgeBase justification;
 
   protected Entailment(EntailmentBuilder<?> builder) {
@@ -27,6 +28,7 @@ public abstract class Entailment {
     this.timeTaken = builder.timeTaken;
     this.removedRanking = builder.removedRanking;
     this.justification = new KnowledgeBase();
+    this._entailmentKnowledgeBase = builder._entailmentKnowledgeBase;
   }
 
   public KnowledgeBase getKnowledgeBase() {
@@ -46,6 +48,14 @@ public abstract class Entailment {
   }
 
   public ModelRankCollection getBaseRanking() {
+    return baseRanking;
+  }
+  
+   public KnowledgeBase getEntailmentKnowledgeBase() {
+    return _entailmentKnowledgeBase;
+  }
+   
+  public ModelRankCollection getRemainingRanks() {
     return baseRanking;
   }
   
@@ -101,9 +111,15 @@ public abstract class Entailment {
     private boolean entailed;
     private double timeTaken;
     private ModelRankCollection removedRanking;
+    private KnowledgeBase _entailmentKnowledgeBase;
 
     public T withRemovedRanking(ModelRankCollection removedRanking) {
       this.removedRanking = removedRanking;
+      return self();
+    }
+    
+     public T withEntailmentKnowledgeBase(KnowledgeBase entailmentKnowledgeBase) {
+      this._entailmentKnowledgeBase = entailmentKnowledgeBase;
       return self();
     }
 

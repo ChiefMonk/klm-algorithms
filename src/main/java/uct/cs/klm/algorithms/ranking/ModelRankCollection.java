@@ -2,7 +2,9 @@ package uct.cs.klm.algorithms.ranking;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 
 /**
@@ -60,5 +62,23 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
         }
 
         return kb;
+    }
+    
+    @Override
+    public String toString() {       
+        StringBuilder sb = new StringBuilder();
+        
+         ArrayList<ModelRank> ranks = (ArrayList<ModelRank>) this.stream()
+        .sorted(Comparator.comparing(ModelRank::getRankNumber).reversed())
+        .collect(Collectors.toList());
+
+        for (ModelRank rank : ranks) {
+           
+            sb.append(rank.getRankNumber()).append(": ");
+            sb.append(rank.getFormulas());   
+            sb.append("\n");                       
+        }
+        
+        return sb.toString();
     }
 }

@@ -1,7 +1,6 @@
 package uct.cs.klm.algorithms.explanation;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
@@ -12,22 +11,23 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.ModelHittingSetTree;
 import uct.cs.klm.algorithms.models.ModelNode;
-import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.utils.DisplayUtils;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  *
  * @author Chipo Hamayobe
  */
 public class RationalJustificationService extends JustificationServiceBase implements IJustificationService 
-{
+{   
     @Override
     public KnowledgeBase computeJustification(
-            ModelRankCollection remainingRanking,
+            KnowledgeBase remainingKnowledgeBase, 
             PlFormula query) 
-    {
-        
-        if(remainingRanking.getKnowledgeBase().isEmpty())
+    {        
+        System.out.print("==> RC Justifications : ");
+         
+        if(remainingKnowledgeBase == null || remainingKnowledgeBase.isEmpty())
         {
             return new KnowledgeBase();
         }
@@ -35,11 +35,12 @@ public class RationalJustificationService extends JustificationServiceBase imple
         SatSolver.setDefaultSolver(new Sat4jSolver());
         SatReasoner reasoner = new SatReasoner();
         
-        KnowledgeBase knowledgeBase = remainingRanking.getKnowledgeBase();
-
+        remainingKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(remainingKnowledgeBase);
+        query = ReasonerUtils.toMaterialisedFormula(query);
+               
         // Construct root node
-        KnowledgeBase rootJustification = super.computeSingleJustification(knowledgeBase, query, reasoner);
-        ModelNode rootNode = new ModelNode(knowledgeBase, rootJustification);
+        KnowledgeBase rootJustification = super.computeSingleJustification(remainingKnowledgeBase, query, reasoner);
+        ModelNode rootNode = new ModelNode(remainingKnowledgeBase, rootJustification);
 
         // Create a queue to keep track of nodes
         Queue<ModelNode> queue = new LinkedList<>();
@@ -60,7 +61,7 @@ public class RationalJustificationService extends JustificationServiceBase imple
                 node.addChildNode(formula, childNode);
                 tree.addNode(childNode);
 
-                if (childJustification != null || childJustification.isEmpty()) 
+                if (childJustification != null && childJustification.isEmpty()) 
                 {
                     queue.add(childNode);
                 }

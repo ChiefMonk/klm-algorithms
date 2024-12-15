@@ -16,6 +16,9 @@ public class BaseRankController {
       ctx.status(200);
       ctx.json(baseRankService.construct(kb));
     } catch (Exception e) {
+        
+    System.out.println(String.format("An error occured: %s", e));
+          e.printStackTrace();
       ctx.status(400);
       ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid"));
     }

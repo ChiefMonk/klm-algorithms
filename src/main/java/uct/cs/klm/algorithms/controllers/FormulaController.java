@@ -42,6 +42,8 @@ public class FormulaController
         ctx.json(new ErrorResponse(400, "Bad Request", "Formula is not defeasible implication."));
       }
     } catch (Exception e) {
+      System.out.println(String.format("An error occured: %s", e));
+       e.printStackTrace();
       ctx.status(400);
       ctx.json(new ErrorResponse(400, "Bad Request", "Invalid formula: " + formula + "."));
     }

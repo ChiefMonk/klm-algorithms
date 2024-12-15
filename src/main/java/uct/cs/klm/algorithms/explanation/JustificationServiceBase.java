@@ -16,7 +16,7 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
  * @author Chipo Hamayobe
  */
 public abstract class JustificationServiceBase {
-
+       
     protected KnowledgeBase computeSingleJustification(
             KnowledgeBase entailmentKb,
             PlFormula query,

@@ -21,8 +21,8 @@ public class ReasonerController {
         ReasonerType reasonerType = ReasonerFactory.createReasonerType(ctx.pathParam("reasoner"));
         String formula = ctx.pathParam("queryFormula");
 
-        System.out.println("ReasonerType: " + reasonerType);
-        System.out.println("Formula: " + formula);          
+        //System.out.println("ReasonerType: " + reasonerType);
+        //System.out.println("Formula: " + formula);          
 
         try {
             DefeasibleParser parser = new DefeasibleParser();
@@ -43,7 +43,7 @@ public class ReasonerController {
             System.out.println(DisplayUtils.printJustificationAsCSV(ranks.getKnowledgeBase()));
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentRanking(), queryFormula);
+            KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
 
             entailment.setJustification(justificationKb);
 
@@ -51,12 +51,15 @@ public class ReasonerController {
             ctx.json(entailment);
 
         } catch (IllegalArgumentException e) {
+            
+           System.out.println(String.format("An error occured: %s", e));
             e.printStackTrace();
             
             ctx.status(400);
             ctx.json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
         } catch (Exception e) {
             
+           System.out.println(String.format("An error occured: %s", e));
            e.printStackTrace();
              
             ctx.status(400);
