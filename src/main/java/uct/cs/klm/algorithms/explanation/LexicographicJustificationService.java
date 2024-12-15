@@ -17,7 +17,7 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
  *
  * @author Chipo Hamayobe
  */
-public class RationalJustificationService extends JustificationServiceBase implements IJustificationService 
+public class LexicographicJustificationService extends JustificationServiceBase implements IJustificationService 
 {   
     @Override
     public KnowledgeBase computeJustification(
@@ -25,7 +25,7 @@ public class RationalJustificationService extends JustificationServiceBase imple
             PlFormula queryFormula) 
     {        
         System.out.println();
-        System.out.println("==> RC Justifications : ");
+        System.out.println("==> LC Justifications : ");
         System.out.println(String.format("Query: %s", queryFormula));
          
         if(remainingKnowledgeBase == null || remainingKnowledgeBase.isEmpty())

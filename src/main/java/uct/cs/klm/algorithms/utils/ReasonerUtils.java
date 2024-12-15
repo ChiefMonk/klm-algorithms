@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-import uct.cs.klm.algorithms.models.DefeasibleImplication;
-import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.ranking.ModelRank;
-import uct.cs.klm.algorithms.ranking.ModelRankCollection;
+import uct.cs.klm.algorithms.models.*;
+import uct.cs.klm.algorithms.ranking.*;
 
 /**
  *
@@ -72,6 +70,52 @@ public final class ReasonerUtils {
             formulaList.add(formula);
         }
         return formulaList;
+    }
+    
+    public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, ModelRankCollection removedRanks) {
+
+        if(removedRanks == null || removedRanks.isEmpty())
+        {
+            return new ModelRankCollection(baseRank);
+        }
+                
+        for (var r : removedRanks) {
+            baseRank.remove(0);
+        }
+        
+        return new ModelRankCollection(baseRank);
+    }
+
+    public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, KnowledgeBase remainingknowledgeBase) {
+
+        if (remainingknowledgeBase == null || remainingknowledgeBase.isEmpty()) {            
+            return new ModelRankCollection(baseRank.get(baseRank.size() - 1));               
+        }
+
+        ModelRankCollection result = new ModelRankCollection();
+
+        var materialknowledgeBase = toMaterialisedKnowledgeBase(remainingknowledgeBase);
+
+        for (ModelRank rank : baseRank) {
+
+            ModelRank curentRank = new ModelRank(rank.getRankNumber());
+
+            for (PlFormula formula : rank.getFormulas()) {
+
+                var materialFormula = toMaterialisedFormula(formula);
+
+                if (materialknowledgeBase.contains(materialFormula)) {
+                    curentRank.addFormula(formula);
+                }
+            }
+
+            if (!curentRank.isEmpty()) {
+                result.add(curentRank);
+            }
+
+        }
+
+        return result;
     }
 
     public static ArrayList<ModelRank> generateFormulaCombinations(ModelRank rank) {

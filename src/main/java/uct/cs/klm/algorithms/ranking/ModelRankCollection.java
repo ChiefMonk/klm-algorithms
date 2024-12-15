@@ -27,6 +27,16 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
     public ModelRankCollection(Collection<? extends ModelRank> ranks) {
         super(ranks);
     }
+    
+     /**
+     * Constructs a ranking from a collection of ranks.
+     *
+     * @param rank
+     */
+    public ModelRankCollection(ModelRank rank) {
+        super();
+        this.add(rank);
+    }
 
     /**
      * Create and add new rank given a rank number and knowledge base of

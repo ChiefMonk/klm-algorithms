@@ -26,6 +26,10 @@ public class ModelRank
   public ModelRank() {
     this(0, new KnowledgeBase());
   }
+  
+   public ModelRank(int rankNumber) {
+    this(rankNumber, new KnowledgeBase());
+  }
 
   /**
    * Creates a new rank given a rank number and a set of formulas.

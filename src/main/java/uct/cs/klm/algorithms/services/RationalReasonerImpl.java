@@ -29,9 +29,11 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
         System.out.println("==> Rational Closure Entailment");
         System.out.println(String.format("Query: %s", queryFormula));
          
-        ArrayList<ModelRank> baseRanking = (ArrayList<ModelRank>) baseRank.getRanking().stream()
+        ArrayList<ModelRank> originalBaseRanking = (ArrayList<ModelRank>) baseRank.getRanking().stream()
         .sorted(Comparator.comparing(ModelRank::getRankNumber))
         .collect(Collectors.toList());
+        
+        ModelRankCollection baseRanking = new ModelRankCollection(originalBaseRanking);
         
         System.out.println("Ranking");             
         for(ModelRank rank : baseRanking)
@@ -81,17 +83,25 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
         }
         
         System.out.println();
-        boolean entailed = !baseRanking.isEmpty() && _reasoner.query(ReasonerUtils.toMaterialisedKnowledgeBase(baseRanking), ReasonerUtils.toMaterialisedFormula(queryFormula));
+        boolean isQueryEntailed = !baseRanking.isEmpty() && _reasoner.query(ReasonerUtils.toMaterialisedKnowledgeBase(baseRanking), ReasonerUtils.toMaterialisedFormula(queryFormula));
+        KnowledgeBase entailmentKb = new KnowledgeBase();   
              
-        if(entailed)
+        if(isQueryEntailed)
         {
+            entailmentKb = ReasonerUtils.toKnowledgeBase(baseRanking);
             System.out.println(String.format("RC Checking if %s entails %s = TRUE", ReasonerUtils.toKnowledgeBase(baseRanking), queryFormula));
         }
         else
         {
              System.out.println(String.format("RC Checking if %s entails %s = FALSE", ReasonerUtils.toKnowledgeBase(baseRanking), queryFormula));
         }
-        
+               
+        System.out.println("Remaining Ranking:");    
+        for(ModelRank rank : ReasonerUtils.toRemainingEntailmentRanks(originalBaseRanking, removedRanking))
+        {
+               System.out.println(String.format("%s:%s", rank.getRankNumber(), rank.getFormulas()));
+        }
+                                  
         long endTime = System.nanoTime();
 
         return new RationalEntailment.RationalEntailmentBuilder()
@@ -99,8 +109,8 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)
-                .withEntailmentKnowledgeBase(ReasonerUtils.toKnowledgeBase(baseRanking))
-                .withEntailed(entailed)
+                .withEntailmentKnowledgeBase(entailmentKb)
+                .withEntailed(isQueryEntailed)
                 .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
                 .build();
     }

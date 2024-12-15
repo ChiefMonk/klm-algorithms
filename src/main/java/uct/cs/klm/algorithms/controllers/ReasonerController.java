@@ -9,11 +9,9 @@ import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.Entailment;
 import uct.cs.klm.algorithms.models.ErrorResponse;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.utils.ReasonerFactory;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 import uct.cs.klm.algorithms.services.IReasonerService;
-import uct.cs.klm.algorithms.utils.DisplayUtils;
 
 public class ReasonerController {
 
@@ -35,12 +33,6 @@ public class ReasonerController {
 
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
             Entailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
-
-            System.out.println(DisplayUtils.printJustificationAsCSV(entailment.getKnowledgeBase()));
-
-            ModelRankCollection ranks = entailment.getEntailmentRanking();
-
-            System.out.println(DisplayUtils.printJustificationAsCSV(ranks.getKnowledgeBase()));
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
             KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);

@@ -31,11 +31,13 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
 
         System.out.println();
         System.out.println("==> Lexicographic Closure Entailment");
-        System.out.println(String.format("Query: %s", queryFormula));
+        System.out.println(String.format("Query: %s", queryFormula));             
         
-        ArrayList<ModelRank> baseRanking = (ArrayList<ModelRank>) baseRank.getRanking().stream()
-                .sorted(Comparator.comparing(ModelRank::getRankNumber))
-                .collect(Collectors.toList());
+         ArrayList<ModelRank> originalBaseRanking = (ArrayList<ModelRank>) baseRank.getRanking().stream()
+        .sorted(Comparator.comparing(ModelRank::getRankNumber))
+        .collect(Collectors.toList());
+        
+        ModelRankCollection baseRanking = new ModelRankCollection(originalBaseRanking);
         
         System.out.println("Ranking");             
         for(ModelRank rank : baseRanking)
@@ -45,7 +47,10 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
 
         KnowledgeBase combinedMaterialisedKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(baseRanking);;       
         PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
-             
+        
+        ModelRankCollection removedRanking = new ModelRankCollection(); 
+        ModelRankCollection weakenedRanking = new ModelRankCollection(baseRanking);        
+        
         boolean continueProcessing = true;
 
         while (!baseRanking.isEmpty()) {
@@ -65,7 +70,10 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
             }
 
             // remove all the formulas in currentRank from baseRanking;
+            removedRanking.add(currentRank);
+            weakenedRanking.remove(0);
             baseRanking.remove(0);
+            
 
             var currentRankBaseRanks = ReasonerUtils.generateFormulaCombinations(currentRank);
 
@@ -82,12 +90,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
                 combinedMaterialisedKnowledgeBase = materialisedKnowledgeBase.union(materialisedCurrentKnowledgeBase);
 
                 System.out.println(String.format("Checking if %s is entailed by %s",negationOfAntecedent, combinedMaterialisedKnowledgeBase));     
-                //System.out.println();
-               // System.out.println("Current Rank    : " + materialisedKnowledgeBase);
-               // System.out.println("Current MiniRank: " + materialisedCurrentKnowledgeBase);
-               // System.out.println("Checking if " + negationOfAntecedent.toString() + " is entailed by " + combinedMaterialisedKnowledgeBase);
-              //  System.out.println();
-
+               
                 boolean isEntailed = _reasoner.query(combinedMaterialisedKnowledgeBase, negationOfAntecedent);
 
                 if (isEntailed) {
@@ -103,15 +106,23 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
             }
         }
 
-        boolean entailed = !baseRanking.isEmpty() && _reasoner.query(combinedMaterialisedKnowledgeBase, ReasonerUtils.toMaterialisedFormula(queryFormula));    
-        
-        if(entailed)
+        boolean isQueryEntailed = !baseRanking.isEmpty() && _reasoner.query(combinedMaterialisedKnowledgeBase, ReasonerUtils.toMaterialisedFormula(queryFormula));    
+        KnowledgeBase entailmentKb = new KnowledgeBase();   
+          
+        if(isQueryEntailed)
         {
-            System.out.println(String.format("RC Checking if %s entails %s = TRUE", combinedMaterialisedKnowledgeBase, queryFormula));
+            entailmentKb = combinedMaterialisedKnowledgeBase;
+            System.out.println(String.format("LC Checking if %s entails %s = TRUE", combinedMaterialisedKnowledgeBase, queryFormula));
         }
         else
         {
-             System.out.println(String.format("RC Checking if %s entails %s = FALSE", combinedMaterialisedKnowledgeBase, queryFormula));
+             System.out.println(String.format("LC Checking if %s entails %s = FALSE", combinedMaterialisedKnowledgeBase, queryFormula));
+        }
+        
+        System.out.println("Remaining Ranking:");    
+        for(ModelRank rank : ReasonerUtils.toRemainingEntailmentRanks(originalBaseRanking, combinedMaterialisedKnowledgeBase))
+        {
+           System.out.println(String.format("%s:%s", rank.getRankNumber(), rank.getFormulas()));
         }
 
         long endTime = System.nanoTime();
@@ -120,10 +131,10 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
-                .withRemovedRanking(new ModelRankCollection())
-                .withWeakenedRanking(new ModelRankCollection())
-                .withEntailmentKnowledgeBase(ReasonerUtils.toKnowledgeBase(baseRanking))
-                .withEntailed(entailed)
+                .withRemovedRanking(removedRanking)
+                .withWeakenedRanking(weakenedRanking)
+                .withEntailmentKnowledgeBase(entailmentKb)
+                .withEntailed(isQueryEntailed)
                 .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
                 .build();
         
