@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTable } from "./tables/ranking-table";
+import { RankingTable, RankingOfRanksTable } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import { LexicalEntailmentModel } from "@/lib/models";
 import { Explanation } from "./common/explanations";
@@ -37,15 +37,30 @@ function LexicographicClosure({
               queryFormula={lexicalEntailment.queryFormula}
             />
             <div className="my-6">
-              <p className="mb-3">
-                Lexicographic closure starts with the initial rankings
-                constructed by the Base Rank algorithm.
+              <p className="mb-3">              
+                Lexicographic closure starts with the initial rankings constructed by the <i>BaseRank</i> algorithm.
               </p>
-              <p className="font-medium">Initial ranks</p>
+             
+              <p className="font-medium">The BaseRanking of Statements by the <i>BaseRank</i> algorithm</p>
               <RankingTable
                 ranking={lexicalEntailment.baseRanking}
-                caption="Ranks constructed by the Base Rank algorithm"
-              />
+                caption="The BaseRank of statements in the KnowledgeBase" />
+
+              <p className="font-medium">The Mini-BaseRanking of Statements</p>
+              <RankingOfRanksTable
+                ranking={lexicalEntailment.miniBaseRanking}
+                caption="The BaseRank of statements in the KnowledgeBase" />
+
+               <p className="font-medium">The Discarded Ranks of Statements</p>
+               <RankingTable
+                ranking={lexicalEntailment.removedRanking}
+                caption="The discarded ranks of statements from the BaseRank"  />
+
+              <p className="font-medium">The Remaining Ranks of Statements</p>
+               <RankingTable
+                ranking={lexicalEntailment.remainingRanks}
+                caption="The remaining ranks of statements from the BaseRank"  />
+
             </div>
             <Explanation
               entailment={lexicalEntailment}

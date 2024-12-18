@@ -37,11 +37,10 @@ function RelevantClosure({
               <QueryFormula formula={relevantEntailment.queryFormula} />
             </div>
             <div className="mb-6">
-              <p className="mb-3">
-                Relevant closure starts with the initial rankings constructed by
-                the Base Rank algorithm.
+              <p className="mb-3">               
+                Relevant closure starts with the initial rankings constructed by the <i>BaseRank</i> algorithm.
               </p>
-              <p className="font-medium">Initial ranks</p>
+              <p className="font-medium">Output of the <i>BaseRank</i> algorithm</p>
               <RankingTable
                 ranking={relevantEntailment.baseRanking}
                 caption="Ranks constructed by the Base Rank algorithm"

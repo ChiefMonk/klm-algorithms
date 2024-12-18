@@ -1,6 +1,7 @@
 package uct.cs.klm.algorithms.utils;
 
 public final class Symbols {
+    public static final int INFINITY_RANK_NUMBER = 999999999;
 
     public static final String IMPLICATION = "=>";
 

@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 
 public class ModelNode {
     
-    private KnowledgeBase knowledgeBase;
+    private final KnowledgeBase knowledgeBase;
     private KnowledgeBase justification;
     private Map<PlFormula, ModelNode> childrenNodes;
 
@@ -22,7 +21,7 @@ public class ModelNode {
     {
         this.knowledgeBase = knowledgeBase;
         this.justification = justification;
-        this.childrenNodes = new HashMap<PlFormula, ModelNode>();
+        this.childrenNodes = new HashMap<>();
         for (PlFormula formula : justification )
         {
             childrenNodes.put(formula, new ModelNode(knowledgeBase.remove(formula)));
@@ -37,7 +36,7 @@ public class ModelNode {
     public void setJustification(KnowledgeBase justification)
     {
         this.justification = justification;
-        this.childrenNodes = new HashMap<PlFormula, ModelNode>();
+        this.childrenNodes = new HashMap<>();
         for (PlFormula formula : justification)
         {
             this.childrenNodes.put(formula, null);
@@ -73,9 +72,9 @@ public class ModelNode {
     }
     
     
-    public List<KnowledgeBase> getAllJustifications()
+    public ArrayList<KnowledgeBase> getAllJustifications()
     {
-        List<KnowledgeBase> justifications = new ArrayList<KnowledgeBase>();
+        ArrayList<KnowledgeBase> justifications = new ArrayList<>();
         
         if (this.childrenNodes != null && !this.childrenNodes.isEmpty())
         {

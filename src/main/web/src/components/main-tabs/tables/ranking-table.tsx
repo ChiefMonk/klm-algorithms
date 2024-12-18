@@ -1,12 +1,11 @@
 import { TexFormula } from "@/components/main-tabs/common/TexFormula";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
-import { Ranking } from "@/lib/models";
+import { Ranking, ConstantValues } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Kb } from "../common/formulas";
-
-const MAX_VALUE = 2147483647;
+//import { toTex } from "@/lib/formula";
 
 const formulas = (label: string): ColumnDef<Ranking> => ({
   accessorKey: "formulas",
@@ -48,7 +47,7 @@ const rankColumns: ColumnDef<Ranking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
       return (
-        <TexFormula>{idx == MAX_VALUE ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
       );
     },
     filterFn: "weakEquals",
@@ -75,7 +74,7 @@ const sequenceColumns: ColumnDef<Ranking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
       return (
-        <TexFormula>{idx == MAX_VALUE ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
       );
     },
     filterFn: "weakEquals",
@@ -90,15 +89,52 @@ function RankingTable({
   ranking: Ranking[];
   caption?: string;
 }) {
+  
   return (
     <DataTable
       columns={rankColumns}
-      data={ranking}
+      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
       filter={ranking.length != 0}
       caption={caption}
     />
   );
 }
+
+function RankingOfRanksTable({
+  ranking,
+  caption = "",
+}: {
+  ranking: Ranking[];
+  caption?: string;
+}) {
+  const rankingData: Ranking[] = [];
+
+  let index = 0;
+
+  ranking.forEach((item) => {
+    const existingRank = rankingData.find((r) => r.rankNumber === item.rankNumber);
+
+    if (existingRank) {
+      index++;
+      const rankFormulas = `A*${item.rankNumber}.${index}*A:* ${item.formulas} *:`;
+      existingRank.formulas.push(rankFormulas);
+    } else {
+      index = 0;
+      const rankFormulas = `A*${item.rankNumber}.${index}*A:* ${item.formulas} *:`;
+      rankingData.push({ rankNumber: item.rankNumber, formulas: [rankFormulas] });
+    }
+  });
+ 
+  return (
+    <DataTable
+      columns={rankColumns}
+      data={rankingData.sort((a, b) => b.rankNumber - a.rankNumber)}
+      filter={rankingData.length !== 0}
+      caption={caption}
+    />
+  );
+}
+
 
 function SequenceTable({
   ranking,
@@ -110,7 +146,7 @@ function SequenceTable({
   return (
     <DataTable
       columns={sequenceColumns}
-      data={ranking}
+      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
       filter={ranking.length != 0}
       caption={caption}
       filters={[
@@ -121,4 +157,4 @@ function SequenceTable({
   );
 }
 
-export { RankingTable, SequenceTable };
+export { RankingTable, RankingOfRanksTable, SequenceTable };

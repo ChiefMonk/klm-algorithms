@@ -32,6 +32,11 @@ function Header({ className }: HeaderProps) {
         <div>
           <NavigationMenu>
             <NavigationMenuList>
+            <NavigationMenuItem>
+                <NavLink to="/" className={navigationMenuTriggerStyle()}>
+                  Home
+                </NavLink>
+              </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavLink to="/syntax" className={navigationMenuTriggerStyle()}>
                   Syntax

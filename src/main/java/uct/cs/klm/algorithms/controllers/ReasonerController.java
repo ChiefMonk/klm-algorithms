@@ -8,7 +8,8 @@ import uct.cs.klm.algorithms.explanation.IJustificationService;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.Entailment;
 import uct.cs.klm.algorithms.models.ErrorResponse;
-import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.ranking.ModelRank;
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.utils.ReasonerFactory;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 import uct.cs.klm.algorithms.services.IReasonerService;
@@ -35,9 +36,15 @@ public class ReasonerController {
             Entailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
+            var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
 
             entailment.setJustification(justificationKb);
+            
+            if (reasonerType == ReasonerType.LexicographicClosure) {
+                for (ModelRank rank : entailment.getMiniBaseRanking()) {                  
+                        System.out.println(String.format("%s: %s", rank.getRankNumber(), rank.getFormulas()));                  
+                }
+            }
 
             ctx.status(200);
             ctx.json(entailment);

@@ -14,6 +14,14 @@ import uct.cs.klm.algorithms.ranking.*;
  */
 public final class ReasonerUtils {
 
+    public static PlFormula toDematerialisedFormula(PlFormula formula) {
+        if ((formula instanceof Implication implication) && !(formula instanceof DefeasibleImplication)) {
+            return new DefeasibleImplication(implication.getFormulas());
+        }
+
+        return formula;
+    }
+
     public static PlFormula toMaterialisedFormula(PlFormula formula) {
 
         if (formula instanceof DefeasibleImplication defeasibleImplication) {
@@ -71,25 +79,24 @@ public final class ReasonerUtils {
         }
         return formulaList;
     }
-    
+
     public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, ModelRankCollection removedRanks) {
 
-        if(removedRanks == null || removedRanks.isEmpty())
-        {
+        if (removedRanks == null || removedRanks.isEmpty()) {
             return new ModelRankCollection(baseRank);
         }
-                
+
         for (var r : removedRanks) {
             baseRank.remove(0);
         }
-        
+
         return new ModelRankCollection(baseRank);
     }
 
     public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, KnowledgeBase remainingknowledgeBase) {
 
-        if (remainingknowledgeBase == null || remainingknowledgeBase.isEmpty()) {            
-            return new ModelRankCollection(baseRank.get(baseRank.size() - 1));               
+        if (remainingknowledgeBase == null || remainingknowledgeBase.isEmpty()) {
+            return new ModelRankCollection(baseRank.get(baseRank.size() - 1));
         }
 
         ModelRankCollection result = new ModelRankCollection();
@@ -119,7 +126,14 @@ public final class ReasonerUtils {
     }
 
     public static ArrayList<ModelRank> generateFormulaCombinations(ModelRank rank) {
-
+        
+         ArrayList<ModelRank> modelRankings = new ArrayList<>();
+         
+        if (rank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
+                modelRankings.add(rank);
+                return modelRankings;
+            }
+        
         List<PlFormula> formulaList = toFormulaList(rank);
 
         if (formulaList.isEmpty()) {
@@ -132,20 +146,18 @@ public final class ReasonerUtils {
         for (int i = 1; i <= rank.getFormulas().size(); i++) {
             combinations.addAll(generateFormulaCombinations(formulaList, i));
         }
-        
-        if(!combinations.contains(new ArrayList<PlFormula>()))
-        {
-           combinations.add(new ArrayList<>());
-        }
-        
-        // Sort combinations by size in descending order
-        combinations.sort((a, b) -> Integer.compare(b.size(), a.size()));
 
-        ArrayList<ModelRank> modelRankings = new ArrayList<>();
+        //if (!combinations.contains(new ArrayList<PlFormula>())) {
+        //    combinations.add(new ArrayList<>());
+        //}
+
+        // Sort combinations by size in descending order
+        //combinations.sort((a, b) -> Integer.compare(b.size(), a.size()));
+        combinations.sort((a, b) -> Integer.compare(a.size(), b.size()));       
 
         for (int i = 0; i < combinations.size(); i++) {
 
-            ModelRank model = new ModelRank();
+            ModelRank model = new ModelRank(i);
 
             for (PlFormula formula : combinations.get(i)) {
                 model.addFormula(formula);
@@ -153,12 +165,12 @@ public final class ReasonerUtils {
 
             modelRankings.add(model);
         }
-                      
+
         int counter = 0;
         System.out.println();
-        System.out.println(String.format("Rank SubRanks for = %s:%s", rank.getRankNumber(), rank.getFormulas()));  
+        System.out.println(String.format("Rank SubRanks for = %s:%s", rank.getRankNumber(), rank.getFormulas()));
         for (ModelRank input : modelRankings) {
-            System.out.println(String.format("%s : %s", counter, input.getFormulas()));  
+            System.out.println(String.format("%s : %s", counter, input.getFormulas()));
             counter++;
         }
 
@@ -187,5 +199,5 @@ public final class ReasonerUtils {
 
         return combinations;
     }
-   
+
 }

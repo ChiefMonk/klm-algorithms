@@ -38,14 +38,24 @@ function RationalClosure({
             </div>
             <div className="mb-6">
               <p className="mb-3">
-                Rational closure starts with the initial rankings constructed by
-                the Base Rank algorithm.
+                Rational closure starts with the initial rankings constructed by the <i>BaseRank</i> algorithm.
               </p>
-              <p className="font-medium">Initial ranks</p>
+              
+              <p className="font-medium">The BaseRanking of Statements by the <i>BaseRank</i> algorithm</p>
               <RankingTable
                 ranking={rationalEntailment.baseRanking}
-                caption="Ranks constructed by the Base Rank algorithm"
-              />
+                caption="The BaseRank of statements in the KnowledgeBase" />
+
+               <p className="font-medium">The Discarded Ranks of Statements</p>
+               <RankingTable
+                ranking={rationalEntailment.removedRanking}
+                caption="The discarded ranks of statements from the BaseRank"  />
+
+              <p className="font-medium">The Remaining Ranks of Statements</p>
+               <RankingTable
+                ranking={rationalEntailment.remainingRanks}
+                caption="The remaining ranks of statements from the BaseRank"  />
+
             </div>
             <Explanation
               entailment={rationalEntailment}

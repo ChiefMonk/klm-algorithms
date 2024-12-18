@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a ranked knowledge base.
@@ -56,22 +57,45 @@ public class ModelRank
     _formulas.add(formular);
   }
   
+    public void addFormulas(KnowledgeBase knowledgeBase) {
+        if (knowledgeBase == null || knowledgeBase.isEmpty()) {
+            return;
+        }
+
+        for (PlFormula formula : knowledgeBase) {
+            addFormula(formula);
+        }
+    }
+  
   public boolean isEmpty() {
     return _formulas.isEmpty();
   }
   
-   public void removeFormulas(KnowledgeBase formulas) {
+   public void removeFormulas(KnowledgeBase knowledgeBase) {
        
-       if(formulas.isEmpty())
+       if(_formulas.isEmpty() || knowledgeBase == null || knowledgeBase.isEmpty())
        {
            return;
        }
        
-       for(PlFormula formula: formulas)
-       {
-           _formulas.remove(formula);
+       for(PlFormula formula: knowledgeBase)
+       {          
+           removeFormula(formula);         
        }           
+   }
+   
+  public void removeFormula(PlFormula formula) {
+      
+      if(_formulas.isEmpty())
+       {
+           return;
+       }
+      
+      _formulas.remove(formula);
+      _formulas.remove(ReasonerUtils.toMaterialisedFormula(formula));
+      _formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
   }
+  
 
   /**
    * Get the rank number.

@@ -3,6 +3,12 @@ type Ranking = {
   formulas: string[];
 };
 
+type RankingOfRank = {
+  rankNumber: number;
+  formulas: Ranking[];
+};
+
+
 type BaseRanking = {
   knowledgeBase: string[];
   ranking: Ranking[];
@@ -16,9 +22,11 @@ type EntailmentModelBase = {
   knowledgeBase: string[];
   entailed: boolean;
   baseRanking: Ranking[];
+  miniBaseRanking: Ranking[];
   timeTaken: number;
   removedRanking: Ranking[];
-  justification: string[];
+  remainingRanking: Ranking[];
+  justification: string[][];
   type: EntailmentType;
 };
 
@@ -124,9 +132,11 @@ abstract class EntailmentModel {
   private _knowledgeBase: string[];
   private _entailed: boolean;
   private _baseRanking: Ranking[];
+  private _miniBaseRanking: Ranking[];
   private _timeTaken: number;
   private _removedRanking: Ranking[];
-  private _justification: string[];
+  private _remainingRanking: Ranking[];
+  private _justification: string[][];
 
   constructor({
     queryFormula,
@@ -134,8 +144,10 @@ abstract class EntailmentModel {
     knowledgeBase,
     entailed,
     baseRanking,
+    miniBaseRanking,
     timeTaken,
     removedRanking,
+    remainingRanking,
     justification,
     type,
   }: EntailmentModelBase) {
@@ -144,8 +156,10 @@ abstract class EntailmentModel {
     this._knowledgeBase = knowledgeBase ?? [];
     this._entailed = entailed;
     this._baseRanking = baseRanking ?? [];
+    this._miniBaseRanking = miniBaseRanking ?? [];
     this._timeTaken = timeTaken;
     this._removedRanking = removedRanking ?? [];
+    this._remainingRanking = remainingRanking ?? [];
     this._justification = justification ?? [];
     this._type = type;
   }
@@ -174,15 +188,23 @@ abstract class EntailmentModel {
     return this._baseRanking;
   }
 
+  public get miniBaseRanking(): Ranking[] {
+    return this._miniBaseRanking;
+  }
+
   public get removedRanking(): Ranking[] {
     return this._removedRanking;
+  }
+
+  public get remainingRanking(): Ranking[] {
+    return this._remainingRanking;
   }
 
   public get timeTaken(): number {
     return this._timeTaken;
   }
 
-  public get justification(): string[] {
+  public get justification(): string[][] {
     return this._justification;
   }
 
@@ -195,8 +217,10 @@ abstract class EntailmentModel {
       knowledgeBase: this._knowledgeBase,
       entailed: this._entailed,
       baseRanking: this._baseRanking,
+      miniBaseRanking: this._miniBaseRanking,
       timeTaken: this._timeTaken,
       removedRanking: this._removedRanking,
+      remainingRanking: this._remainingRanking,
       justification: this._justification,
       type: this._type,
     };
@@ -214,12 +238,15 @@ class RationalEntailmentModel extends EntailmentModel {
   public get remainingRanks(): Ranking[] 
   {
     const ranks: Ranking[] = [];   
-    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
-    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
+    //const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+    //const m =  this.baseRanking != null ? this.baseRanking.length: 0;
+    const r =  this.remainingRanking != null ? this.remainingRanking.length: 0;
     
-    for (let i = n; i < m; i++) 
+    console.log('RC Remaining: ' + r.toString())
+
+    for (let i = 0; i < r; i++) 
     {
-      ranks.push(this.baseRanking[i]);
+      ranks.push(this.remainingRanking[i]);
     }
     return ranks;
   }
@@ -250,19 +277,29 @@ class LexicalEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] {
     const ranks: Ranking[] = [];
-    const k = this.weakenedRanking != null ? this.weakenedRanking.length: 0;
-    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
-    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
 
-    // Add Latest refined rank
-    if (k != 0 && this.weakenedRanking[k - 1].rankNumber == n) {
-      ranks.push(this.weakenedRanking[k - 1]);
-    }
+    const r =  this.remainingRanking != null ? this.remainingRanking.length: 0;
+    console.log('LC Remaining: ' + r.toString())
 
-    for (let i = n + ranks.length; i < m; i++) {
-      ranks.push(this.baseRanking[i]);
+    for (let i = 0; i < r; i++) 
+    {
+      ranks.push(this.remainingRanking[i]);
     }
     return ranks;
+
+   // const k = this.weakenedRanking != null ? this.weakenedRanking.length: 0;
+    //const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+   // const m =  this.baseRanking != null ? this.baseRanking.length: 0;
+
+    // Add Latest refined rank
+   // if (k != 0 && this.weakenedRanking[k - 1].rankNumber == n) {
+   //   ranks.push(this.weakenedRanking[k - 1]);
+   // }
+
+    //for (let i = n + ranks.length; i < m; i++) {
+   //   ranks.push(this.baseRanking[i]);
+  //  }
+   // return ranks;
   }
 
   public toObject(): LexicalEntailment {
@@ -291,10 +328,19 @@ class RelevantEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] {
     const ranks: Ranking[] = [];
-    const n =  this.removedRanking != null ? this.removedRanking.length: 0;
-    const m =  this.baseRanking != null ? this.baseRanking.length: 0;
-    for (let i = n; i < m; i++) {
-      ranks.push(this.baseRanking[i]);
+    //const n =  this.removedRanking != null ? this.removedRanking.length: 0;
+   // const m =  this.baseRanking != null ? this.baseRanking.length: 0;
+   // for (let i = n; i < m; i++) {
+   //  ranks.push(this.baseRanking[i]);
+   // }
+
+    const r =  this.remainingRanking != null ? this.remainingRanking.length: 0;
+
+    console.log('RelC Remaining: ' + r.toString())
+    
+    for (let i = 0; i < r; i++) 
+    {
+      ranks.push(this.remainingRanking[i]);
     }
     return ranks;
   }
@@ -361,6 +407,7 @@ export {
 };
 export type {
   Ranking,
+  RankingOfRank,
   BaseRanking,
   EntailmentModelBase,
   RationalEntailment,
@@ -368,3 +415,7 @@ export type {
   RelevantEntailment,
   ErrorData,
 };
+
+export const ConstantValues = {
+  INFINITY_RANK_NUMBER: 999999999
+}

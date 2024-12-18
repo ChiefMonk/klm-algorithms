@@ -87,10 +87,22 @@ function EntailmentTable({
   };
 
   const getJustification = ({ entailed, justification }: EntailmentModel) => {
-    console.log("Final Justification: " + justification)
-    return entailed
-      ? toTex("\\mathcal{J} =: \\{ " + justification + " \\}")
-      : toTex("\\mathcal{J} =: \\{ \\}");
+    console.log("Final Justification: " + justification);
+
+    if (entailed && justification.length > 0) {
+      const symbol = justification
+          .map((item, index) => `\\mathcal{J_{${index + 1}}} =: \\{ ${item} \\}`)
+          .join(', ');
+      
+      return toTex(symbol);
+  }
+
+  return toTex("\\mathcal{J_{1}} =: \\{ \\}");
+
+
+   // return entailed && justification.length > 0
+   //   ? toTex("\\mathcal{J_{1}} =: \\{ " + justification + " \\}")
+   //   : toTex("\\mathcal{J_{1}} =: \\{ \\}");
   };
   return (
     <DataTable

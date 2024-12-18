@@ -65,7 +65,7 @@ function Summary({
 
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
-                Final Ranks
+                Remaining Ranks and Statements
               </h4>
               
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">

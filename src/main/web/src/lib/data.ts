@@ -79,6 +79,9 @@ const uploadKnowledgeBase = async (data: FormData) => {
 const fetchBaseRank = async (data: string[]) => {
   try {
     const response = await axios.post(BASE_RANK_URL, data);
+
+    console.log('BaseRank Response: ' + response.data.toString());
+
     return BaseRankModel.create(response.data);
   } catch (error) {
     throw getError(error);
@@ -94,6 +97,9 @@ const fetchRationalEntailment = async (
       ENTAILMENT_URL("rational", queryFormula),
       baseRank.toObject()
     );
+
+    console.log('RC Response: ' + response.data.toString());
+
     return RationalEntailmentModel.create(response.data);
   } catch (error) {
     throw getError(error);
@@ -109,6 +115,9 @@ const fetchLexicalEntailment = async (
       ENTAILMENT_URL("lexical", queryFormula),
       baseRank.toObject()
     );
+
+    console.log('LC Response: ' + response.data.toString());
+
     return LexicalEntailmentModel.create(response.data);
   } catch (error) {
     throw getError(error);
@@ -124,6 +133,9 @@ const fetchRelevantEntailment = async (
       ENTAILMENT_URL("relevant", queryFormula),
       baseRank.toObject()
     );
+
+    console.log('RelC Response: ' + response.data.toString());
+
     return RelevantEntailmentModel.create(response.data);
   } catch (error) {
     throw getError(error);

@@ -8,6 +8,7 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.utils.Symbols;
 
 /**
  *
@@ -81,13 +82,13 @@ public final class BaseRankService implements IBaseRankService {
 
         if(!classicalStatements.isEmpty())
         {
-            rankCollection.add(new ModelRank(Integer.MAX_VALUE, classicalStatements));
+            rankCollection.add(new ModelRank(Symbols.INFINITY_RANK_NUMBER, classicalStatements));
         }
         
         System.out.println("Base Ranking of Knowledge Base:");
         
         for (ModelRank rank : rankCollection) {
-            if (rank.getRankNumber() == Integer.MAX_VALUE) {
+            if (rank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
                 System.out.println("Infinite Rank:" + rank.getFormulas().toString());
             } else {
                 System.out.println("Rank " + rank.getRankNumber() + ":" + rank.getFormulas().toString());
@@ -129,10 +130,10 @@ public final class BaseRankService implements IBaseRankService {
                 rank.setRankNumber(i);
                 ranking.add(rank);
             }
-            sequence.addRank(previous.equals(current) ? Integer.MAX_VALUE : i, previous);
+            sequence.addRank(previous.equals(current) ? Symbols.INFINITY_RANK_NUMBER : i, previous);
             i++;
         }
-        ranking.addRank(Integer.MAX_VALUE, classical.union(current));
+        ranking.addRank(Symbols.INFINITY_RANK_NUMBER, classical.union(current));
 
         long endTime = System.nanoTime();
          return new ModelBaseRank(knowledgeBase, sequence, ranking, (endTime - startTime) / 1_000_000_000.0);

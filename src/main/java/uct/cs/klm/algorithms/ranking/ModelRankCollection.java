@@ -11,7 +11,7 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
  * This class represents ranking of formulas.
  */
 public class ModelRankCollection extends ArrayList<ModelRank> {
-
+  
     /**
      * Constructs an empty ranking.
      */
@@ -27,8 +27,8 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
     public ModelRankCollection(Collection<? extends ModelRank> ranks) {
         super(ranks);
     }
-    
-     /**
+        
+    /**
      * Constructs a ranking from a collection of ranks.
      *
      * @param rank
@@ -36,7 +36,7 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
     public ModelRankCollection(ModelRank rank) {
         super();
         this.add(rank);
-    }
+    }   
 
     /**
      * Create and add new rank given a rank number and knowledge base of
@@ -73,22 +73,22 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
 
         return kb;
     }
-    
+
     @Override
-    public String toString() {       
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        
-         ArrayList<ModelRank> ranks = (ArrayList<ModelRank>) this.stream()
-        .sorted(Comparator.comparing(ModelRank::getRankNumber).reversed())
-        .collect(Collectors.toList());
+
+        ArrayList<ModelRank> ranks = (ArrayList<ModelRank>) this.stream()
+                .sorted(Comparator.comparing(ModelRank::getRankNumber).reversed())
+                .collect(Collectors.toList());
 
         for (ModelRank rank : ranks) {
-           
+
             sb.append(rank.getRankNumber()).append(": ");
-            sb.append(rank.getFormulas());   
-            sb.append("\n");                       
+            sb.append(rank.getFormulas());
+            sb.append("\n");
         }
-        
+
         return sb.toString();
     }
 }

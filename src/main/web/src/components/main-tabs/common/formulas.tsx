@@ -55,7 +55,23 @@ interface KbProps {
   formulas: string[];
   set?: boolean;
 }
+
 export function Kb({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center"}}>
+      {set && <Formula formula={`${name} =: \\{\\;`} />}
+      {formulas.map((formula, index, array) => (
+        <span key={index} style={{ display: "flex", alignItems: "center" }}>
+          <Formula formula={formula} />
+          {index < array.length - 1 && <Formula formula=",\;" />}
+        </span>
+      ))}
+      {set && <Formula formula="\;\}" />}
+    </div>
+  );
+}
+
+export function Kb2({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
   return (
     <div className="line-clamp-1">
       {set && <Formula formula={`${name} =: \\{\\;`} />}
@@ -67,10 +83,13 @@ export function Kb({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
       ))}
       {set && <Formula formula="\;\}" />}
     </div>
-  );
+  );  
 }
 
-export function Just({ name = "\\mathcal{J}", formulas, set = false }: KbProps) {
+export function Just({ name = "\\mathcal{J_{1}}", formulas, set = false }: KbProps) {
+
+  console.log('Justification Formulas: ' + formulas.toString())
+
   return (
     <div className="line-clamp-1">
       {set && <Formula formula={`${name} =: \\{\\;`} />}

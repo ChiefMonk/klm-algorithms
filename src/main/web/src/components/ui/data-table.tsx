@@ -39,8 +39,8 @@ export function DataTable<TData, TValue>({
   data,
   filter = false,
   filters = [
-    { id: "rankNumber", search: "Search rank..." },
-    { id: "formulas", search: "Search formulas..." },
+    { id: "rankNumber", search: "filter ranks..." },
+    { id: "formulas", search: "filter statements..." },
   ],
   caption = "",
 }: DataTableProps<TData, TValue>) {
@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });

@@ -1,12 +1,11 @@
 import { TexFormula } from "@/components/main-tabs/common/TexFormula";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
-import { Ranking } from "@/lib/models";
+import { Ranking, ConstantValues } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Kb } from "../common/formulas";
 
-const MAX_VALUE = 2147483647;
 
 interface RefinedRanking extends Ranking {
   subsetSize: number;
@@ -31,7 +30,7 @@ const rankColumns: ColumnDef<RefinedRanking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
       return (
-        <TexFormula>{idx == MAX_VALUE ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
       );
     },
     filterFn: "weakEquals",
@@ -54,7 +53,7 @@ const rankColumns: ColumnDef<RefinedRanking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("subsetSize") as number;
       return (
-        <TexFormula>{idx == MAX_VALUE ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
       );
     },
     filterFn: "weakEquals",

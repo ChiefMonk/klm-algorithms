@@ -11,7 +11,6 @@ import uct.cs.klm.algorithms.ranking.*;
 import uct.cs.klm.algorithms.services.IReasonerService;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
 import uct.cs.klm.algorithms.utils.ReasonerFactory;
-import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  *
@@ -83,10 +82,14 @@ public class AppConsole {
             System.out.println(String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
             
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
+            var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
             
             System.out.println(String.format("Does %s entail %s", queryFormula,knolewdgeBase )); 
-            System.out.println(String.format("Justification := %s", justificationKb)); 
+            
+            if(!justificationKb.isEmpty())
+            {
+                System.out.println(String.format("Justification := %s", justificationKb.get(0))); 
+            }
             System.out.println();
 
 

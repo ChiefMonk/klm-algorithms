@@ -15,7 +15,14 @@ function toTex(formula: string): string
     .replaceAll("||", " \\lor ")
     .replaceAll("<=>", " \\leftrightarrow ")
     .replaceAll("=>", " \\to ")
-    .replaceAll("~>", " \\vsim ");
+    .replaceAll("~>", " \\vsim ")
+    .replaceAll("9999999990", " \\infty")
+    .replaceAll("999999999.0", " \\infty")
+    .replaceAll("999999999", " \\infty")
+    .replaceAll("A*", " \\mathcal{R^{'}_{")
+    .replaceAll("*A", "}} := ")
+    .replaceAll(":*", " \\{")
+    .replaceAll("*:", " \\}");
 }
 
 /**

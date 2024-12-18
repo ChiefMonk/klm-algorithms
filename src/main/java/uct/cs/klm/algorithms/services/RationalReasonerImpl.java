@@ -96,8 +96,9 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
              System.out.println(String.format("RC Checking if %s entails %s = FALSE", ReasonerUtils.toKnowledgeBase(baseRanking), queryFormula));
         }
                
+        var remainingRanking = ReasonerUtils.toRemainingEntailmentRanks(originalBaseRanking, removedRanking);
         System.out.println("Remaining Ranking:");    
-        for(ModelRank rank : ReasonerUtils.toRemainingEntailmentRanks(originalBaseRanking, removedRanking))
+        for(ModelRank rank : remainingRanking)
         {
                System.out.println(String.format("%s:%s", rank.getRankNumber(), rank.getFormulas()));
         }
@@ -109,6 +110,7 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)
+                .withRemainingRanking(remainingRanking)
                 .withEntailmentKnowledgeBase(entailmentKb)
                 .withEntailed(isQueryEntailed)
                 .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
