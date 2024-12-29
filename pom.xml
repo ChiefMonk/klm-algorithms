@@ -12,10 +12,10 @@
   <properties>
     <!-- https://maven.apache.org/general.html#encoding-warning -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- <java.version>22</java.version> -->
+    <java.version>21</java.version>
     <maven.compiler.release>21</maven.compiler.release>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+   <!-- <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target> -->
     <frontend.app.dir>${project.basedir}/src/main/web</frontend.app.dir>
     <main.class>uct.cs.klm.algorithms.App</main.class>
     <node.version>v20.16.0</node.version>
@@ -58,6 +58,19 @@
       <artifactId>mockito-core</artifactId>
       <version>5.12.0</version>
       <scope>test</scope>
+    </dependency>
+    <!-- Log4j Core -->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.24.3</version> 
+    </dependency>
+
+    <!-- Log4j API -->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.24.3</version>
     </dependency>
   </dependencies>
   <build>
@@ -148,6 +161,12 @@
             <configuration>
               <outputDirectory>${project.build.outputDirectory}/web</outputDirectory>
               <resources>
+                <resource>
+                  <directory>/</directory>
+                  <includes>
+                      <include>log4j2.xml</include>
+                  </includes>
+                </resource>
                 <resource>
                   <directory>${frontend.app.dir}/dist</directory>
                   <filtering>false</filtering>

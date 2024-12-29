@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LexicalEntailment extends Entailment {
+public class LexicalEntailment extends ModelEntailment {
   private final ModelRankCollection weakenedRanking;
 
   private LexicalEntailment(LexicalEntailmentBuilder builder) {

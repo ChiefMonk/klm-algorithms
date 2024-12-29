@@ -5,7 +5,7 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
-import uct.cs.klm.algorithms.models.Entailment;
+import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.models.RationalEntailment;
@@ -16,7 +16,7 @@ public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerSe
   }
 
   @Override
-  public Entailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
+  public ModelEntailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
 
     // Get inputs

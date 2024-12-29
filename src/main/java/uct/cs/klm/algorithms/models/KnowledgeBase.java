@@ -13,8 +13,7 @@ import uct.cs.klm.algorithms.ranking.ModelRank;
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za
  */
 
-public class KnowledgeBase extends PlBeliefSet {
-
+public class KnowledgeBase extends PlBeliefSet {    
     /**
      * Creates new (empty) knowledge base.
      */
@@ -34,7 +33,7 @@ public class KnowledgeBase extends PlBeliefSet {
      public KnowledgeBase(KnowledgeBase knowledgeBase) {
          this(knowledgeBase.formulas);                 
     }
-         
+            
 
     /**
      * Computes the union of this knowledge base and other knowledge base.

@@ -61,9 +61,9 @@ public class AppConsole {
             ReasonerType reasonerType = ReasonerFactory.createReasonerType("rational");
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
             
-            Entailment entailment = reasoner.getEntailment(baseRank, queryFormula);
+            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
             
-            System.out.println(String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
+            System.out.println(String.format("ModelEntailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
             
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
             KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
@@ -77,7 +77,7 @@ public class AppConsole {
             ReasonerType reasonerType = ReasonerFactory.createReasonerType("lexical");
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
             
-            Entailment entailment = reasoner.getEntailment(baseRank, queryFormula);
+            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
             
             System.out.println(String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
             

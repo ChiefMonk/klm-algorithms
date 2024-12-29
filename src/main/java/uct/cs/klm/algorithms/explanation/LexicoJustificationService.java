@@ -11,9 +11,9 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
  *
  * @author Chipo Hamayobe
  */
-public class LexicographicJustificationService extends JustificationServiceBase implements IJustificationService 
+public class LexicoJustificationService extends JustificationServiceBase implements IJustificationService 
 {   
-    public LexicographicJustificationService()
+    public LexicoJustificationService()
     {
         super();
     }
@@ -24,7 +24,7 @@ public class LexicographicJustificationService extends JustificationServiceBase 
             PlFormula queryFormula) 
     {   
         return super.computeJustification(
-                ReasonerType.RationalClosure,
+                ReasonerType.LexicographicClosure,
                 remainingKnowledgeBase, 
                 queryFormula);            
     }

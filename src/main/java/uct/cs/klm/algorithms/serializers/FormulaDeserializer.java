@@ -12,15 +12,15 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 public class FormulaDeserializer extends JsonDeserializer<PlFormula> {
 
-  @Override
-  public PlFormula deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-    String formulaString = p.getValueAsString();
-    try {
-      DefeasibleParser parser = new DefeasibleParser();
-      return parser.parseFormula(formulaString);
-    } catch (Exception e) {
-      throw new IOException("The formula \"" + formulaString + "\" is invalid.");
+    @Override
+    public PlFormula deserialize(JsonParser p, DeserializationContext context) throws IOException, JacksonException {
+        String formulaString = p.getValueAsString();
+        try {
+            DefeasibleParser parser = new DefeasibleParser();
+            return parser.parseFormula(formulaString);
+        } catch (Exception e) {
+            throw new IOException("The formula \"" + formulaString + "\" is invalid.");
+        }
     }
-  }
 
 }

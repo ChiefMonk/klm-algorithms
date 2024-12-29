@@ -3,7 +3,7 @@ package uct.cs.klm.algorithms.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RationalEntailment extends Entailment {
+public class RationalEntailment extends ModelEntailment {
 
     private RationalEntailment(RationalEntailmentBuilder builder) {
         super(builder);

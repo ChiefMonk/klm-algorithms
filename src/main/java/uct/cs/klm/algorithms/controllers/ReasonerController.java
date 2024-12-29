@@ -6,7 +6,7 @@ import io.javalin.http.Context;
 import uct.cs.klm.algorithms.enums.ReasonerType;
 import uct.cs.klm.algorithms.explanation.IJustificationService;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
-import uct.cs.klm.algorithms.models.Entailment;
+import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.ErrorResponse;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
@@ -33,7 +33,7 @@ public class ReasonerController {
             ModelBaseRank baseRankCopy = new ModelBaseRank(baseRank);
 
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
-            Entailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
+            ModelEntailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
             var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);

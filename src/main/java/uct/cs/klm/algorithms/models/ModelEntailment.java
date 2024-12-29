@@ -8,8 +8,8 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import java.util.*;
 
-// Base class for Entailment
-public abstract class Entailment {
+// Base class for ModelEntailment
+public abstract class ModelEntailment {
 
     protected final KnowledgeBase knowledgeBase;
     protected final PlFormula queryFormula;
@@ -22,7 +22,7 @@ public abstract class Entailment {
     protected final KnowledgeBase _entailmentKnowledgeBase;
     protected ArrayList<KnowledgeBase> _justification;
 
-    protected Entailment(EntailmentBuilder<?> builder) {
+    protected ModelEntailment(EntailmentBuilder<?> builder) {
         this.knowledgeBase = builder._knowledgeBase;
         this.queryFormula = builder._queryFormula;
         this.baseRanking = builder._baseRanking;
@@ -112,7 +112,7 @@ public abstract class Entailment {
         return timeTaken;
     }
 
-    // Builder for Entailment
+    // Builder for ModelEntailment
     public static abstract class EntailmentBuilder<T extends EntailmentBuilder<T>> {
 
         private KnowledgeBase _knowledgeBase;
@@ -192,6 +192,6 @@ public abstract class Entailment {
 
         protected abstract T self();
 
-        public abstract Entailment build();
+        public abstract ModelEntailment build();
     }
 }

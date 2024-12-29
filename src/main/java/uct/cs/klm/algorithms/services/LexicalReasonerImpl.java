@@ -12,7 +12,7 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
-import uct.cs.klm.algorithms.models.Entailment;
+import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.LexicalEntailment;
 import uct.cs.klm.algorithms.ranking.ModelRank;
@@ -26,7 +26,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
     }
 
     @Override
-    public Entailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
+    public ModelEntailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
         long startTime = System.nanoTime();
 
         System.out.println();
@@ -169,7 +169,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
          */
     }
 
-    public Entailment getEntailment2(ModelBaseRank baseRank, PlFormula queryFormula) {
+    public ModelEntailment getEntailment2(ModelBaseRank baseRank, PlFormula queryFormula) {
         long startTime = System.nanoTime();
 
         // Get inputs

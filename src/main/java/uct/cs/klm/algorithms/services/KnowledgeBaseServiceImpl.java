@@ -12,17 +12,25 @@ import uct.cs.klm.algorithms.utils.DefeasibleParser;
 public class KnowledgeBaseServiceImpl implements IKnowledgeBaseService {
 
     private KnowledgeBase getDefault() {
-        Proposition p = new Proposition("p");
-        Proposition b = new Proposition("b");
-        Proposition f = new Proposition("f");
-        Proposition w = new Proposition("w");
+        Proposition birds = new Proposition("b");
+        Proposition wings = new Proposition("w");
+        Proposition fly = new Proposition("f");
+        Proposition penguins = new Proposition("p");
+       
+        Proposition tweety = new Proposition("t");
+        Proposition skipper = new Proposition("s");
 
-        KnowledgeBase kb = new KnowledgeBase();
-        kb.add(new Implication(p, b));
-        kb.add(new DefeasibleImplication(b, f));
-        kb.add(new DefeasibleImplication(b, w));
-        kb.add(new DefeasibleImplication(p, new Negation(f)));
-        return kb;
+        KnowledgeBase knowledgeBase = new KnowledgeBase();
+       
+        knowledgeBase.add(new DefeasibleImplication(birds, wings));
+        knowledgeBase.add(new DefeasibleImplication(birds, fly));         
+        knowledgeBase.add(new Implication(penguins, birds));
+        knowledgeBase.add(new DefeasibleImplication(penguins, wings));
+        knowledgeBase.add(new DefeasibleImplication(penguins, new Negation(fly)));
+        knowledgeBase.add(new Implication(tweety, birds));
+        knowledgeBase.add(new Implication(skipper, penguins));       
+        
+        return knowledgeBase;
     }
 
     @Override

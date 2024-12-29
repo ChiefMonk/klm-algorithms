@@ -40,7 +40,7 @@ public class ReasonerFactory {
             case ReasonerType.RationalClosure ->
                  new RationalJustificationService();
             case ReasonerType.LexicographicClosure ->
-                 new LexicographicJustificationService();
+                 new LexicoJustificationService();
             case ReasonerType.RelevantClosure ->
                 new RationalJustificationService();
 

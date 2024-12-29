@@ -1,16 +1,27 @@
 package uct.cs.klm.algorithms;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import io.javalin.Javalin;
+import io.javalin.json.JavalinJackson;
 import uct.cs.klm.algorithms.config.ObjectMapperConfig;
 import uct.cs.klm.algorithms.controllers.BaseRankController;
 import uct.cs.klm.algorithms.controllers.FormulaController;
 import uct.cs.klm.algorithms.controllers.KnowledgeBaseController;
 import uct.cs.klm.algorithms.controllers.ReasonerController;
 
-import io.javalin.Javalin;
-import io.javalin.json.JavalinJackson;
-
 public class App {
+
+  private static final Logger _logger = LogManager.getLogger(App.class.getName());
+
   public static void main(String[] args) {
+
+    System.setProperty("log4j.configurationFile", "./log4j2.xml");
+
+    _logger.info("Application started.");
+    _logger.debug("Debugging application.");
+    _logger.error("An error occurred.");
 
     Javalin app = Javalin.create(config -> {
       config.jsonMapper(new JavalinJackson(ObjectMapperConfig.createObjectMapper(), true));
