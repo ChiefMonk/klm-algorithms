@@ -1,5 +1,7 @@
 package uct.cs.klm.algorithms.utils;
 
+import uct.cs.klm.algorithms.rational.RationalJustificationService;
+import uct.cs.klm.algorithms.rational.RationalReasonerImpl;
 import uct.cs.klm.algorithms.enums.*;
 import uct.cs.klm.algorithms.explanation.*;
 import uct.cs.klm.algorithms.services.*;

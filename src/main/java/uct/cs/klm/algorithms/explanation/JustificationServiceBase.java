@@ -57,9 +57,7 @@ public abstract class JustificationServiceBase {
 
         // Construct root node
         KnowledgeBase rootJustification = computeSingleJustification(remainingKnowledgeBase, queryFormula);
-        
-        System.out.println(String.format("RootJustification = %s", rootJustification));
-        
+               
         ModelNode rootNode = new ModelNode(remainingKnowledgeBase, rootJustification);
 
         // Create a queue to keep track of nodes
@@ -85,22 +83,18 @@ public abstract class JustificationServiceBase {
                 }
             }
         }
-
-        //var justification = rootNode.getJustification();
-        //System.out.println(String.format("Mimimal J = %s", justification));
-          
+              
         ArrayList<KnowledgeBase> allJustifications = rootNode.getAllJustifications();
+        allJustifications.sort(Comparator.comparingInt(a -> a.size()));
         
-        System.out.println(String.format("All Justifications = %s", allJustifications.size()));
+        System.out.println(String.format("Number of Justifications = %s", allJustifications.size()));
         int counter = 1;
         for(KnowledgeBase kb : allJustifications)
         {
-             System.out.println(String.format("J_%s = %s", counter, kb)); 
+             System.out.println(String.format(" --> %s. J_%s = %s", counter, counter, kb)); 
              counter ++;
         }              
-     
-        allJustifications.sort(Comparator.comparingInt(a -> a.size()));
-
+            
         return allJustifications;
     }
     

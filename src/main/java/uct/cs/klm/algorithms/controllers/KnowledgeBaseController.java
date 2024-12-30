@@ -2,7 +2,7 @@ package uct.cs.klm.algorithms.controllers;
 
 import java.util.List;
 
-import uct.cs.klm.algorithms.models.ErrorResponse;
+import uct.cs.klm.algorithms.models.ModelErrorResponse;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.services.KnowledgeBaseServiceImpl;
 import uct.cs.klm.algorithms.utils.DefeasibleParser;
@@ -30,7 +30,7 @@ public class KnowledgeBaseController {
        e.printStackTrace();
        
       ctx.status(400);
-      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
+      ctx.json(new ModelErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
     }
   }
 
@@ -45,14 +45,14 @@ public class KnowledgeBaseController {
         ctx.json(kb);
       } else {
         ctx.status(400);
-        ctx.json(new ErrorResponse(400, "Bad Request", "No file uploaded"));
+        ctx.json(new ModelErrorResponse(400, "Bad Request", "No file uploaded"));
       }
     } catch (Exception e) {
         
          System.out.println(String.format("An error occured: %s", e));
           e.printStackTrace();
       ctx.status(400);
-      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
+      ctx.json(new ModelErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
     }
   }
 }

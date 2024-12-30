@@ -1,68 +1,72 @@
 package uct.cs.klm.algorithms.controllers;
 
+import io.javalin.http.Context;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import io.javalin.http.Context;
 import uct.cs.klm.algorithms.enums.ReasonerType;
 import uct.cs.klm.algorithms.explanation.IJustificationService;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
-import uct.cs.klm.algorithms.models.ModelEntailment;
-import uct.cs.klm.algorithms.models.ErrorResponse;
-import uct.cs.klm.algorithms.ranking.ModelRank;
-import uct.cs.klm.algorithms.ranking.ModelRankCollection;
-import uct.cs.klm.algorithms.utils.ReasonerFactory;
-import uct.cs.klm.algorithms.utils.DefeasibleParser;
+import uct.cs.klm.algorithms.models.*;
+import uct.cs.klm.algorithms.utils.*;
 import uct.cs.klm.algorithms.services.IReasonerService;
 
 public class ReasonerController {
 
-    public static void getEntailment(Context ctx) {
-        ReasonerType reasonerType = ReasonerFactory.createReasonerType(ctx.pathParam("reasoner"));
-        String formula = ctx.pathParam("queryFormula");
-
-        //System.out.println("ReasonerType: " + reasonerType);
-        //System.out.println("Formula: " + formula);          
+    public static void getEntailment(Context context) {
+        
+        System.out.println();
+        //System.out.println("==> Reasoner Controller");  
+        
+        ReasonerType reasonerType = ReasonerFactory.createReasonerType(context.pathParam("reasoner"));
+        String query = context.pathParam("queryFormula");
 
         try {
-            DefeasibleParser parser = new DefeasibleParser();
-            PlFormula queryFormula = parser.parseFormula(formula);
-            //System.out.println(DisplayUtils.printJustificationAsCSV(entailment.getKnowledgeBase()));
-              
-            ModelBaseRank baseRank = ctx.bodyAsClass(ModelBaseRank.class);
-            
-            ModelBaseRank baseRankCopy = new ModelBaseRank(baseRank);
 
+            ModelBaseRank baseRankParam = context.bodyAsClass(ModelBaseRank.class);
+            ModelBaseRank baseRank = new ModelBaseRank(baseRankParam);
+                                        
+            DefeasibleParser parser = new DefeasibleParser();
+            PlFormula queryFormula = parser.parseFormula(query);
+            
+           /* 
+            System.out.println("->BaseRank Parameter");             
+            for(ModelRank rank : baseRank.getRanking())
+            {
+                System.out.println(String.format("%s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+            }     
+            System.out.println(String.format("->Query, α: %s", query));
+            */
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
-            ModelEntailment entailment = reasoner.getEntailment(baseRankCopy, queryFormula);
+            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
             var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
 
             entailment.setJustification(justificationKb);
-            
-            if (reasonerType == ReasonerType.LexicographicClosure) {
-                for (ModelRank rank : entailment.getMiniBaseRanking()) {                  
-                        System.out.println(String.format("%s: %s", rank.getRankNumber(), rank.getFormulas()));                  
-                }
-            }
 
-            ctx.status(200);
-            ctx.json(entailment);
+            //if (reasonerType == ReasonerType.LexicographicClosure) {
+            //    for (ModelRank rank : entailment.getMiniBaseRanking()) {
+            //        System.out.println(String.format("%s: %s", rank.getRankNumber(), rank.getFormulas()));
+            //    }
+           // }
+
+            context.status(200);
+            context.json(entailment);
 
         } catch (IllegalArgumentException e) {
-            
-           System.out.println(String.format("An error occured: %s", e));
+
+            System.out.println(String.format("An error occured: %s", e));
             e.printStackTrace();
-            
-            ctx.status(400);
-            ctx.json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
+
+            context.status(400);
+            context.json(new ModelErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
         } catch (Exception e) {
-            
-           System.out.println(String.format("An error occured: %s", e));
-           e.printStackTrace();
-             
-            ctx.status(400);
-            ctx.json(new ErrorResponse(400, "Bad Request", "Invalid query formula: " + formula));
+
+            System.out.println(String.format("An error occured: %s", e));
+            e.printStackTrace();
+
+            context.status(400);
+            context.json(new ModelErrorResponse(400, "Bad Request", "Invalid query formula: " + query));
         }
     }
 }

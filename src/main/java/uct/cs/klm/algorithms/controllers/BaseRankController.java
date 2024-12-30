@@ -1,6 +1,6 @@
 package uct.cs.klm.algorithms.controllers;
 
-import uct.cs.klm.algorithms.models.ErrorResponse;
+import uct.cs.klm.algorithms.models.ModelErrorResponse;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.ranking.BaseRankService;
 
@@ -20,7 +20,7 @@ public class BaseRankController {
     System.out.println(String.format("An error occured: %s", e));
           e.printStackTrace();
       ctx.status(400);
-      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid"));
+      ctx.json(new ModelErrorResponse(400, "Bad Request", "The knowledge base is invalid"));
     }
   }
 }

@@ -3,9 +3,9 @@ package uct.cs.klm.algorithms.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RelevantEntailment extends ModelEntailment {
+public class ModelRelevantClosureEntailment extends ModelEntailment {
 
-  private RelevantEntailment(RelevantEntailmentBuilder builder) {
+  private ModelRelevantClosureEntailment(RelevantEntailmentBuilder builder) {
     super(builder);
   }
 
@@ -17,8 +17,8 @@ public class RelevantEntailment extends ModelEntailment {
     }
 
     @Override
-    public RelevantEntailment build() {
-      return new RelevantEntailment(this);
+    public ModelRelevantClosureEntailment build() {
+      return new ModelRelevantClosureEntailment(this);
     }
   }
 }

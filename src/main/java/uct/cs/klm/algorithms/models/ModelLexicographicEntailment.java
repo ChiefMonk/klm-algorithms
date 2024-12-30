@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LexicalEntailment extends ModelEntailment {
+public class ModelLexicographicEntailment extends ModelEntailment {
   private final ModelRankCollection weakenedRanking;
 
-  private LexicalEntailment(LexicalEntailmentBuilder builder) {
+  private ModelLexicographicEntailment(ModelLexicographicEntailmentBuilder builder) {
     super(builder);
     this.weakenedRanking = builder.weakenedRanking;
   }
@@ -16,22 +16,22 @@ public class LexicalEntailment extends ModelEntailment {
     return weakenedRanking;
   }
 
-  public static class LexicalEntailmentBuilder extends EntailmentBuilder<LexicalEntailmentBuilder> {
+  public static class ModelLexicographicEntailmentBuilder extends EntailmentBuilder<ModelLexicographicEntailmentBuilder> {
     private ModelRankCollection weakenedRanking;
 
-    public LexicalEntailmentBuilder withWeakenedRanking(ModelRankCollection weakenedRanking) {
+    public ModelLexicographicEntailmentBuilder withWeakenedRanking(ModelRankCollection weakenedRanking) {
       this.weakenedRanking = weakenedRanking;
       return this;
     }
 
     @Override
-    protected LexicalEntailmentBuilder self() {
+    protected ModelLexicographicEntailmentBuilder self() {
       return this;
     }
 
     @Override
-    public LexicalEntailment build() {
-      return new LexicalEntailment(this);
+    public ModelLexicographicEntailment build() {
+      return new ModelLexicographicEntailment(this);
     }
   }
 }

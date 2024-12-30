@@ -21,4 +21,14 @@ public class DisplayUtils {
             return "NULL";
     }
     
+    public static String toRankNumberString(int rankNumber)
+    {
+        if(rankNumber == Symbols.INFINITY_RANK_NUMBER)
+        {
+            return "∞";
+        }
+        
+        return String.valueOf(rankNumber);
+    }
+    
 }

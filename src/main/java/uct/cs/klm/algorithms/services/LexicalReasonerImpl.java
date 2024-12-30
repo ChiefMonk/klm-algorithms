@@ -14,11 +14,19 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
-import uct.cs.klm.algorithms.models.LexicalEntailment;
+import uct.cs.klm.algorithms.models.ModelLexicographicEntailment;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
+/**
+ * <h1>DefeasibleParserHelper<\h1>
+ * The Defeasible Parser Helper.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-07-03
+ */
 public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerService {
 
     public LexicalReasonerImpl() {
@@ -143,7 +151,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
 
         long endTime = System.nanoTime();
 
-        return new LexicalEntailment.LexicalEntailmentBuilder()
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
@@ -157,7 +165,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
                 .build();
 
         /*
-          return new LexicalEntailment.LexicalEntailmentBuilder()
+          return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
                 .withKnowledgeBase(knowledgeBase)
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRanking)
@@ -207,7 +215,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
         boolean entailed = !union.isEmpty() && _reasoner.query(union, queryFormula);
         long endTime = System.nanoTime();
 
-        return new LexicalEntailment.LexicalEntailmentBuilder()
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
                 .withKnowledgeBase(knowledgeBase)
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRanking)

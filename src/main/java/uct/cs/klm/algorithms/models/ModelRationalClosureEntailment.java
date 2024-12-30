@@ -3,9 +3,9 @@ package uct.cs.klm.algorithms.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RationalEntailment extends ModelEntailment {
+public class ModelRationalClosureEntailment extends ModelEntailment {
 
-    private RationalEntailment(RationalEntailmentBuilder builder) {
+    private ModelRationalClosureEntailment(RationalEntailmentBuilder builder) {
         super(builder);
     }
 
@@ -17,8 +17,8 @@ public class RationalEntailment extends ModelEntailment {
         }
 
         @Override
-        public RationalEntailment build() {
-            return new RationalEntailment(this);
+        public ModelRationalClosureEntailment build() {
+            return new ModelRationalClosureEntailment(this);
         }
     }
 }

@@ -8,7 +8,7 @@ import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
-import uct.cs.klm.algorithms.models.RationalEntailment;
+import uct.cs.klm.algorithms.models.ModelRationalClosureEntailment;
 
 public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerService {
   public RelevantReasonerImpl() {
@@ -40,7 +40,7 @@ public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerSe
     boolean entailed = !union.isEmpty() && _reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();
 
-    return new RationalEntailment.RationalEntailmentBuilder()
+    return new ModelRationalClosureEntailment.RationalEntailmentBuilder()
         .withKnowledgeBase(knowledgeBase)
         .withQueryFormula(queryFormula)
         .withBaseRanking(baseRanking)
