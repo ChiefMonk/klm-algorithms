@@ -31,6 +31,11 @@ public class ModelRank
    public ModelRank(int rankNumber) {
     this(rankNumber, new KnowledgeBase());
   }
+   
+    public ModelRank(int rankNumber, KnowledgeBase formulas) {
+    _formulas = new KnowledgeBase(formulas);
+    _rankNumber = rankNumber;
+  }
 
   /**
    * Creates a new rank given a rank number and a set of formulas.
@@ -84,16 +89,24 @@ public class ModelRank
        }           
    }
    
-  public void removeFormula(PlFormula formula) {
+  public boolean removeFormula(PlFormula formula) {
       
       if(_formulas.isEmpty())
        {
-           return;
+           return true;
        }
       
-      _formulas.remove(formula);
-      _formulas.remove(ReasonerUtils.toMaterialisedFormula(formula));
-      _formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
+      if(_formulas.remove(formula))
+      {
+          return true;
+      }
+      
+      if(_formulas.remove(ReasonerUtils.toMaterialisedFormula(formula)))
+      {
+          return true;
+      }
+      
+      return _formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
   }
   
 

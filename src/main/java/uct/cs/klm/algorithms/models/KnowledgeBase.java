@@ -1,11 +1,13 @@
 package uct.cs.klm.algorithms.models;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.ranking.ModelRank;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a defeasible knowledge base of propositional formulae.
@@ -32,6 +34,35 @@ public class KnowledgeBase extends PlBeliefSet {
     
      public KnowledgeBase(KnowledgeBase knowledgeBase) {
          this(knowledgeBase.formulas);                 
+    }
+     
+     public Set<PlFormula> getFormulas()
+     {
+         return this.formulas;
+     }
+     
+     public boolean removeFormula(PlFormula formula) {
+      
+      if(this.formulas.isEmpty())
+       {
+           return true;
+       }
+      
+      if(this.formulas.remove(formula))
+      {
+          return true;
+      }
+      
+      if(this.formulas.remove(ReasonerUtils.toMaterialisedFormula(formula)))
+      {
+          return true;
+      }
+      
+      return this.formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
+  }
+     
+     public void addKnowledgeBase(KnowledgeBase knowledgeBase) {       
+        this.addAll(knowledgeBase);       
     }
             
 
@@ -178,10 +209,8 @@ public class KnowledgeBase extends PlBeliefSet {
         return new KnowledgeBase[]{defeasible, classical};
     }
 
-    public KnowledgeBase remove(PlFormula formula) {
-        KnowledgeBase result = new KnowledgeBase(this);
-        result.formulas.remove(formula);
-        return result;
+    public boolean remove(PlFormula formula) {      
+        return this.formulas.remove(formula);        
     }
     
     public void removeAll(KnowledgeBase knowledgeBase) {

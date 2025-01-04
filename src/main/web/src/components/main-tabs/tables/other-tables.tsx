@@ -80,10 +80,11 @@ function EntailmentTable({
   lexicalEntailment,
   relevantEntailment,
 }: EntailmentTableProps) {
-  const getResult = ({ entailed, queryFormula }: EntailmentModel) => {
+  const getResult = ({entailed, queryFormula }: EntailmentModel) => {
+      
     return entailed
       ? toTex("\\mathcal{K} \\vapprox " + queryFormula)
-      : toTex("\\mathcal{K} \\nvapprox " + queryFormula);
+      : toTex("\\mathcal{K} \\nvapprox " + queryFormula)
   };
 
   const getJustification = ({ entailed, justification }: EntailmentModel) => {

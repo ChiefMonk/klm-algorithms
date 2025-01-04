@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 
 public class ModelNode {
@@ -24,7 +25,7 @@ public class ModelNode {
         this.childrenNodes = new HashMap<>();
         for (PlFormula formula : justification )
         {
-            childrenNodes.put(formula, new ModelNode(knowledgeBase.remove(formula)));
+            childrenNodes.put(formula, new ModelNode(ReasonerUtils.removeFormula(knowledgeBase, formula)));
         }
     }
     

@@ -1,5 +1,7 @@
 package uct.cs.klm.algorithms.utils;
 
+import uct.cs.klm.algorithms.lexicographic.LexicoJustificationService;
+import uct.cs.klm.algorithms.lexicographic.LexicalReasonerImpl;
 import uct.cs.klm.algorithms.rational.RationalJustificationService;
 import uct.cs.klm.algorithms.rational.RationalReasonerImpl;
 import uct.cs.klm.algorithms.enums.*;

@@ -79,21 +79,114 @@ public final class ReasonerUtils {
         }
         return formulaList;
     }
+       
+    
+     public static KnowledgeBase removeFormula(KnowledgeBase kb, PlFormula formula) {
+        KnowledgeBase result = new KnowledgeBase(kb);
+        result.getFormulas().remove(formula);
+        return result;
+    }
+    
+    public static ModelRankCollection toRemainingFormulas(
+            ModelRankCollection baseRank, 
+            List<Integer> removedRankNumbers) {
 
-    public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, ModelRankCollection removedRanks) {
+        // Create a copy of baseRank
+        var baseRankCopy = new ModelRankCollection(baseRank);
+         
+        // Return the copy if removedRankNumbers is null or empty
+        if (removedRankNumbers == null || removedRankNumbers.isEmpty()) {
+            return baseRankCopy;
+        }
+        
+       for(Integer rankNumber : removedRankNumbers)
+       {
+          baseRankCopy.removeIf(model -> model.getRankNumber() == rankNumber);
+       }
+       
+        return baseRankCopy;
+    }
+   
+    public static ModelRankCollection toRemainingFormulas(
+            ModelRankCollection baseRank, 
+            ArrayList<PlFormula> removedFormulas) {
 
-        if (removedRanks == null || removedRanks.isEmpty()) {
-            return new ModelRankCollection(baseRank);
+        var baseRankCopy = new ModelRankCollection(baseRank);
+
+        if (removedFormulas == null || removedFormulas.isEmpty()) {
+            return baseRankCopy;
         }
 
-        for (var r : removedRanks) {
-            baseRank.remove(0);
+        for (var formula : removedFormulas) {
+            for (var rank : baseRankCopy) {
+                rank.removeFormula(formula);
+            }
         }
 
-        return new ModelRankCollection(baseRank);
+        return baseRankCopy;
+    }
+    
+    public static ModelRankCollection toRemovedFormulas(
+            ModelRankCollection baseRank, 
+            List<Integer> removedRankNumbers) {
+       
+        var baseRankRemoved = new ModelRankCollection();
+                 
+        if (removedRankNumbers == null || removedRankNumbers.isEmpty()) {
+            return baseRankRemoved;
+        }
+        
+       for(ModelRank rank : baseRank)
+       {
+           if(removedRankNumbers.contains(rank.getRankNumber()))
+           {
+               baseRankRemoved.add(rank);
+           }
+       }
+       
+        return baseRankRemoved;
+    }
+    
+    public static ModelRankCollection toRemovedFormulas(
+            ModelRankCollection baseRank,
+            ArrayList<PlFormula> removedFormulas) {
+
+        if (removedFormulas == null || removedFormulas.isEmpty()) {
+            return new ModelRankCollection();
+        }
+
+        var baseRankCopy = new ModelRankCollection(baseRank);
+
+        for (var rank : baseRankCopy) {
+            for (var formula : rank.getFormulas()) {
+                if (!removedFormulas.contains(formula)) {
+                    rank.removeFormula(formula);
+                }
+            }
+        }
+
+        return baseRankCopy;
+    }
+    
+    public static KnowledgeBase removeFormulasFromKnowledgeBase(
+            KnowledgeBase originalKnowledgeBase, 
+            KnowledgeBase formulasKnowledgeBase) {
+      
+        KnowledgeBase result = new KnowledgeBase(originalKnowledgeBase);
+         
+        if (formulasKnowledgeBase == null || formulasKnowledgeBase.isEmpty()) {
+            return result;
+        }
+                
+        for (var formula : formulasKnowledgeBase) {           
+                result.removeFormula(formula);
+            }        
+
+        return result;
     }
 
-    public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, KnowledgeBase remainingknowledgeBase) {
+
+     public static ModelRankCollection toRemainingEntailmentRanks(ArrayList<ModelRank> baseRank, KnowledgeBase remainingknowledgeBase) {
 
         if (remainingknowledgeBase == null || remainingknowledgeBase.isEmpty()) {
             return new ModelRankCollection(baseRank.get(baseRank.size() - 1));
@@ -125,6 +218,7 @@ public final class ReasonerUtils {
         return result;
     }
 
+     
     public static ArrayList<ModelRank> generateFormulaCombinations(ModelRank rank) {
         
          ArrayList<ModelRank> modelRankings = new ArrayList<>();
@@ -146,14 +240,10 @@ public final class ReasonerUtils {
         for (int i = 1; i <= rank.getFormulas().size(); i++) {
             combinations.addAll(generateFormulaCombinations(formulaList, i));
         }
-
-        //if (!combinations.contains(new ArrayList<PlFormula>())) {
-        //    combinations.add(new ArrayList<>());
-        //}
-
-        // Sort combinations by size in descending order
-        //combinations.sort((a, b) -> Integer.compare(b.size(), a.size()));
-        combinations.sort((a, b) -> Integer.compare(a.size(), b.size()));       
+        
+        combinations.add(new ArrayList<>());
+      
+        combinations.sort((a, b) -> Integer.compare(b.size(), a.size()));       
 
         for (int i = 0; i < combinations.size(); i++) {
 
@@ -168,7 +258,7 @@ public final class ReasonerUtils {
 
         int counter = 0;
         System.out.println();
-        System.out.println(String.format("Rank SubRanks for = %s:%s", rank.getRankNumber(), rank.getFormulas()));
+        System.out.println(String.format("Mini SubRanks for rank = %s:%s", rank.getRankNumber(), rank.getFormulas()));
         for (ModelRank input : modelRankings) {
             System.out.println(String.format("%s : %s", counter, input.getFormulas()));
             counter++;

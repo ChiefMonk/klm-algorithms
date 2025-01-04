@@ -1,9 +1,11 @@
-package uct.cs.klm.algorithms.explanation;
+package uct.cs.klm.algorithms.lexicographic;
 
 import java.util.ArrayList;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import uct.cs.klm.algorithms.enums.ReasonerType;
+import uct.cs.klm.algorithms.explanation.IJustificationService;
+import uct.cs.klm.algorithms.explanation.JustificationServiceBase;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 
 

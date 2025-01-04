@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 
 /**
  * This class represents ranking of formulas.
  */
-public class ModelRankCollection extends ArrayList<ModelRank> {
+public class ModelRankCollection extends ArrayList<ModelRank> implements Cloneable {
   
     /**
      * Constructs an empty ranking.
@@ -24,7 +25,7 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
      *
      * @param ranks
      */
-    public ModelRankCollection(Collection<? extends ModelRank> ranks) {
+    public ModelRankCollection(Collection<? extends ModelRank> ranks)  {
         super(ranks);
     }
         
@@ -36,7 +37,13 @@ public class ModelRankCollection extends ArrayList<ModelRank> {
     public ModelRankCollection(ModelRank rank) {
         super();
         this.add(rank);
-    }   
+    } 
+    
+    // Overriding clone() method
+    @Override
+    public ModelRankCollection clone() {
+        return (ModelRankCollection) super.clone();
+    }
 
     /**
      * Create and add new rank given a rank number and knowledge base of

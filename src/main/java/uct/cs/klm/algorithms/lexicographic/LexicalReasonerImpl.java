@@ -1,6 +1,7 @@
-package uct.cs.klm.algorithms.services;
+package uct.cs.klm.algorithms.lexicographic;
 
 import java.util.Collections;
+
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
@@ -9,26 +10,60 @@ import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.ModelLexicographicEntailment;
-import uct.cs.klm.algorithms.models.ModelRelevantClosureEntailment;
-import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 import uct.cs.klm.algorithms.ranking.ModelRank;
+import uct.cs.klm.algorithms.ranking.ModelRankCollection;
+import uct.cs.klm.algorithms.services.IReasonerService;
+import uct.cs.klm.algorithms.services.KlmReasonerBase;
 import uct.cs.klm.algorithms.utils.DisplayUtils;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 import uct.cs.klm.algorithms.utils.Symbols;
 
-public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerService {
-  public RelevantReasonerImpl() {
-    super();
-  }
+/**
+ * <h1>DefeasibleParserHelper<\h1>
+ * The Defeasible Parser Helper.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-07-03
+ */
+public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerService {
 
-   @Override
+    public LexicalReasonerImpl() {
+        super();
+    }
+
+    public ModelEntailment getEntailment7(
+            ModelBaseRank baseRank,
+            PlFormula queryFormula) {
+
+        long startTime = System.nanoTime();
+
+        System.out.println("==>Lexicographic Closure Entailment");
+
+        long endTime = System.nanoTime();
+
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
+                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withQueryFormula(queryFormula)
+                .withBaseRanking(baseRank.getRanking())
+                .withMiniBaseRanking(new ModelRankCollection())
+                .withRemovedRanking(new ModelRankCollection())
+                .withRemainingRanking(baseRank.getRanking())
+                .withWeakenedRanking(new ModelRankCollection())
+                .withEntailmentKnowledgeBase(new KnowledgeBase())
+                .withEntailed(false)
+                .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
+                .build();
+    }
+
+    @Override
     public ModelEntailment getEntailment(
             ModelBaseRank baseRank,
             PlFormula queryFormula) {
 
         long startTime = System.nanoTime();
 
-        System.out.println("==>Relevant Closure Entailment");
+        System.out.println("==>Lexicographic Closure Entailment");
 
         // get the negation of the antecedent of the query
         PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
@@ -86,7 +121,7 @@ public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerSe
             System.out.println(String.format("  YES it is, so we process mini-ranks within rank %s: %s", currentRank.getRankNumber(), currentRank.getFormulas()));
            
             var currentMiniRankCollection = ReasonerUtils.generateFormulaCombinations(currentRank);
-            currentMiniRankCollection.sort((a, b) -> Integer.compare(a.getFormulas().size(), b.getFormulas().size()));
+            currentMiniRankCollection.sort((a, b) -> Integer.compare(b.getFormulas().size(), a.getFormulas().size()));
 
             for (ModelRank mini : currentMiniRankCollection) {
                 mini.setRankNumber(currentRank.getRankNumber());
@@ -185,15 +220,8 @@ public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerSe
         System.out.println(String.format("Is Entailed: %s", hasEntailed));
 
         long endTime = System.nanoTime();
-        
-        System.out.println();
-        System.out.println("->Original BaseRank Ranks:");
-        for (ModelRank rank : baseRank.getRanking()) {
-            System.out.println(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
-        }
-
-
-        return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
+               
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
@@ -205,7 +233,17 @@ public class RelevantReasonerImpl extends KlmReasonerBase implements IReasonerSe
                 .withEntailed(isQueryEntailed)
                 .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
                 .build();
-       
-    }
 
+        /*
+          return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
+                .withKnowledgeBase(knowledgeBase)
+                .withQueryFormula(queryFormula)
+                .withBaseRanking(baseRanking)
+                .withRemovedRanking(removedRanking)
+                .withWeakenedRanking(weakenedRanking)
+                .withEntailed(entailed)
+                .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
+                .build();
+         */
+    }
 }

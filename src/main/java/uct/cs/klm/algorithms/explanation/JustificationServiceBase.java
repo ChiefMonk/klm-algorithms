@@ -71,7 +71,7 @@ public abstract class JustificationServiceBase {
             ModelNode node = queue.poll();
 
             for (PlFormula formula : node.getJustification()) {
-                KnowledgeBase childKnowledgeBase = node.getKnowledgeBase().remove(formula);
+                KnowledgeBase childKnowledgeBase = ReasonerUtils.removeFormula(node.getKnowledgeBase(), formula);
                 KnowledgeBase childJustification = computeSingleJustification(childKnowledgeBase, queryFormula);
                 ModelNode childNode = new ModelNode(childKnowledgeBase, childJustification);
 
