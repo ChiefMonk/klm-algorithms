@@ -64,19 +64,7 @@ public class KnowledgeBase extends PlBeliefSet {
      public void addKnowledgeBase(KnowledgeBase knowledgeBase) {       
         this.addAll(knowledgeBase);       
     }
-            
-
-    /**
-     * Computes the union of this knowledge base and other knowledge base.
-     *
-     * @param knowledgeBase Other knowledge base.
-     * @return Knowledge base representing the union.
-     */
-    public KnowledgeBase union(KnowledgeBase knowledgeBase) {
-        KnowledgeBase result = new KnowledgeBase(this);
-        result.addAll(knowledgeBase);
-        return result;
-    }
+               
 
     /**
      * Computes union of this knowledge base with a collection of other
@@ -132,9 +120,9 @@ public class KnowledgeBase extends PlBeliefSet {
     }
 
     /**
-     * Retrevies the antecedants of statements with implication.
+     * Retrieves the antecedents of statements with implication.
      *
-     * @return Knowledge base representing the antecedants.
+     * @return Knowledge base representing the antecedents.
      */
     public KnowledgeBase antecedents() {
         KnowledgeBase antecedents = new KnowledgeBase();
@@ -149,7 +137,7 @@ public class KnowledgeBase extends PlBeliefSet {
     /**
      * Convert the defeasible implication statements to classical implication.
      *
-     * @return Materialisation of this knowledge base.
+     * @return Materialization of this knowledge base.
      */
     public KnowledgeBase materialise() {
         KnowledgeBase result = new KnowledgeBase();
@@ -207,6 +195,26 @@ public class KnowledgeBase extends PlBeliefSet {
             }
         });
         return new KnowledgeBase[]{defeasible, classical};
+    }
+    
+    public KnowledgeBase getClassicalFormulas() {      
+        KnowledgeBase classical = new KnowledgeBase();
+        this.forEach(formula -> {
+            if (!(formula instanceof DefeasibleImplication)) {
+                 classical.add(formula);
+            }
+        });
+        return classical;
+    }
+    
+    public KnowledgeBase getDefeasibleFormulas() {      
+        KnowledgeBase classical = new KnowledgeBase();
+        this.forEach(formula -> {
+            if (formula instanceof DefeasibleImplication) {
+                 classical.add(formula);
+            }
+        });
+        return classical;
     }
 
     public boolean remove(PlFormula formula) {      

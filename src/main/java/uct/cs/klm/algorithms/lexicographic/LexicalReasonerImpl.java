@@ -120,7 +120,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
             
             System.out.println(String.format("  YES it is, so we process mini-ranks within rank %s: %s", currentRank.getRankNumber(), currentRank.getFormulas()));
            
-            var currentMiniRankCollection = ReasonerUtils.generateFormulaCombinations(currentRank);
+            var currentMiniRankCollection = ReasonerUtils.generateFormulaCombinations(currentRank, true);
             currentMiniRankCollection.sort((a, b) -> Integer.compare(b.getFormulas().size(), a.getFormulas().size()));
 
             for (ModelRank mini : currentMiniRankCollection) {

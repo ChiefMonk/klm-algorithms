@@ -1,5 +1,6 @@
 package uct.cs.klm.algorithms;
 
+import uct.cs.klm.algorithms.ranking.IBaseRankService;
 import java.io.IOException;
 import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
@@ -22,16 +23,13 @@ public class AppConsole {
     private static final IBaseRankService baseRankService = new BaseRankService();
 
     public static void main(String[] args) throws IOException, ParserException, Exception {
-
-        KnowledgeBase knolewdgeBase = null;
-        PlFormula queryFormula = null;
-
+       
         try {
             if(args.length == 0)
             {
                 args = new String[2];
-                args[0] = "kb.txt";
-                args[1] = "s ~> w";
+                args[0] = "kb3.txt";
+                args[1] = "u ~> b";
             }
             
             if (args == null || args.length != 2) {
@@ -42,8 +40,8 @@ public class AppConsole {
             String kbFilePath = args[0];                        
             String queryString = args[1];
 
-            knolewdgeBase = parser.parseFormulasFromFile(kbFilePath);
-            queryFormula = parser.parseFormula(queryString);
+            var knolewdgeBase = parser.parseFormulasFromFile(kbFilePath);
+            var queryFormula = parser.parseFormula(queryString);
                        
             System.out.println(String.format("K := %s", knolewdgeBase));
             System.out.println(String.format("Query := %s", queryFormula));           
@@ -51,47 +49,8 @@ public class AppConsole {
             ModelBaseRank baseRank = baseRankService.construct(knolewdgeBase);
             
             System.out.println(String.format("BaseRank := \n %s", baseRank)); 
-            
-            //var rank = baseRank.getRanking().get(0);
-            //System.out.println(String.format("Current Rank := \n %s", rank)); 
-            //ReasonerUtils.generateFormulaCombinations(rank);
-                        
-            /*
-            System.out.println("==>Rational Closure"); 
-            ReasonerType reasonerType = ReasonerFactory.createReasonerType("rational");
-            IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
-            
-            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
-            
-            System.out.println(String.format("ModelEntailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
-            
-            IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            KnowledgeBase justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
-            
-            System.out.println(String.format("Does %s entail %s", queryFormula,knolewdgeBase )); 
-            System.out.println(String.format("Justification := %s", justificationKb)); 
-            System.out.println();
-            */
-            
-            System.out.println("==>Lexicographical Closure"); 
-            ReasonerType reasonerType = ReasonerFactory.createReasonerType("lexical");
-            IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
-            
-            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
-            
-            System.out.println(String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
-            
-            IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
-            
-            System.out.println(String.format("Does %s entail %s", queryFormula,knolewdgeBase )); 
-            
-            if(!justificationKb.isEmpty())
-            {
-                System.out.println(String.format("Justification := %s", justificationKb.get(0))); 
-            }
-            System.out.println();
-
+                     
+           //ExecuteResoner("rational", baseRank, knolewdgeBase, queryFormula);           
 
         } catch (IOException e) {
             System.out.println();
@@ -102,6 +61,29 @@ public class AppConsole {
             System.out.println(String.format("An error occured: %s", e));
             System.out.println();
         }
+    }
+    
+    
+    private static void ExecuteResoner(String reasonerTypeString, ModelBaseRank baseRank,  KnowledgeBase knolewdgeBase, PlFormula queryFormula)
+    {
+       
+            ReasonerType reasonerType = ReasonerFactory.createReasonerType(reasonerTypeString);
+            IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
+            
+            ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
+            
+            System.out.println(String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));  
+            
+           // IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
+           // var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
+            
+           // System.out.println(String.format("Does %s entail %s", queryFormula,knolewdgeBase )); 
+            
+           // if(!justificationKb.isEmpty())
+           // {
+             //   System.out.println(String.format("Justification := %s", justificationKb.get(0))); 
+          //  }
+            System.out.println();
     }
 
     private static void consoleWriteLine(String heading, String message) {

@@ -1,5 +1,7 @@
 package uct.cs.klm.algorithms.utils;
 
+import uct.cs.klm.algorithms.relevant.RelevantReasonerImpl;
+import uct.cs.klm.algorithms.relevant.RelevantJustificationService;
 import uct.cs.klm.algorithms.lexicographic.LexicoJustificationService;
 import uct.cs.klm.algorithms.lexicographic.LexicalReasonerImpl;
 import uct.cs.klm.algorithms.rational.RationalJustificationService;
@@ -46,7 +48,7 @@ public class ReasonerFactory {
             case ReasonerType.LexicographicClosure ->
                  new LexicoJustificationService();
             case ReasonerType.RelevantClosure ->
-                new RationalJustificationService();
+                new RelevantJustificationService();
 
             default ->
                 throw new IllegalArgumentException("Unknown reasoner: " + reasonerType);
