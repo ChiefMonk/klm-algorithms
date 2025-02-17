@@ -27,17 +27,18 @@ const formSchema = z.object({
 interface KbFormProps {
   defaultFormulas: string;
   fromFile: boolean;
+  fromGenerating: boolean;
   handleReset: () => void;
   submitKnowledgeBase: (knowledgeBase: string[]) => void;
-  uploadKnowledgeBase: (data: FormData) => void;
+  uploadKnowledgeBase: (data: FormData) => void; 
 }
 
 function KbForm({
   defaultFormulas,
-  fromFile,
+  fromFile,  
   handleReset,
   submitKnowledgeBase,
-  uploadKnowledgeBase,
+  uploadKnowledgeBase, 
 }: KbFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,7 +66,8 @@ function KbForm({
           message: "File is required",
         });
       }
-    } else {
+    }     
+    else {
       submitKnowledgeBase(values.formulas.split(","));
       handleReset();
     }

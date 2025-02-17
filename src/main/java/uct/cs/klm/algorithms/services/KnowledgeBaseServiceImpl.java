@@ -37,9 +37,16 @@ public class KnowledgeBaseServiceImpl implements IKnowledgeBaseService {
     public KnowledgeBase getKnowledgeBase() {
         return getDefault();
     }
+     
+    @Override    
+     public KnowledgeBase generateKnowledgeBase()
+     {
+          return getDefault();
+     }
 
     @Override
-    public KnowledgeBase getKnowledgeBase(String kbFilePath) throws Exception, IOException {
+    public KnowledgeBase getKnowledgeBase(
+            String kbFilePath) throws Exception, IOException {
 
        return new DefeasibleParser().parseFormulasFromFile(kbFilePath);
     }

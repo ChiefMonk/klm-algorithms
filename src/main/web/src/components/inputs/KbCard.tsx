@@ -7,49 +7,53 @@ import { Formula, Kb } from "../main-tabs/common/formulas";
 interface KbCardProps {
   isLoading: boolean;
   knowledgeBase: string[];
+  signature: string[];
   submitKnowledgeBase: (knowledgeBase: string[]) => void;
   uploadKnowledgeBase: (data: FormData) => void;
+  generateKnowledgeBase: () => void;
 }
 
 function KbCard({
   isLoading,
-  knowledgeBase,
+  knowledgeBase,   
   submitKnowledgeBase,
-  uploadKnowledgeBase,
+  uploadKnowledgeBase 
 }: KbCardProps) {
-  const [state, setState] = useState({ editing: false, fromFile: false });
+  const [state, setState] = useState({ editing: false,  fromGenerating: false, fromFile: false });
 
   const handleEdit = () => {
-    setState((prev) => ({ ...prev, editing: true, fromFile: false }));
+    setState((prev) => ({ ...prev, editing: true, fromGenerating: false, fromFile: false }));
   };
 
   const handleUpload = () => {
-    setState((prev) => ({ ...prev, editing: true, fromFile: true }));
+    setState((prev) => ({ ...prev, editing: true, fromGenerating: false, fromFile: true }));
   };
 
   const handleGenerate = () => {
-    setState((prev) => ({ ...prev, editing: true, fromFile: true }));
+    setState((prev) => ({ ...prev, editing: false, fromGenerating: true, fromFile: false }));
   };
 
   const handleReset = () => {
-    setState((prev) => ({ ...prev, editing: false, fromFile: false }));
+    setState((prev) => ({ ...prev, editing: false, fromGenerating: false, fromFile: false }));
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full">     
       <CardHeader className="space-y-0 pb-4">
         <CardTitle className="text-center font-semibold">
-          The Knowledge Base <Formula formula="(\mathcal{K})" />
+          The Knowledge Base, <Formula formula="\mathcal{K}" />
         </CardTitle>
       </CardHeader>
+
       <CardContent>
         {!state.editing && (
-          <div className="w-full flex flex-col gap-4 items-center">
+          <div className="w-full flex flex-col gap-4 items-center">           
             <Kb formulas={knowledgeBase} />
             
-            <hr className="w-full max-w-sm border-t border-gray-300 my-[5px]" />
+            <hr className="w-full max-w-sm border-t border-gray-300 my-[5px]" />                    
 
             <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
+
             <Button
                 variant="secondary"  
                 size="default"   
@@ -88,9 +92,10 @@ function KbCard({
             <KbForm
               defaultFormulas={knowledgeBase.join(",")}
               fromFile={state.fromFile}
+              fromGenerating={state.fromGenerating}
               submitKnowledgeBase={submitKnowledgeBase}
               handleReset={handleReset}
-              uploadKnowledgeBase={uploadKnowledgeBase}
+              uploadKnowledgeBase={uploadKnowledgeBase}            
             />
           </div>
         )}

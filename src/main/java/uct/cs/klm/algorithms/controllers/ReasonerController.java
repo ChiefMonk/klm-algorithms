@@ -28,14 +28,7 @@ public class ReasonerController {
             DefeasibleParser parser = new DefeasibleParser();
             PlFormula queryFormula = parser.parseFormula(query);
             
-           /* 
-            System.out.println("->BaseRank Parameter");             
-            for(ModelRank rank : baseRank.getRanking())
-            {
-                System.out.println(String.format("%s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
-            }     
-            System.out.println(String.format("->Query, α: %s", query));
-            */
+          
             IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
             ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
 
@@ -43,12 +36,6 @@ public class ReasonerController {
             var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
 
             entailment.setJustification(justificationKb);
-
-            //if (reasonerType == ReasonerType.LexicographicClosure) {
-            //    for (ModelRank rank : entailment.getMiniBaseRanking()) {
-            //        System.out.println(String.format("%s: %s", rank.getRankNumber(), rank.getFormulas()));
-            //    }
-           // }
 
             context.status(200);
             context.json(entailment);

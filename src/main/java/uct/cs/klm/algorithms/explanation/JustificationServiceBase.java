@@ -134,7 +134,7 @@ public abstract class JustificationServiceBase {
 
         while (result != sPrime) {
             sPrime = result;
-            result = result.union(findRelatedFormulas(sigma, knowledgeBase));
+             result = ReasonerUtils.toCombinedKnowledgeBases(result, findRelatedFormulas(sigma, knowledgeBase));
             PlBeliefSet resultKownledgeBase = new PlBeliefSet(result);
 
             if (reasoner.query(resultKownledgeBase, query)) {
@@ -203,11 +203,13 @@ public abstract class JustificationServiceBase {
         List<KnowledgeBase> splitList = split(whole);
         KnowledgeBase left = splitList.get(0);
         KnowledgeBase right = splitList.get(1);
-
-        KnowledgeBase leftUnion = support.union(left);
+       
+        KnowledgeBase leftUnion = ReasonerUtils.toCombinedKnowledgeBases(support, left);
+          
         PlBeliefSet leftKB = new PlBeliefSet(leftUnion);
-
-        KnowledgeBase rightUnion = support.union(right);
+       
+        KnowledgeBase rightUnion = ReasonerUtils.toCombinedKnowledgeBases(support, right);
+         
         PlBeliefSet rightKB = new PlBeliefSet(rightUnion);
 
         if (reasoner.query(leftKB, query)) {
@@ -217,11 +219,11 @@ public abstract class JustificationServiceBase {
             return contractRecursive(support, right, query, reasoner);
         }
 
-        KnowledgeBase leftPrime = contractRecursive(rightUnion, left, query, reasoner);
-        KnowledgeBase leftPrimeUnion = support.union(leftPrime);
+        KnowledgeBase leftPrime = contractRecursive(rightUnion, left, query, reasoner);     
+        KnowledgeBase leftPrimeUnion = ReasonerUtils.toCombinedKnowledgeBases(support, leftPrime);
         KnowledgeBase rightPrime = contractRecursive(leftPrimeUnion, right, query, reasoner);
 
-        return leftPrime.union(rightPrime);
+        return  ReasonerUtils.toCombinedKnowledgeBases(leftPrime, rightPrime);
     }
 
     private List<KnowledgeBase> split(KnowledgeBase whole) {

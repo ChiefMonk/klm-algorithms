@@ -32,14 +32,14 @@ public class KnowledgeBase extends PlBeliefSet {
         super(formulas);
     }
     
-     public KnowledgeBase(KnowledgeBase knowledgeBase) {
+    public KnowledgeBase(KnowledgeBase knowledgeBase) {
          this(knowledgeBase.formulas);                 
     }
      
-     public Set<PlFormula> getFormulas()
-     {
+    public Set<PlFormula> getFormulas()
+    {
          return this.formulas;
-     }
+    }       
      
      public boolean removeFormula(PlFormula formula) {
       
@@ -117,21 +117,6 @@ public class KnowledgeBase extends PlBeliefSet {
         KnowledgeBase result = new KnowledgeBase(this);
         result.removeAll(knowledgeBase);
         return result;
-    }
-
-    /**
-     * Retrieves the antecedents of statements with implication.
-     *
-     * @return Knowledge base representing the antecedents.
-     */
-    public KnowledgeBase antecedents() {
-        KnowledgeBase antecedents = new KnowledgeBase();
-        this.forEach(formula -> {
-            if (formula instanceof Implication implication) {
-                antecedents.add(implication.getFirstFormula());
-            }
-        });
-        return antecedents;
     }
 
     /**
@@ -233,31 +218,5 @@ public class KnowledgeBase extends PlBeliefSet {
     
     public void removeAll(ModelRank rank) {        
        removeAll(rank.getFormulas());
-    }
-
-    /**
-     * Convert defeasible implication to classical implication.
-     *
-     * @param formula Classical implication formula
-     * @return Defeasible implication.
-     */
-    public static PlFormula materialise(PlFormula formula) {
-        if (formula instanceof DefeasibleImplication defeasibleImplication) {
-            return new Implication(defeasibleImplication.getFormulas());
-        }
-        return formula;
-    }
-
-    /**
-     * Convert classical implication to defeasible implication.
-     *
-     * @param formula Defeasible implication formula.
-     * @return Classical implication.
-     */
-    public static PlFormula dematerialise(PlFormula formula) {
-        if (formula instanceof Implication implication) {
-            return new DefeasibleImplication(implication.getFormulas());
-        }
-        return formula;
-    }
+    }   
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.utils.Symbols;
 
 /**
  * This class represents ranking of formulas.
@@ -90,8 +91,14 @@ public class ModelRankCollection extends ArrayList<ModelRank> implements Cloneab
                 .collect(Collectors.toList());
 
         for (ModelRank rank : ranks) {
-
-            sb.append(rank.getRankNumber()).append(": ");
+            String rankNumber = String.valueOf(rank.getRankNumber());
+            
+            if(rank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER)
+            {
+                rankNumber = "α"; 
+            }
+                                 
+            sb.append(rankNumber).append(": ");
             sb.append(rank.getFormulas());
             sb.append("\n");
         }

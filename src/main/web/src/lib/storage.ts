@@ -8,6 +8,7 @@ import {
 export type QueryInput = {
   queryFormula: string;
   knowledgeBase: string[];
+  signature: string[];
 };
 
 export type QueryResult = {

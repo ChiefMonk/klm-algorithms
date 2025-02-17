@@ -27,15 +27,32 @@ public final class ReasonerUtils {
 
         return result;
     }
-     
-    public static PlFormula toDematerialisedFormula(PlFormula formula) {
-        if ((formula instanceof Implication implication) && !(formula instanceof DefeasibleImplication)) {
-            return new DefeasibleImplication(implication.getFormulas());
-        }
+    
+     /**
+     * Retrieves the antecedents of statements with implication.
+     *
+     * @param knowledgeBase
+     * @return Knowledge base representing the antecedents.
+     */
+    public static KnowledgeBase getAntecedentFormulas(
+            KnowledgeBase knowledgeBase) {
 
-        return formula;
+         KnowledgeBase antecedents = new KnowledgeBase();
+        knowledgeBase.forEach(formula -> {
+            if (formula instanceof Implication implication) {
+                antecedents.add(implication.getFirstFormula());
+            }
+        });
+        return antecedents;
     }
-
+     
+  
+     /**
+     * Convert defeasible implication to classical implication.
+     *
+     * @param formula Classical implication formula
+     * @return Defeasible implication.
+     */
     public static PlFormula toMaterialisedFormula(PlFormula formula) {
 
         if (formula instanceof DefeasibleImplication defeasibleImplication) {
@@ -44,6 +61,21 @@ public final class ReasonerUtils {
 
         return formula;
     }
+    
+       /**
+     * Convert classical implication to defeasible implication.
+     *
+     * @param formula Defeasible implication formula.
+     * @return Classical implication.
+     */
+    public static PlFormula toDematerialisedFormula(PlFormula formula) {
+        if ((formula instanceof Implication implication) && !(formula instanceof DefeasibleImplication)) {
+            return new DefeasibleImplication(implication.getFormulas());
+        }
+
+        return formula;
+    }
+
 
     public static KnowledgeBase toMaterialisedKnowledgeBase(KnowledgeBase knowledgeBase) {
 
@@ -63,6 +95,10 @@ public final class ReasonerUtils {
     public static KnowledgeBase toMaterialisedKnowledgeBase(ArrayList<ModelRank> baseRank) {
         return toMaterialisedKnowledgeBase(toKnowledgeBase(baseRank).materialisedKnowledgeBase());
     }
+    
+    public static KnowledgeBase toMaterialisedKnowledgeBase(List<ModelRank> baseRank) {
+        return toMaterialisedKnowledgeBase(toKnowledgeBase(baseRank).materialisedKnowledgeBase());
+    }
 
     public static ModelRankCollection toModelRankCollection(ArrayList<ModelRank> baseRank) {
 
@@ -74,8 +110,9 @@ public final class ReasonerUtils {
 
         return result;
     }
+    
 
-    public static KnowledgeBase toKnowledgeBase(ArrayList<ModelRank> baseRank) {
+    public static KnowledgeBase toKnowledgeBase(List<ModelRank> baseRank) {
 
         Collection<PlFormula> result = new ArrayList<>();
 
@@ -302,6 +339,11 @@ public final class ReasonerUtils {
 
         return modelRankings;
     }
+    
+    public static double ToTimeDifference(long startTime, long endTime)
+    {
+        return (endTime - startTime) / 1_000_000_000.0;
+    }       
 
     private static List<List<PlFormula>> generateFormulaCombinations(List<PlFormula> formulaList, int size) {
 
@@ -325,5 +367,4 @@ public final class ReasonerUtils {
 
         return combinations;
     }
-
 }

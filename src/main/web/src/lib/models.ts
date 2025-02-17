@@ -11,6 +11,7 @@ type RankingOfRank = {
 
 type BaseRanking = {
   knowledgeBase: string[];
+  signature: string[];
   ranking: Ranking[];
   sequence: Ranking[];
   timeTaken: number; 
@@ -20,6 +21,7 @@ type EntailmentModelBase = {
   queryFormula: string;
   negation: string;
   knowledgeBase: string[];
+  signature: string[];
   entailed: boolean;
   baseRanking: Ranking[];
   miniBaseRanking: Ranking[];
@@ -50,6 +52,7 @@ type ErrorData = {
 class BaseRankModel {
   // Private fields holding the data for the model.
   private _knowledgeBase: string[];
+  private _signature: string[];
   private _ranking: Ranking[];
   private _sequence: Ranking[];
   private _timeTaken: number;  
@@ -57,8 +60,9 @@ class BaseRankModel {
   /**
    * Constructs new base rank model.
    */
-  constructor({ knowledgeBase, ranking, sequence, timeTaken }: BaseRanking) {
+  constructor({ knowledgeBase, signature, ranking, sequence, timeTaken }: BaseRanking) {
     this._knowledgeBase = knowledgeBase;
+    this._signature = signature;
     this._ranking = ranking;
     this._sequence = sequence;
     this._timeTaken = timeTaken;  
@@ -71,6 +75,15 @@ class BaseRankModel {
    */
   public get knowledgeBase(): string[] {
     return this._knowledgeBase;
+  }
+
+   /**
+   * Gets the Signature of the knowledge base.
+   *
+   * @returns The Signature of the knowledge base as an array of strings.
+   */
+  public get signature(): string[] {
+    return this._signature;
   }
 
   /**
@@ -103,6 +116,7 @@ class BaseRankModel {
   public toObject(): BaseRanking {
     return {
       knowledgeBase: this._knowledgeBase,
+      signature: this._signature,
       ranking: this._ranking,
       sequence: this._sequence,
       timeTaken: this._timeTaken,    
@@ -130,6 +144,7 @@ abstract class EntailmentModel {
   private _queryFormula: string;
   private _negation: string;
   private _knowledgeBase: string[];
+  private _signature: string[];
   private _entailed: boolean;
   private _baseRanking: Ranking[];
   private _miniBaseRanking: Ranking[];
@@ -142,6 +157,7 @@ abstract class EntailmentModel {
     queryFormula,
     negation,
     knowledgeBase,
+    signature,
     entailed,
     baseRanking,
     miniBaseRanking,
@@ -154,6 +170,7 @@ abstract class EntailmentModel {
     this._queryFormula = queryFormula;
     this._negation = negation;
     this._knowledgeBase = knowledgeBase ?? [];
+    this._signature = signature ?? [];
     this._entailed = entailed;
     this._baseRanking = baseRanking ?? [];
     this._miniBaseRanking = miniBaseRanking ?? [];
@@ -179,6 +196,11 @@ abstract class EntailmentModel {
   public get knowledgeBase(): string[] {
     return this._knowledgeBase;
   }
+
+  public get signature(): string[] {
+    return this._signature;
+  }
+
 
   public get entailed(): boolean {
     return this._entailed;
@@ -215,6 +237,7 @@ abstract class EntailmentModel {
       queryFormula: this._queryFormula,
       negation: this._negation,
       knowledgeBase: this._knowledgeBase,
+      signature: this._signature,
       entailed: this._entailed,
       baseRanking: this._baseRanking,
       miniBaseRanking: this._miniBaseRanking,

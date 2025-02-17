@@ -24,10 +24,11 @@ export function MainContent() {
         <QueryInputs
           isLoading={reasoner.inputPending}
           queryInput={reasoner.queryInput}
-          submitKnowledgeBase={reasoner.updateKnowledgeBase}
-          uploadKnowledgeBase={reasoner.uploadKnowledgeBase}
+          submitKnowledgeBase={reasoner.createInputKnowledgeBase}
+          uploadKnowledgeBase={reasoner.createFileKnowledgeBase}
           submitQuery={reasoner.fetchQueryResult}
           updateFormula={reasoner.updateFormula}
+          generateKnowledgeBase={reasoner.generateKnowledgeBase}
         />
         <Tabs defaultValue="summary">
           <TabsList className="grid grid-cols-2 sm:grid-cols-5 flex-wrap h-auto space-y-1'">

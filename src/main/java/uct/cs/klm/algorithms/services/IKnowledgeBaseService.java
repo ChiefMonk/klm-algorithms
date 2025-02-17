@@ -7,5 +7,7 @@ public interface IKnowledgeBaseService {
 
   public KnowledgeBase getKnowledgeBase();
   
+  public KnowledgeBase generateKnowledgeBase();
+  
   public KnowledgeBase getKnowledgeBase(String kbFilePath) throws Exception, IOException;
 }

@@ -46,8 +46,14 @@ function useReasoner() {
     setInputPending(true);
     try {
       const queryFormula = await api.fetchQueryFormula();
-      const knowledgeBase = await api.fetchKnowledgeBase();
-      const data: QueryInput = { queryFormula, knowledgeBase };
+      const knowledgeBase = await api.getDefaultKnowledgeBase();
+      const signature = await api.getSignatureKnowledgeBase(knowledgeBase);
+
+      const data: QueryInput = { 
+        queryFormula, 
+        knowledgeBase,
+        signature 
+      };
       setQueryInput(data);
       saveQueryInput(data);
     } 
@@ -79,9 +85,9 @@ function useReasoner() {
           baseRank
         );
         
-        console.log('rationalEntailment: ' + rationalEntailment.justification.toString())
-        console.log('lexicalEntailment: ' + lexicalEntailment.justification.toString())
-        console.log('relevantEntailment: ' + relevantEntailment.justification.toString())
+        //console.log('rationalEntailment: ' + rationalEntailment.justification.toString())
+        //console.log('lexicalEntailment: ' + lexicalEntailment.justification.toString())
+        //console.log('relevantEntailment: ' + relevantEntailment.justification.toString())
 
         const data: QueryResult = {
           baseRank,
@@ -107,6 +113,7 @@ function useReasoner() {
           setQueryInput((prev) => {
             const updatedInput = {
               knowledgeBase: prev?.knowledgeBase || [],
+              signature: prev?.signature || [],
               queryFormula: queryFormula,
             };
             saveQueryInput(updatedInput);
@@ -120,14 +127,17 @@ function useReasoner() {
     [toastError]
   );
 
-  const updateKnowledgeBase = useCallback(
+  const createInputKnowledgeBase = useCallback(
     async (formulas: string[]) => {
       try {
-        const kb = await api.createKnowledgeBase(formulas);
+        const kb = await api.createInputKnowledgeBase(formulas);
+        const signatures = await api.getSignatureKnowledgeBase(kb);
+
         clearQueryResult();
         setQueryInput((prev) => {
           const updatedInput = {
             knowledgeBase: kb,
+            signature: signatures,
             queryFormula: prev?.queryFormula || "",
           };
           saveQueryInput(updatedInput);
@@ -140,14 +150,40 @@ function useReasoner() {
     [toastError]
   );
 
-  const uploadKnowledgeBase = useCallback(
+  const generateKnowledgeBase = useCallback(async () => {
+    setInputPending(true);
+    try {     
+      const kb = await api.getGeneratedKnowledgeBase();
+      const signature = await api.getSignatureKnowledgeBase(kb);
+
+      clearQueryResult();
+      setQueryInput((prev) => {
+        const updatedInput = {
+          knowledgeBase: kb,
+          signature: signature,
+          queryFormula: prev?.queryFormula || "",
+        };
+        saveQueryInput(updatedInput);
+        return updatedInput;
+      });
+    } catch (error) {
+      toastError(error);
+    }
+  },
+  [toastError]
+);
+
+  const createFileKnowledgeBase = useCallback(
     async (formulas: FormData) => {
       try {
-        const kb = await api.uploadKnowledgeBase(formulas);
+        const kb = await api.createFileKnowledgeBase(formulas);
+        const signatures = await api.getSignatureKnowledgeBase(kb);
+
         clearQueryResult();
         setQueryInput((prev) => {
           const updatedInput = {
             knowledgeBase: kb,
+            signature: signatures,
             queryFormula: prev?.queryFormula || "",
           };
           saveQueryInput(updatedInput);
@@ -175,8 +211,9 @@ function useReasoner() {
     resultPending,
     fetchQueryResult,
     updateFormula,
-    updateKnowledgeBase,
-    uploadKnowledgeBase,
+    createInputKnowledgeBase,
+    generateKnowledgeBase,
+    createFileKnowledgeBase,
   };
 }
 

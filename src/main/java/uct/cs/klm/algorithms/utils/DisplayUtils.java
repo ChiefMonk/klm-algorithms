@@ -1,5 +1,6 @@
 package uct.cs.klm.algorithms.utils;
 
+import org.slf4j.Logger;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 
@@ -29,6 +30,13 @@ public class DisplayUtils {
         }
         
         return String.valueOf(rankNumber);
+    }
+    
+    public static void LogDebug(Logger logger, String message)
+    {
+        if (logger.isDebugEnabled()) {
+            logger.debug(message);
+        }
     }
     
 }

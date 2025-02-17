@@ -22,6 +22,18 @@
     <pnpm.version>9.6.0</pnpm.version>
   </properties>
   <dependencies>
+      <!-- SLF4J API -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.36</version>
+    </dependency>
+    <!-- Logback Implementation -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.10</version>
+    </dependency>
     <dependency>
       <groupId>org.tweetyproject.logics</groupId>
       <artifactId>pl</artifactId>

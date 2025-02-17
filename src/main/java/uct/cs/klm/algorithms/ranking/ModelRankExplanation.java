@@ -13,9 +13,8 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ModelRank 
-{
-  // the rank number (index + 1) within the ranking
+public class ModelRankExplanation 
+{ 
   private int _rankNumber;
   
   /** Represents rank formulas. */
@@ -24,15 +23,15 @@ public class ModelRank
   /**
    * Creates a new (empty) rank 0.
    */
-  public ModelRank() {
+  public ModelRankExplanation() {
     this(0, new KnowledgeBase());
   }
   
-   public ModelRank(int rankNumber) {
+   public ModelRankExplanation(int rankNumber) {
     this(rankNumber, new KnowledgeBase());
   }
    
-    public ModelRank(int rankNumber, KnowledgeBase formulas) {
+    public ModelRankExplanation(int rankNumber, KnowledgeBase formulas) {
     _formulas = new KnowledgeBase(formulas);
     _rankNumber = rankNumber;
   }
@@ -43,7 +42,7 @@ public class ModelRank
    * @param rankNumber Rank number.
    * @param formulas   A set of formulas.
    */
-  public ModelRank(int rankNumber, Collection<? extends PlFormula> formulas) {
+  public ModelRankExplanation(int rankNumber, Collection<? extends PlFormula> formulas) {
     _formulas = new KnowledgeBase(formulas);
     _rankNumber = rankNumber;
   }
@@ -53,7 +52,7 @@ public class ModelRank
    * 
    * @param rank Ranked knowledge base.
    */
-  public ModelRank(ModelRank rank) {
+  public ModelRankExplanation(ModelRankExplanation rank) {
     _formulas = new KnowledgeBase(rank.getFormulas());
     _rankNumber = rank._rankNumber;
   }
@@ -135,5 +134,4 @@ public class ModelRank
   public KnowledgeBase getFormulas() {
     return _formulas;
   }
-  
 }

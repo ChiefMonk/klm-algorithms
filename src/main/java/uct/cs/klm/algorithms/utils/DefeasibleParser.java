@@ -37,7 +37,7 @@ public class DefeasibleParser {
             formula = isDI ? reformatDefeasibleImplication(formula) : formula;
             parsedFormula = parser.parseFormula(formula);
                        
-            return isDI ? KnowledgeBase.dematerialise(parsedFormula) : parsedFormula;
+            return isDI ? ReasonerUtils.toDematerialisedFormula(parsedFormula) : parsedFormula;
             
         } catch (IOException | ParserException e) {
             throw new Exception("Cannot parse formula: " + formula);

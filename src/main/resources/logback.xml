@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+ <!-- Define a property for the log file directory -->
+  <property name="LOG_PATH" value="logs" />
+
+   <!-- Console appender with a detailed pattern -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <!-- Rolling File Appender: logs to a file and rolls over daily -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- Log file location -->
+    <file>${LOG_PATH}/klm_algos.log</file>
+    
+    <!-- Configure rolling policy: daily rollover with 30 days of history -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- File pattern for rolled logs -->
+      <fileNamePattern>${LOG_PATH}/klm_algos_%d{yyyy_MM_dd}.log</fileNamePattern>
+      <!-- Keep 30 days' worth of logs -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    
+    <encoder>
+      <pattern>
+        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <!-- Optional: Set specific logging levels for your packages -->
+  <logger name="uct.cs.klm.algorithms" level="DEBUG" />
+
+   <!-- Root logger configuration: adjust the level as needed -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

@@ -9,6 +9,7 @@ interface QueryInputProps {
   uploadKnowledgeBase: (data: FormData) => void;
   submitQuery: () => void;
   updateFormula: (formula: string) => void;
+  generateKnowledgeBase: () => void;
 }
 function QueryInputs({
   isLoading,
@@ -17,15 +18,18 @@ function QueryInputs({
   uploadKnowledgeBase,
   submitQuery,
   updateFormula,
+  generateKnowledgeBase,
 }: QueryInputProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {queryInput && (
         <KbCard
-          isLoading={isLoading}
+          isLoading={isLoading}          
           knowledgeBase={queryInput.knowledgeBase}
+          signature={queryInput.signature}
           submitKnowledgeBase={submitKnowledgeBase}
           uploadKnowledgeBase={uploadKnowledgeBase}
+          generateKnowledgeBase={generateKnowledgeBase}
         />
       )}
 
