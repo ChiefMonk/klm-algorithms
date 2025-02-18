@@ -291,8 +291,22 @@ public final class ReasonerUtils {
 
         return generateFormulaCombinations(theRank, ignoreInfinityRank);
     }
+    
+    public static ModelRankCollection generateFormulaCombinations(ModelRank rank, boolean ignoreInfinityRank) {
 
-    public static ArrayList<ModelRank> generateFormulaCombinations(ModelRank rank, boolean ignoreInfinityRank) {
+        ArrayList<ModelRank> rankCollection = generateFormulaCombinationList(rank, ignoreInfinityRank);
+
+        ModelRankCollection theRank = new ModelRankCollection();
+
+        for (var r : rankCollection) {
+
+            theRank.add(r);
+        }
+
+        return theRank;
+    }
+
+    public static ArrayList<ModelRank> generateFormulaCombinationList(ModelRank rank, boolean ignoreInfinityRank) {
 
         ArrayList<ModelRank> modelRankings = new ArrayList<>();
 
