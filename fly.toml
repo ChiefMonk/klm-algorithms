@@ -7,17 +7,23 @@ app = "klm-algos"
 primary_region = "jnb"
 
 [http_service]
-auto_start_machines = true
-auto_stop_machines = true
-force_https = true
-internal_port = 8080
-min_machines_running = 0
-processes = [ "app" ]
+  auto_start_machines = true
+  auto_stop_machines = true
+  force_https = true
+  internal_port = 8080
+  min_machines_running = 0
+  processes = [ "app" ]
 
 [[vm]]
-cpu_kind = "shared"
-cpus = 1
-memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "1gb"
 
 [build.args]
-  DEPOT = "false"
+  depot = "false"
+
+[deploy]
+  strategy = "immediate"
+
+[env]
+  LOG_LEVEL = "debug"

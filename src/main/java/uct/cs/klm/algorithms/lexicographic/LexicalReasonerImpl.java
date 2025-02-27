@@ -245,13 +245,19 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
         ModelRankCollection weakenedRanking = new ModelRankCollection();
         ModelRankCollection miniBaseRanking = new ModelRankCollection();
 
-        boolean isNegationEntailed = true;
         int stepNumber = 1;
         outerLoop:
         while (!baseRankCollection.isEmpty()) {
             ModelRank currentRank = baseRankCollection.get(0);
+            
             // Materialise the knowledge base from the current ranking collection.
             KnowledgeBase materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
+            
+              // Stop if the current rank is the infinity rank.
+            if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
+                _logger.debug("  Because current rank is ∞; stopping with current K = {}", materialisedKB);
+                break;
+            }
 
             _logger.debug("-> Checking Entailment Step {}", stepNumber++);
             _logger.debug("  Current BaseRank:");
@@ -261,14 +267,9 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
             _logger.debug("  Current K: {}", materialisedKB);
             _logger.debug("  Checking if {} is entailed by current K", negationOfAntecedent);
 
-            isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
+            boolean isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
             if (!isNegationEntailed) {
                 _logger.debug("  NO, not entailed; stopping rank removal process with current K = {}", materialisedKB);
-                break;
-            }
-            // Stop if the current rank is the infinity rank.
-            if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
-                _logger.debug("  YES, entailed but current rank is ∞; stopping with current K = {}", materialisedKB);
                 break;
             }
 
@@ -351,7 +352,6 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
         PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
        var materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
         boolean isQueryEntailed = !baseRankCollection.isEmpty() &&
-                !isNegationEntailed &&
                 _reasoner.query(materialisedKB, materialisedQueryFormula);
         
         KnowledgeBase entailmentKb = new KnowledgeBase();

@@ -71,6 +71,12 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
             var materialisedKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(currentRemaining);
             
             ModelRank currentRank = currentRemaining.get(0);
+            
+            // Stop if the current rank is the infinity rank.
+            if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
+                _logger.debug("  Because current rank is ∞; stopping with current K = {}", materialisedKnowledgeBase);
+                break;
+            }
                                  
            if (_logger.isDebugEnabled()) {
                 _logger.debug("-> Checking Entailment Step {}", stepNumber++);
@@ -137,8 +143,7 @@ public class RationalReasonerImpl extends KlmReasonerBase implements IReasonerSe
         
 
         // The query is entailed only if the negation is not entailed and the query is entailed.
-        boolean isNegationEntailedFinal = _reasoner.query(finalMaterialisedKB, negationOfAntecedent);
-        boolean isQueryEntailed = !isNegationEntailedFinal && _reasoner.query(finalMaterialisedKB, materialisedQueryFormula);
+        boolean isQueryEntailed = _reasoner.query(finalMaterialisedKB, materialisedQueryFormula);
         
         
       KnowledgeBase entailmentKb = new KnowledgeBase();
