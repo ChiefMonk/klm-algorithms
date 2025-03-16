@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { KbForm } from "./kb-form";
 import { Formula, Kb } from "../main-tabs/common/formulas";
+import { GenerateForm } from "./genereteForm";
 
 interface KbCardProps {
   isLoading: boolean;
@@ -10,16 +11,22 @@ interface KbCardProps {
   signature: string[];
   submitKnowledgeBase: (knowledgeBase: string[]) => void;
   uploadKnowledgeBase: (data: FormData) => void;
-  generateKnowledgeBase: () => void;
+  generateKnowledgeBase: (data: {
+    numberOfRanks: number;
+    complexity: string[];
+    distributionType: string;
+    defeasibleImplications: number;
+  }) => void;
 }
 
 function KbCard({
   isLoading,
   knowledgeBase,   
   submitKnowledgeBase,
-  uploadKnowledgeBase 
+  uploadKnowledgeBase,
+  generateKnowledgeBase
 }: KbCardProps) {
-  const [state, setState] = useState({ editing: false,  fromGenerating: false, fromFile: false });
+  const [state, setState] = useState({ editing: false, fromGenerating: false, fromFile: false });
 
   const handleEdit = () => {
     setState((prev) => ({ ...prev, editing: true, fromGenerating: false, fromFile: false }));
@@ -30,11 +37,16 @@ function KbCard({
   };
 
   const handleGenerate = () => {
-    setState((prev) => ({ ...prev, editing: false, fromGenerating: true, fromFile: false }));
+    setState((prev) => ({ ...prev, editing: true, fromGenerating: true, fromFile: false }));
   };
 
   const handleReset = () => {
     setState((prev) => ({ ...prev, editing: false, fromGenerating: false, fromFile: false }));
+  };
+
+  const handleGenerateSubmit = (data) => {
+    generateKnowledgeBase(data);
+    handleReset();
   };
 
   return (
@@ -54,7 +66,7 @@ function KbCard({
 
             <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
 
-            <Button
+              <Button
                 variant="secondary"  
                 size="default"   
                 className="border border-light-blue-500"           
@@ -87,7 +99,7 @@ function KbCard({
             </div>
           </div>
         )}
-        {state.editing && (
+        {state.editing && !state.fromGenerating && (
           <div className="w-full flex flex-col gap-4 items-center">
             <KbForm
               defaultFormulas={knowledgeBase.join(",")}
@@ -96,6 +108,14 @@ function KbCard({
               submitKnowledgeBase={submitKnowledgeBase}
               handleReset={handleReset}
               uploadKnowledgeBase={uploadKnowledgeBase}            
+            />
+          </div>
+        )}
+        {state.editing && state.fromGenerating && (
+          <div className="w-full flex flex-col gap-4 items-center">
+            <GenerateForm
+              onSubmit={handleGenerateSubmit}
+              onCancel={handleReset}
             />
           </div>
         )}
