@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-// ✅ Define the schema using Zod
 const formSchema = z.object({
   numberOfRanks: z
     .number()
@@ -35,7 +33,7 @@ const formSchema = z.object({
     .max(999, "Must be less than 1000"),
 });
 
-// ✅ Define TypeScript Type from Schema
+
 type FormValues = z.infer<typeof formSchema>;
 
 interface GenerateFormProps {
@@ -60,7 +58,6 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 w-full max-w-sm"
       >
-        {/* Number of Ranks */}
         <FormField
           control={form.control}
           name="numberOfRanks"
@@ -81,8 +78,6 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
             </FormItem>
           )}
         />
-
-        {/* Complexity (Checkboxes) */}
         <FormField
           control={form.control}
           name="complexity"
@@ -109,8 +104,6 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
             </FormItem>
           )}
         />
-
-        {/* Distribution Type (Dropdown) */}
         <FormField
           control={form.control}
           name="distributionType"
@@ -133,8 +126,6 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
             </FormItem>
           )}
         />
-
-        {/* Number of Defeasible Implications */}
         <FormField
           control={form.control}
           name="defeasibleImplications"
@@ -155,8 +146,6 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
             </FormItem>
           )}
         />
-
-        {/* Buttons */}
         <div className="grid grid-cols-2 gap-4">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
