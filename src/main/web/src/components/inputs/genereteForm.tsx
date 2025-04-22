@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
-  numberOfRanks: z
+  numberOfRanks: z.coerce
     .number()
     .min(1, "Number of Ranks must be at least 1")
     .max(100, "Number of Ranks must be at most 100"),
@@ -29,7 +30,7 @@ const formSchema = z.object({
     .array(z.string())
     .nonempty("At least one complexity level must be selected"),
   distributionType: z.string().min(1, "Distribution Type is required"),
-  defeasibleImplications: z
+  defeasibleImplications: z.coerce
     .number()
     .min(55, "Must be at least 55")
     .max(999, "Must be less than 1000"),
@@ -42,7 +43,41 @@ interface GenerateFormProps {
   onCancel: () => void;
 }
 
+const MOCK_GENERATED_RULES: string[] = [
+  "p ~> m",
+  "p ~> t",
+  "s ~> b",
+  "s ~> !t",
+  "u ~> !b",
+  "u ~> b",
+  "u => s",
+  "a => p",
+  "s => p",
+];
+
 function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
+  const [generatedRules, setGeneratedRules] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerate = async (data: FormValues) => {
+    setLoading(true);
+    try {
+      // You can replace this with an actual fetch to URL_KB_GET_GENERATE
+      // const response = await fetch("URL_KB_GET_GENERATE");
+      // const json = await response.json();
+
+      // Mocking the response
+      const json = MOCK_GENERATED_RULES;
+
+      setGeneratedRules(json);
+      onSubmit(data); // optional if you still want to call the original onSubmit
+    } catch (error) {
+      console.error("Failed to generate rules", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +91,7 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleGenerate)}
         className="space-y-4 w-full max-w-xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -156,10 +191,20 @@ function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit" variant="secondary">
-            Generate
+          <Button type="submit" variant="secondary" disabled={loading}>
+            {loading ? "Generating..." : "Generate"}
           </Button>
         </div>
+        {generatedRules.length > 0 && (
+          <div className="mt-6 p-4 border rounded bg-muted">
+            <h3 className="font-semibold mb-2">Generated Rules</h3>
+            <ul className="list-disc list-inside space-y-1">
+              {generatedRules.map((rule, idx) => (
+                <li key={idx}>{rule}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </form>
     </Form>
   );

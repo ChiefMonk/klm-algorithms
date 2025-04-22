@@ -44,6 +44,7 @@ function KbCard({
   };
 
   const handleGenerateSubmit = (data: GenerateData) => {
+    console.log('i was clicked!!')
     generateKnowledgeBase(data);
     handleReset();
   };
