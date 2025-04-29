@@ -15,7 +15,7 @@ const Divider: React.FC<DividerProps> = ({
   const heightClass = `h-[${thickness}px]`;
 
   return (
-    <hr className="w-full max-w-sm border-t border-gray-300 my-[20px]" />
+    <hr className="w-full max-w-sm border border-gray-300 my-[20px]" />
   );
 };
 
