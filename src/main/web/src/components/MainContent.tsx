@@ -7,6 +7,7 @@ import { LexicographicClosure } from "./main-tabs/LexicographicClosure";
 import { RelevantClosure } from "./main-tabs/RelevantClosure";
 import { QueryInputs } from "./inputs/QueryInputs";
 import BarLoader from "react-spinners/BarLoader";
+import Divider from "./Divider";
 
 export function MainContent() {
   const reasoner = useReasoner();
@@ -30,6 +31,7 @@ export function MainContent() {
           updateFormula={reasoner.updateFormula}
           generateKnowledgeBase={reasoner.generateKnowledgeBase}
         />
+        <Divider />
         <Tabs defaultValue="summary">
           <TabsList className="grid grid-cols-2 sm:grid-cols-5 flex-wrap h-auto space-y-1'">
             <TabsTrigger value="summary">Summary</TabsTrigger>
