@@ -19,7 +19,7 @@ interface KbCardProps {
   signature: string[];
   submitKnowledgeBase: (knowledgeBase: string[]) => void;
   uploadKnowledgeBase: (data: FormData) => void;
-  generateKnowledgeBase: (data: GenerateData) => void;
+  generateKnowledgeBase: () => void;
 }
 
 function KbCard({
@@ -43,9 +43,9 @@ function KbCard({
     setState({ editing: false, fromGenerating: false, fromFile: false });
   };
 
-  const handleGenerateSubmit = (data: GenerateData) => {
+  const handleGenerateSubmit = () => {
     console.log('i was clicked!!')
-    generateKnowledgeBase(data);
+    generateKnowledgeBase();
     handleReset();
   };
 

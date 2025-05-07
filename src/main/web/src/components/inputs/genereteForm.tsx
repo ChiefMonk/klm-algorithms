@@ -39,38 +39,18 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface GenerateFormProps {
-  onSubmit: (data: FormValues) => void;
+  onSubmit: () => void;
   onCancel: () => void;
 }
-
-const MOCK_GENERATED_RULES: string[] = [
-  "p ~> m",
-  "p ~> t",
-  "s ~> b",
-  "s ~> !t",
-  "u ~> !b",
-  "u ~> b",
-  "u => s",
-  "a => p",
-  "s => p",
-];
 
 function GenerateForm({ onSubmit, onCancel }: GenerateFormProps) {
   const [generatedRules, setGeneratedRules] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleGenerate = async (data: FormValues) => {
+  const handleGenerate = async () => {
     setLoading(true);
     try {
-      // You can replace this with an actual fetch to URL_KB_GET_GENERATE
-      // const response = await fetch("URL_KB_GET_GENERATE");
-      // const json = await response.json();
-
-      // Mocking the response
-      const json = MOCK_GENERATED_RULES;
-
-      setGeneratedRules(json);
-      onSubmit(data); // optional if you still want to call the original onSubmit
+      onSubmit();
     } catch (error) {
       console.error("Failed to generate rules", error);
     } finally {

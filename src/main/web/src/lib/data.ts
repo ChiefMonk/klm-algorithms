@@ -77,7 +77,8 @@ const getGeneratedKnowledgeBase = async () => {
 
     console.log('GET: Generate KnowledgeBase Request');
 
-    const response = await axios.get(URL_KB_GET_GENERATE);
+    // const response = await axios.get(URL_KB_GET_GENERATE);
+    const response = {data: ["p ~> m", "p ~> t", "s ~> b", "s ~> !t", "u ~> !b", "u ~> b", "u => s", "a => p", "s => p"]};
     return response.data as string[];
   } catch (error) {
     throw getError(error);
@@ -102,6 +103,7 @@ const createInputKnowledgeBase = async (data: string[]) => {
     console.log('POST: Create Input KnowledgeBase Request: ' + data.toString());
 
     const response = await axios.post(URL_KB_POST_CREATE_INPUT, data);
+    
     return response.data as string[];
   } catch (error) {
     throw getError(error);
