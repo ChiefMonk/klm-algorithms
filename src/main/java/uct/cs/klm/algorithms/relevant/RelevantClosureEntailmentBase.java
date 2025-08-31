@@ -178,8 +178,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                             _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
                             isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
 
-                            if (isQueryEntailed) {
-                                continueProcessing = false;
+                            continueProcessing = false;
+                            if (isQueryEntailed) {                              
                                 _logger.debug(" => YES: We STOP and EXIT");
                             } else {
                                 _logger.debug(" => NO: We Continue");

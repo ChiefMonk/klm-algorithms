@@ -30,7 +30,7 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
           The Base Rank Algorithm
         </CardTitle>
         <CardDescription>
-          Using the base rank algorithm to determine the initial ranks.
+          Using the BaseRank algorithm to determine the ranking of statements in <Formula formula="\mathcal{K}" />.
         </CardDescription>
       </CardHeader>
       <CardContent>

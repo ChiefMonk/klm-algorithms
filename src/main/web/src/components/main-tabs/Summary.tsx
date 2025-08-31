@@ -14,6 +14,7 @@ import { QueryInputContainer } from "./common/query-input";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { AlgosSummary } from "./algos-summary";
 import { InferenceOperator } from "@/lib/models";
+import { Formula } from "./common/formulas";
 
 function Summary(): JSX.Element {
   const {
@@ -59,7 +60,7 @@ function Summary(): JSX.Element {
             </div>
             <div>
               <h4 className="scroll-m-20 text-lg font-bold tracking-tight">
-                Initial Ranks
+                Base Rank of statements in <Formula formula="\mathcal{K}" />
               </h4>
               <RankingTable ranking={baseRank?.ranking || []} />
             </div>

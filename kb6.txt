@@ -1,0 +1,8 @@
+cats => animals
+pets => animals
+kittens => cats
+kittens ~> !trainable
+cats ~> !wild
+cats ~> trainable
+animals ~> wild
+animals ~> legs
