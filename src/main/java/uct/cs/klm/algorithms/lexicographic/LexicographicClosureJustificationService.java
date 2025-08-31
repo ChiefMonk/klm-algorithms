@@ -13,9 +13,9 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
  *
  * @author Chipo Hamayobe
  */
-public class LexicoJustificationService extends JustificationServiceBase implements IJustificationService 
+public class LexicographicClosureJustificationService extends JustificationServiceBase implements IJustificationService 
 {   
-    public LexicoJustificationService()
+    public LexicographicClosureJustificationService()
     {
         super();
     }

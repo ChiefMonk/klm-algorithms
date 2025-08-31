@@ -1,7 +1,9 @@
 import { TexFormula } from "@/components/main-tabs/common/TexFormula";
 import { DataTable } from "@/components/ui/data-table";
 import { toTex } from "@/lib/formula";
-import { BaseRankModel, EntailmentModel } from "@/lib/models";
+import { BaseRankModel, EntailmentModel, QueryType } from "@/lib/models";
+import { cn } from "@/lib/utils";
+import { useReasonerContext } from "@/state/reasoner.context";
 import { ColumnDef } from "@tanstack/react-table";
 
 interface AlgorithmResult {
@@ -13,61 +15,8 @@ interface AlgorithmResult {
 interface TimesResult {
   algorithm: string;
   timeTaken: string;
+  justifcationTime?: string;
 }
-
-const entailmentColumns: ColumnDef<AlgorithmResult>[] = [
-  {
-    accessorKey: "algorithm",
-    header: "Inference Operator",
-    cell: ({ row }) => row.getValue("algorithm"),
-    meta: {
-      headerClassName: "min-w-[180px]",
-      cellClassName: "whitespace-nowrap",
-    },
-  },
-  {
-    accessorKey: "result",
-    header: "Entailment",
-    cell: ({ row }) => <TexFormula>{row.getValue("result")}</TexFormula>,
-    meta: {
-      headerClassName: "min-w-[180px]",
-      cellClassName: "whitespace-nowrap",
-    },
-  },
-  {
-    accessorKey: "justification",
-    header: "Justification",
-    cell: ({ row }) => <TexFormula>{row.getValue("justification")}</TexFormula>,
-    meta: {
-      headerClassName: "w-full min-w-[180px]",
-      cellClassName: "whitespace-nowrap",
-    },
-  },
-];
-
-const timesColumns: ColumnDef<TimesResult>[] = [
-  {
-    accessorKey: "algorithm",
-    header: "Algorithm",
-    cell: ({ row }) => row.getValue("algorithm"),
-    meta: {
-      headerClassName: "min-w-[180px]",
-      cellClassName: "whitespace-nowrap",
-    },
-  },
-  {
-    accessorKey: "timeTaken",
-    header: "Time Taken (in seconds)",
-    cell: ({ row }) => {
-      const value = row.getValue("timeTaken") as string;
-      return <TexFormula>{value}</TexFormula>;
-    },
-    meta: {
-      headerClassName: "w-full min-w-[180px]",
-      cellClassName: "whitespace-nowrap",
-    },
-  },
-];
 
 interface EntailmentTableProps {
   rationalEntailment: EntailmentModel | null;
@@ -82,6 +31,8 @@ function EntailmentTable({
   basicRelevantEntailment,
   minimalRelevantEntailment,
 }: EntailmentTableProps) {
+  const { queryType } = useReasonerContext();
+
   const getResult = ({ entailed, queryFormula }: EntailmentModel) => {
     return entailed
       ? toTex("\\mathcal{K} \\vapprox " + queryFormula)
@@ -89,22 +40,15 @@ function EntailmentTable({
   };
 
   const getJustification = ({ entailed, justification }: EntailmentModel) => {
-    console.log("Final Justification: " + justification);
-
     if (entailed && justification.length > 0) {
       const symbol = justification
         .map((item, index) => `\\mathcal{J_{${index + 1}}} = \\{ ${item} \\}`)
         .join(", ");
-
       return toTex(symbol);
     }
-
     return toTex("\\mathcal{J_{1}} = \\{ \\}");
-
-    // return entailed && justification.length > 0
-    //   ? toTex("\\mathcal{J_{1}} = \\{ " + justification + " \\}")
-    //   : toTex("\\mathcal{J_{1}} = \\{ \\}");
   };
+
   const data = [
     rationalEntailment && {
       algorithm: "Rational Closure",
@@ -128,7 +72,45 @@ function EntailmentTable({
     },
   ].filter(Boolean) as AlgorithmResult[];
 
-  return <DataTable columns={entailmentColumns} data={data} />;
+  const baseColumns: ColumnDef<AlgorithmResult>[] = [
+    {
+      accessorKey: "algorithm",
+      header: "Inference Operator",
+      cell: ({ row }) => row.getValue("algorithm"),
+      meta: {
+        headerClassName: "min-w-[180px]",
+        cellClassName: "whitespace-nowrap",
+      },
+    },
+    {
+      accessorKey: "result",
+      header: "Entailment",
+      cell: ({ row }) => <TexFormula>{row.getValue("result")}</TexFormula>,
+      meta: {
+        headerClassName: cn("min-w-[180px]", {
+          "w-full": queryType !== QueryType.Justification,
+        }),
+        cellClassName: "whitespace-nowrap",
+      },
+    },
+  ];
+
+  const justificationColumn: ColumnDef<AlgorithmResult> = {
+    accessorKey: "justification",
+    header: "Justification",
+    cell: ({ row }) => <TexFormula>{row.getValue("justification")}</TexFormula>,
+    meta: {
+      headerClassName: "w-full min-w-[180px]",
+      cellClassName: "whitespace-nowrap",
+    },
+  };
+
+  const columns =
+    queryType === QueryType.Justification
+      ? [...baseColumns, justificationColumn]
+      : baseColumns;
+
+  return <DataTable columns={columns} data={data} />;
 }
 
 interface TimesTableProps {
@@ -146,33 +128,98 @@ function TimesTable({
   basicRelevantEntailment,
   minimalRelevantEntailment,
 }: TimesTableProps) {
-  const roundOff = (value: number) => {
-    return (Math.round(value * 10000) / 10000).toString();
-  };
+  const { queryType } = useReasonerContext();
+
+  const roundOff = (value: number) =>
+    (Math.round(value * 10000) / 10000).toString();
 
   const data: TimesResult[] = [
     baseRank && {
       algorithm: "Base Rank",
       timeTaken: roundOff(baseRank.timeTaken),
+      justificationTimeTaken: undefined,
     },
     rationalEntailment && {
       algorithm: "Rational Closure",
       timeTaken: roundOff(rationalEntailment.timeTaken),
+      justificationTimeTaken:
+        queryType === QueryType.Justification
+          ? roundOff(rationalEntailment.justifcationTime)
+          : undefined,
     },
     lexicalEntailment && {
       algorithm: "Lexicographic Closure",
       timeTaken: roundOff(lexicalEntailment.timeTaken),
+      justificationTimeTaken:
+        queryType === QueryType.Justification
+          ? roundOff(lexicalEntailment.justifcationTime)
+          : undefined,
     },
     basicRelevantEntailment && {
       algorithm: "Basic Relevant Closure",
       timeTaken: roundOff(basicRelevantEntailment.timeTaken),
+      justificationTimeTaken:
+        queryType === QueryType.Justification
+          ? roundOff(basicRelevantEntailment.justifcationTime)
+          : undefined,
     },
     minimalRelevantEntailment && {
       algorithm: "Minimal Relevant Closure",
       timeTaken: roundOff(minimalRelevantEntailment.timeTaken),
+      justificationTimeTaken:
+        queryType === QueryType.Justification
+          ? roundOff(minimalRelevantEntailment.justifcationTime)
+          : undefined,
     },
-  ].filter((item): item is TimesResult => Boolean(item));
+  ].filter(Boolean) as TimesResult[];
 
-  return <DataTable columns={timesColumns} data={data} />;
+  const baseColumns: ColumnDef<TimesResult>[] = [
+    {
+      accessorKey: "algorithm",
+      header: "Algorithm",
+      cell: ({ row }) => row.getValue("algorithm"),
+      meta: {
+        headerClassName: "min-w-[180px]",
+        cellClassName: "whitespace-nowrap",
+      },
+    },
+    {
+      accessorKey: "timeTaken",
+      header: "Time Taken (in seconds)",
+      cell: ({ row }) => {
+        const value = row.getValue("timeTaken") as string;
+        return <TexFormula>{value}</TexFormula>;
+      },
+      meta: {
+        headerClassName: cn("min-w-[180px]", {
+          "w-full": queryType !== QueryType.Justification,
+        }),
+        cellClassName: "whitespace-nowrap",
+      },
+    },
+  ];
+
+  const justificationColumn: ColumnDef<TimesResult> = {
+    accessorKey: "justificationTimeTaken",
+    header: "Justification Time (in seconds)",
+    cell: ({ row }) => {
+      const value = row.getValue("justificationTimeTaken") as
+        | string
+        | undefined;
+      return value ? <TexFormula>{value}</TexFormula> : null;
+    },
+    meta: {
+      headerClassName: "w-full min-w-[180px]",
+      cellClassName: "whitespace-nowrap",
+    },
+  };
+
+  const columns =
+    queryType === QueryType.Justification
+      ? [...baseColumns, justificationColumn]
+      : baseColumns;
+
+  return <DataTable columns={columns} data={data} />;
 }
+
 export { EntailmentTable, TimesTable };

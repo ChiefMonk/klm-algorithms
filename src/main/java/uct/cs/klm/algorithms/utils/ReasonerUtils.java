@@ -528,4 +528,22 @@ public final class ReasonerUtils {
         }
         return result;
     }
+    
+    public static ModelRank removeFormulasFromRank(ModelRank currentRank, KnowledgeBase knowledgeBase) {
+        
+        ModelRank resultRank = new ModelRank(currentRank.getRankNumber());
+        
+        var materialKb = toMaterialisedKnowledgeBase(knowledgeBase);
+        
+        for (PlFormula formula : currentRank.getFormulas()) {
+            
+            var materialFormula = toMaterialisedFormula(formula);
+            
+            if (!materialKb.contains(materialFormula)) {
+                    resultRank.addFormula(formula);
+            }
+        }
+    
+        return resultRank;
+    }
 }

@@ -10,7 +10,15 @@ import {
 import { Formula } from "./main-tabs/common/formulas";
 import { toTex } from "@/lib/formula";
 
-const symbols = [
+interface LogicalSymbol {
+  name: string;
+  plainTextSymbol: string;
+  mathSymbol: string;
+  plainTextExample: string;
+  mathExample: string;
+}
+
+const symbols: LogicalSymbol[] = [
   {
     name: "Negation",
     plainTextSymbol: "!",
@@ -52,6 +60,20 @@ const symbols = [
     mathSymbol: toTex("<=>"),
     plainTextExample: "p <=> q",
     mathExample: toTex("p <=> q"),
+  },
+  {
+    name: "Tautology",
+    plainTextSymbol: "+",
+    mathSymbol: toTex("+"),
+    plainTextExample: "+",
+    mathExample: toTex("+"),
+  },
+  {
+    name: "Contradiction",
+    plainTextSymbol: "-",
+    mathSymbol: toTex("-"),
+    plainTextExample: "-",
+    mathExample: toTex("-"),
   },
 ];
 

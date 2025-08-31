@@ -12,6 +12,8 @@ import { RankingTable } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 
 import { useReasonerContext } from "@/state/reasoner.context";
+import { AlgosSummary } from "./algos-summary";
+import { InferenceOperator } from "@/lib/models";
 
 function Summary(): JSX.Element {
   const {
@@ -23,14 +25,16 @@ function Summary(): JSX.Element {
   const baseRank = entailmentQueryResult?.baseRank ?? null;
   const rationalEntailment = entailmentQueryResult?.rationalEntailment ?? null;
   const lexicalEntailment = entailmentQueryResult?.lexicalEntailment ?? null;
-  const minimalRelevantEntailment = entailmentQueryResult?.minimalRelevantEntailment ?? null;
-  const basicRelevantEntailment = entailmentQueryResult?.basicRelevantEntailment ?? null;  
+  const minimalRelevantEntailment =
+    entailmentQueryResult?.minimalRelevantEntailment ?? null;
+  const basicRelevantEntailment =
+    entailmentQueryResult?.basicRelevantEntailment ?? null;
 
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Summary of Results</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold">Summary of Results</CardTitle>
+        <CardDescription className="text-base">
           A summary of entailment and justification algorithm results
         </CardDescription>
       </CardHeader>
@@ -43,7 +47,7 @@ function Summary(): JSX.Element {
             />
 
             <div>
-              <h4 className="scroll-m-20 font-medium tracking-tight">
+              <h4 className="scroll-m-20 text-lg font-bold tracking-tight">
                 Algorithm Results
               </h4>
               <EntailmentTable
@@ -54,58 +58,49 @@ function Summary(): JSX.Element {
               />
             </div>
             <div>
-              <h4 className="scroll-m-20 font-medium tracking-tight">
+              <h4 className="scroll-m-20 text-lg font-bold tracking-tight">
                 Initial Ranks
               </h4>
               <RankingTable ranking={baseRank?.ranking || []} />
             </div>
 
             <div>
-              <h4 className="scroll-m-20 font-medium tracking-tight">
-                Remaining Ranks and Statements
+              <h4 className="scroll-m-20 mb-4 text-lg font-bold tracking-tight">
+                Algorithms
               </h4>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-12">
+                {rationalEntailment && (
+                  <AlgosSummary
+                    operator={InferenceOperator.RationalClosure}
+                    entailment={rationalEntailment}
+                  />
+                )}
 
-              {rationalEntailment && (
-                <>
-                  <h5 className="text-sm text-muted-foreground mt-2 font-medium">
-                    Rational Closure
-                  </h5>
-                  <RankingTable ranking={rationalEntailment.remainingRanks} />
-                </>
-              )}
+                {lexicalEntailment && (
+                  <AlgosSummary
+                    operator={InferenceOperator.LexicographicClosure}
+                    entailment={lexicalEntailment}
+                  />
+                )}
 
-              {lexicalEntailment && (
-                <>
-                  <h5 className="text-sm text-muted-foreground mt-2 font-medium">
-                    Lexicographic Closure
-                  </h5>
-                  <RankingTable ranking={lexicalEntailment.remainingRanks} />
-                </>
-              )}
-              
-              {basicRelevantEntailment && (
-                <>
-                  <h5 className="text-sm text-muted-foreground mt-2 font-medium">
-                  Basic Relevant Closure
-                  </h5>
-                  <RankingTable ranking={basicRelevantEntailment.remainingRanks} />
-                </>
-              )}
+                {basicRelevantEntailment && (
+                  <AlgosSummary
+                    operator={InferenceOperator.BasicRelevantClosure}
+                    entailment={basicRelevantEntailment}
+                  />
+                )}
 
-              {minimalRelevantEntailment && (
-                <>
-                  <h5 className="text-sm text-muted-foreground mt-2 font-medium">
-                    Minimal Relevant Closure
-                  </h5>
-                  <RankingTable ranking={minimalRelevantEntailment.remainingRanks} />
-                </>
-              )}
-
-             
+                {minimalRelevantEntailment && (
+                  <AlgosSummary
+                    operator={InferenceOperator.MinimalRelevantClosure}
+                    entailment={minimalRelevantEntailment}
+                  />
+                )}
+              </div>
             </div>
 
             <div>
-              <h4 className="scroll-m-20 font-medium tracking-tight">
+              <h4 className="scroll-m-20  text-lg font-bold tracking-tight">
                 Time Taken
               </h4>
               <TimesTable
@@ -123,7 +118,7 @@ function Summary(): JSX.Element {
             baseRank ||
             rationalEntailment ||
             lexicalEntailment ||
-            basicRelevantEntailment || 
+            basicRelevantEntailment ||
             minimalRelevantEntailment
           ) && <NoResults />}
         {isLoading && <ResultSkeleton />}

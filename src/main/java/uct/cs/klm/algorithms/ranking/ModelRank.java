@@ -2,6 +2,8 @@ package uct.cs.klm.algorithms.ranking;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
@@ -13,7 +15,7 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ModelRank 
+public class ModelRank implements Cloneable
 {
   // the rank number (index + 1) within the ranking
   private int _rankNumber;
@@ -57,6 +59,17 @@ public class ModelRank
     _formulas = new KnowledgeBase(rank.getFormulas());
     _rankNumber = rank._rankNumber;
   }
+  
+   @Override
+    public ModelRank clone() {
+      try {
+          return (ModelRank) super.clone();
+      } catch (CloneNotSupportedException ex) {
+          Logger.getLogger(ModelRank.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      
+      return null;
+    }
   
   public void addFormula(PlFormula formular) {
     _formulas.add(formular);

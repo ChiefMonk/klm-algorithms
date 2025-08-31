@@ -3,13 +3,13 @@
  * @param formula formula to convert.
  * @returns Tex string
  */
-function toTex(formula: string): string 
-{
-  if (formula == "+") 
-  {
+function toTex(formula: string): string {
+  if (formula == "+") {
     return "\\top"; // tautology
   }
   return formula
+    .replaceAll("+", "\\top") // tautology
+    .replaceAll("-", "\\bot") // contradiction
     .replaceAll("!", " \\neg ")
     .replaceAll("&&", " \\land ")
     .replaceAll("||", " \\lor ")

@@ -16,6 +16,8 @@ public abstract class ModelEntailment {
     protected ModelRankCollection _baseRanking;   
     protected boolean _entailed;
     protected double _timeTaken;
+
+    protected double _justificationTime;
     
     protected ModelRankCollection _removedRanking;       
     protected ModelRankCollection _remainingRanking; 
@@ -34,6 +36,7 @@ public abstract class ModelEntailment {
         _baseRanking = builder._baseRanking;
         _entailed = builder._entailed;
         _timeTaken = builder._timeTaken;
+        _justificationTime = builder._justificationTime;
         _removedRanking = builder._removedRanking;
         _justification = new ArrayList<>();
         _remainingRanking = builder._remainingRanking;
@@ -92,6 +95,14 @@ public abstract class ModelEntailment {
 
     public void setTimeTaken(double timeTaken) {
         _timeTaken = timeTaken;
+    }
+
+    public void setJustificationTime(double justificationTime) {
+        _justificationTime = justificationTime;
+    }
+
+    public double getJustificationTime() {
+        return _justificationTime;
     }
 
     public void setRemovedRanking(ModelRankCollection removedRanking) {
@@ -155,6 +166,8 @@ public abstract class ModelEntailment {
         private ModelRankCollection _baseRanking;      
         private boolean _entailed;
         private double _timeTaken;
+        private double _justificationTime;
+
         private ModelRankCollection _removedRanking;
         private ModelRankCollection _remainingRanking;
         private KnowledgeBase _entailmentKnowledgeBase;
@@ -212,6 +225,11 @@ public abstract class ModelEntailment {
 
         public T withTimeTaken(double timeTaken) {
             _timeTaken = timeTaken;
+            return self();
+        }
+
+        public T withJustificationTime(double justificationTime) {
+            _justificationTime = justificationTime;
             return self();
         }
 

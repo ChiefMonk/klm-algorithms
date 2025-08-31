@@ -42,9 +42,13 @@ public class ReasonerController {
             ModelEntailment entailment = reasoner.getEntailment(baseRank, queryFormula);
 
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
+
+            long startTime = System.nanoTime();
             var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
+            double finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 
             entailment.setJustification(justificationKb);
+            entailment.setJustificationTime(finalTime);
 
             context.status(200);
             context.json(entailment);

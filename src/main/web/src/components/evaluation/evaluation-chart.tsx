@@ -11,6 +11,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   CustomTooltipProps,
@@ -21,7 +23,14 @@ import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { saveAs } from "file-saver";
 import { Button } from "../ui/button";
-import { HardDriveDownload, LoaderCircle } from "lucide-react";
+import {
+  Circle,
+  Diamond,
+  HardDriveDownload,
+  LoaderCircle,
+  Square,
+  Triangle,
+} from "lucide-react";
 import { timestampFilename } from "@/lib/utils/file-name";
 
 interface EvaluationChartProps {
@@ -71,20 +80,27 @@ export function EvaluationChart({
 
   // 3. Build chartConfig for only present algorithms
   const chartConfig: ChartConfig = {};
-  const algoColors = [
-    "--chart-1",
-    "--chart-2",
-    "--chart-3",
-    "--chart-4",
-    "--chart-5",
-  ];
 
-  Array.from(presentAlgos).forEach((algo, index) => {
+  const algoColors = {
+    [Algorithm.Naive]: "--chart-1",
+    [Algorithm.Binary]: "--chart-2",
+    [Algorithm.Ternary]: "--chart-3",
+    [Algorithm.PowerSet]: "--chart-4",
+  };
+
+  Array.from(presentAlgos).forEach((algo) => {
     chartConfig[algo] = {
       label: algo,
-      color: `hsl(var(${algoColors[index % algoColors.length]}))`,
+      color: `hsl(var(${algoColors[algo]}))`,
     };
   });
+
+  const algoIcons = {
+    [Algorithm.Naive]: Square,
+    [Algorithm.Binary]: Circle,
+    [Algorithm.Ternary]: Diamond,
+    [Algorithm.PowerSet]: Triangle,
+  };
 
   return (
     <Card className={cn(className)}>
@@ -152,9 +168,40 @@ export function EvaluationChart({
                 dataKey={key}
                 stroke={chartConfig[key].color}
                 strokeWidth={2}
-                dot={false}
+                dot={({ cx, cy }) => {
+                  const r = 12;
+                  const AlgoIcon = algoIcons[key as Algorithm] ?? Circle;
+                  return (
+                    <AlgoIcon
+                      key={key}
+                      x={cx - r / 2}
+                      y={cy - r / 2}
+                      width={r}
+                      height={r}
+                      fill={`hsl(var(${algoColors[key as Algorithm]}))`}
+                      stroke={`hsl(var(${algoColors[key as Algorithm]}))`}
+                    />
+                  );
+                }}
+                activeDot={({ cx, cy }) => {
+                  const r = 16;
+                  const AlgoIcon = algoIcons[key as Algorithm] ?? Circle;
+                  return (
+                    <AlgoIcon
+                      key={key}
+                      x={cx - r / 2}
+                      y={cy - r / 2}
+                      width={r}
+                      height={r}
+                      fill={`hsl(var(${algoColors[key as Algorithm]}))`}
+                      stroke={`hsl(var(${algoColors[key as Algorithm]}))`}
+                    />
+                  );
+                }}
               />
             ))}
+
+            <ChartLegend content={<ChartLegendContent />} />
           </LineChart>
         </ChartContainer>
       </CardContent>

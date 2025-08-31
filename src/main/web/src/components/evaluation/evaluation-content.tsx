@@ -48,7 +48,7 @@ export function EvaluationContent() {
         <EvaluationQueryCard />
         <Separator className="h-1" />
 
-        {activeTab && evaluationData.length && (
+        {activeTab && evaluationData.length > 0 && (
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}

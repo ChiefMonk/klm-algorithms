@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.javalin.json.JavalinJackson;
+import org.tweetyproject.logics.pl.syntax.PlFormula;
+import uct.cs.klm.algorithms.benchmarks.JmhRunner;
 import uct.cs.klm.algorithms.enums.Algorithm;
 import uct.cs.klm.algorithms.enums.InferenceOperator;
-import uct.cs.klm.algorithms.models.EvaluationData;
-import uct.cs.klm.algorithms.models.EvaluationGroup;
-import uct.cs.klm.algorithms.models.EvaluationModel;
-import uct.cs.klm.algorithms.models.EvaluationQuery;
+import uct.cs.klm.algorithms.enums.ReasonerType;
+import uct.cs.klm.algorithms.models.*;
+import uct.cs.klm.algorithms.ranking.BaseRankService;
+import uct.cs.klm.algorithms.ranking.ModelBaseRank;
+import uct.cs.klm.algorithms.utils.ReasonerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,30 +24,90 @@ public class EvaluationServiceImpl implements EvaluationService {
     private final ObjectMapper mapper = JavalinJackson.defaultMapper();
     private final ObjectWriter writer = mapper.writer().withDefaultPrettyPrinter();
 
+    private final FormulaServiceImpl formulaService;
+    private final KnowledgeBaseServiceImpl knowledgeBaseService;
+    private final BaseRankService baseRankService;
+
+    public EvaluationServiceImpl() {
+        formulaService = new FormulaServiceImpl();
+        knowledgeBaseService = new KnowledgeBaseServiceImpl();
+        baseRankService = new BaseRankService();
+    }
+
     @Override
     public EvaluationModel evaluate(EvaluationQuery query) {
+        EvaluationQueryParams params = query.parameters();
+
+        // Example: Overriding query params for one of the evaluation
+        EvaluationQueryParams params1 = new EvaluationQueryParams(
+                100, // Overrides params.numberOfRanks()
+                params.distribution(),
+                params.numberOfDefeasibleImplications(),
+                params.simpleDiOnly(),
+                params.reuseConsequent(),
+                params.antecedentComplexity(),
+                params.consequentComplexity(),
+                params.connective(),
+                params.characterSet(),
+                params.generator()
+        );
+        EvaluationGroup group1 = evaluationGroup("Evaluation 1",  new EvaluationQuery(params1, query.inferenceOperator(), query.algorithms()));
+
+
+        EvaluationQueryParams params2 = new EvaluationQueryParams(
+                params.numberOfRanks(),
+                params.distribution(),
+                params.numberOfDefeasibleImplications(),
+                false, // Overrides params.simpleDiOnly()
+                params.reuseConsequent(),
+                params.antecedentComplexity(),
+                params.consequentComplexity(),
+                params.connective(),
+                params.characterSet(),
+                params.generator()
+        );
+
+        EvaluationGroup group2 = evaluationGroup("Evaluation 2",  new EvaluationQuery(params2, query.inferenceOperator(), query.algorithms()));
+        EvaluationGroup group3 = evaluationGroup("Evaluation 3",  query);
+        EvaluationGroup group4 = evaluationGroup("Evaluation 4",  query);
+
+        return new EvaluationModel(query, List.of(group1, group2, group3, group4));
+    }
+
+    public EvaluationGroup evaluationGroup(String evaluationName, EvaluationQuery query) {
+        ReasonerType reasonerType = switch (query.inferenceOperator()) {
+            case RationalClosure -> ReasonerType.RationalClosure;
+            case LexicographicClosure -> ReasonerType.LexicographicClosure;
+            case BasicRelevantClosure -> ReasonerType.BasicRelevantClosure;
+            case MinimalRelevantClosure ->  ReasonerType.MinimalRelevantClosure;
+        };
+
+        IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
+
         InferenceOperator operator = query.inferenceOperator();
         List<Algorithm> selectedAlgorithms = query.algorithms();
+        List<EvaluationData> dataList = new ArrayList<>();
 
-        EvaluationGroup group1 = new EvaluationGroup(
-                "Evaluation 1",
-                operator,
-                generateData(selectedAlgorithms, operator, 1.0)
-        );
+        KnowledgeBase knowledgeBase = knowledgeBaseService.getKnowledgeBase();
+        ModelBaseRank baseRank = baseRankService.construct(knowledgeBase);
 
-        EvaluationGroup group2 = new EvaluationGroup(
-                "Evaluation 2",
-                operator,
-                generateData(selectedAlgorithms, operator, 1.5)
-        );
+        PlFormula formula = formulaService.getQueryFormula();
 
-        EvaluationGroup group3 = new EvaluationGroup(
-                "Evaluation 3",
-                operator,
-                generateData(selectedAlgorithms, operator, 2.0)
-        );
+        for (String testQuery : List.of("R1", "Rn", "alpha_same", "alpha_dist", "alpha_half")) {
+            EvaluationData data = new EvaluationData(testQuery, operator);
 
-        return new EvaluationModel(query, List.of(group1, group2, group3));
+            for (Algorithm algo : selectedAlgorithms) {
+                long start = System.nanoTime();
+                reasoner.getEntailment(baseRank, formula);
+                double timeMs = Math.round(((System.nanoTime() - start) / 1_000_000.0) * 100.0) / 100.0;
+                data.addResult(algo, timeMs);
+
+            }
+            dataList.add(data);
+
+        }
+
+        return new EvaluationGroup(evaluationName, operator, dataList);
     }
 
     @Override
@@ -61,27 +124,4 @@ public class EvaluationServiceImpl implements EvaluationService {
     public EvaluationModel importEvaluation(InputStream inputStream) throws IOException {
         return mapper.readValue(inputStream, EvaluationModel.class);
     }
-
-    // Private methods for generating dummy data
-    private List<EvaluationData> generateData(List<Algorithm> algorithms, InferenceOperator op, double multiplier) {
-        List<EvaluationData> dataList = new ArrayList<>();
-
-        dataList.add(data("50 tqs R1", op, algorithms, multiplier * 100, multiplier * 300, multiplier * 200, multiplier * 10));
-        dataList.add(data("50 tqs Rn", op, algorithms, multiplier * 200, multiplier * 250, multiplier * 180, multiplier * 12));
-        dataList.add(data("50 tqs α_same", op, algorithms, multiplier * 300, multiplier * 400, multiplier * 270, multiplier * 15));
-        dataList.add(data("50 tqs α_dist", op, algorithms, multiplier * 150, multiplier * 280, multiplier * 210, multiplier * 9));
-        dataList.add(data("50 tqs α_half", op, algorithms, multiplier * 180, multiplier * 310, multiplier * 250, multiplier * 8));
-
-        return dataList;
-    }
-
-    private EvaluationData data(String label, InferenceOperator op, List<Algorithm> algos, double naive, double binary, double ternary, double powerset) {
-        EvaluationData d = new EvaluationData(label, op);
-        if (algos.contains(Algorithm.Naive)) d.addResult(Algorithm.Naive, naive);
-        if (algos.contains(Algorithm.Binary)) d.addResult(Algorithm.Binary, binary);
-        if (algos.contains(Algorithm.Ternary)) d.addResult(Algorithm.Ternary, ternary);
-        if (algos.contains(Algorithm.PowerSet)) d.addResult(Algorithm.PowerSet, powerset);
-        return d;
-    }
-
 }

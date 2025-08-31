@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { KbForm } from "./kb-form";
 import { Formula, Kb } from "../main-tabs/common/formulas";
-import { SquarePen, Upload } from "lucide-react";
+import { SquarePen, Upload, RefreshCw } from "lucide-react";
+import { useReasonerContext } from "@/state/reasoner.context";
 
 interface KbCardProps {
   isLoading: boolean;
@@ -25,6 +26,7 @@ function KbCard({
   submitKnowledgeBase,
   uploadKnowledgeBase,
 }: KbCardProps) {
+  const reasoner = useReasonerContext();
   const [state, setState] = useState<KbCardState>(KbCardState.View);
 
   const handleEdit = () => {
@@ -37,6 +39,10 @@ function KbCard({
 
   const handleReset = () => {
     setState(KbCardState.View);
+  };
+
+  const handleDefault = () => {
+    reasoner.fetchDefaultKnowledgeBase();
   };
 
   return (
@@ -52,7 +58,18 @@ function KbCard({
           <div className="w-full flex flex-col gap-4 items-center">
             <Kb formulas={knowledgeBase} />
 
-            <div className="grid grid-cols-2 gap-4 w-full max-w-sm mt-4">
+            <div className="grid grid-cols-3 gap-4 w-full max-w-md mt-4">
+              <Button
+                variant="secondary"
+                size="default"
+                className="border border-light-blue-500"
+                onClick={handleDefault}
+                disabled={isLoading}
+              >
+                <RefreshCw className="mr-4" />
+                Default
+              </Button>
+
               <Button
                 variant="secondary"
                 size="default"

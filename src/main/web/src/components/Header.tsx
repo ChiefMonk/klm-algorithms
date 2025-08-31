@@ -32,7 +32,7 @@ function Header({ className }: HeaderProps) {
     >
       <div
         className={cn(
-          "flex items-center justify-between max-w-screen-xl w-full p-4 sm:px-6",
+          "grid grid-cols-3 items-center justify-between max-w-screen-xl w-full p-4 sm:px-6",
           `max-w-[${SCREEN_WIDTH_SIZE}vw]`
         )}
       >
@@ -48,7 +48,7 @@ function Header({ className }: HeaderProps) {
             Algorithms
           </p>
         </div>
-        <div>
+        <div className="justify-self-end">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>

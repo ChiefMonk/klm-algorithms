@@ -31,15 +31,304 @@ import uct.cs.klm.algorithms.utils.Symbols;
  * @version 1.0.1
  * @since 2024-07-03
  */
-public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerService {
+public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements IReasonerService {
     
- private static final Logger _logger = LoggerFactory.getLogger(LexicalReasonerImpl.class);
+ private static final Logger _logger = LoggerFactory.getLogger(LexicographicClosureReasonerImpl.class);
     
-    public LexicalReasonerImpl() {
+    public LexicographicClosureReasonerImpl() {
         super();
     }
    
-   // @Override
+   
+    @Override
+    public ModelEntailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
+        long startTime = System.nanoTime();
+        _logger.debug("==> Lexicographic Closure Entailment");
+
+        // Compute the negation of the antecedent of the query.
+        PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
+        PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
+        boolean isQueryEntailed = false;
+        
+       _logger.debug("-> BaseRank");
+        for (ModelRank rank : baseRank.getRanking()) {
+            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+        }
+        _logger.debug("-> Query, \u0391: {}", queryFormula);
+        _logger.debug("-> Antecedent Negation of \u0391: {}", negationOfAntecedent);
+       
+        ModelRankCollection otherRankCollection = new ModelRankCollection();
+        ModelRank infinityRank = new ModelRank();
+        
+        for (ModelRank rank : baseRank.getRanking()) {            
+            if (rank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
+                infinityRank = rank;
+            }
+            else {
+                otherRankCollection.add(rank);
+            }                            
+        }
+        
+        otherRankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
+        
+        ModelRankCollection removedRanking = new ModelRankCollection();
+        ModelRankCollection weakenedRanking = new ModelRankCollection();
+        ModelRankCollection miniBaseRanking = new ModelRankCollection();
+        
+        ModelRankCollection higherRanks = new ModelRankCollection();
+        List<List<PlFormula>> previousPowersets = new ArrayList<>();
+        
+        KnowledgeBase materialisedKB = new KnowledgeBase();
+        
+        ModelRankCollection allRankCollection = new ModelRankCollection(otherRankCollection.clone());
+
+        boolean stopNow = false;     
+        for (ModelRank currentRank : allRankCollection) {                           
+            if(stopNow) {
+                break;
+            }
+            
+            if(currentRank.isEmpty()) {
+                continue;
+            }
+            int rankNumber = currentRank.getRankNumber();
+            DisplayUtils.LogDebug(_logger, String.format("Rank := %s: %s", rankNumber, currentRank.getFormulas()));   
+                    
+            Map.Entry<ModelRankCollection, List<List<PlFormula>>> powersetTurple = ReasonerUtils.powersetIterative(otherRankCollection, rankNumber, previousPowersets);  
+            
+            higherRanks = powersetTurple.getKey();
+            var currentPowerset = powersetTurple.getValue();
+                       
+            int counter = 0;
+            for(var ff : currentPowerset){
+                DisplayUtils.LogDebug(_logger, String.format("PowerSet := %s-%s: %s", rankNumber, counter, ff));
+                counter++;
+            }
+            
+            ReasonerUtils.AddToList(previousPowersets, currentPowerset);
+                       
+            for(var powerset : currentPowerset){
+                
+                DisplayUtils.LogDebug(_logger, String.format("PowerSet := %s: %s", rankNumber, powerset));  
+                
+                //DisplayUtils.LogDebug(_logger, String.format("Current KB %s: %s\n %s\n %s", rankNumber, infinityRank, higherRanks, powerset)); 
+                
+                // Materialise the knowledge base from the current ranking collection.
+                var currentKb =  ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset); 
+                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(currentKb); 
+                
+                previousPowersets.add(ReasonerUtils.toFormulaList(currentKb));
+                
+                DisplayUtils.LogDebug(_logger, String.format("MaterialisedKB := %s: %s", rankNumber, materialisedKB));   
+                
+                boolean isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
+                if (isNegationEntailed) {
+                    _logger.debug("  YES-NegationOfAntecedent:Entailed; We continue to NEXT powersetEntry");                
+                }
+                else {
+                    _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");                       
+                     isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
+                     
+                     if(isQueryEntailed) {
+                            stopNow = true;
+                          _logger.debug("  YES-Query:Entailed; We STOP and EXIT");       
+                     }
+                     else{
+                          _logger.debug("  NO-Query:Entailed; We continue to NEXT powersetEntry");   
+                     }
+                         
+                }
+                
+                if(stopNow) {
+                    break;
+                }
+            }
+            
+            if(stopNow) {
+                break;
+            }                                                
+        }
+
+        long endTime = System.nanoTime();
+        double timeTaken = (endTime - startTime) / 1_000_000_000.0;
+        
+        if(!isQueryEntailed)
+        {
+            materialisedKB = new KnowledgeBase();
+        }
+               
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
+                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withQueryFormula(queryFormula)
+                .withBaseRanking(baseRank.getRanking())
+                //.withMiniBaseRanking(miniBaseRanking)
+                .withRemovedRanking(removedRanking)
+                .withRemainingRanking(baseRank.getRanking())
+                .withWeakenedRanking(weakenedRanking)
+                .withEntailmentKnowledgeBase(materialisedKB)
+                .withEntailed(isQueryEntailed)
+                .withTimeTaken(timeTaken)
+                .build();
+    }
+      
+    public ModelEntailment getEntailmentC(ModelBaseRank baseRank, PlFormula queryFormula) {
+        long startTime = System.nanoTime();
+        _logger.debug("==> Lexicographic Closure Entailment");
+
+        // Compute the negation of the antecedent of the query.
+        PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
+
+        // Clone and sort the base ranking in ascending order.
+        ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking().clone());
+        baseRankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
+
+        _logger.debug("-> BaseRank");
+        for (ModelRank rank : baseRankCollection) {
+            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+        }
+        _logger.debug("-> Query, α: {}", queryFormula);
+        _logger.debug("-> Antecedent Negation of α: {}", negationOfAntecedent);
+
+        ModelRankCollection removedRanking = new ModelRankCollection();
+        ModelRankCollection weakenedRanking = new ModelRankCollection();
+        ModelRankCollection miniBaseRanking = new ModelRankCollection();
+
+        int stepNumber = 1;
+        outerLoop:
+        while (!baseRankCollection.isEmpty()) {
+            ModelRank currentRank = baseRankCollection.get(0);
+            
+            // Materialise the knowledge base from the current ranking collection.
+            KnowledgeBase materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
+            
+              // Stop if the current rank is the infinity rank.
+            if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
+                _logger.debug("  Because current rank is ∞; stopping with current K = {}", materialisedKB);
+                break;
+            }
+
+            _logger.debug("-> Checking Entailment Step {}", stepNumber++);
+            _logger.debug("  Current BaseRank:");
+            for (ModelRank rank : baseRankCollection) {
+                _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+            }
+            _logger.debug("  Current K: {}", materialisedKB);
+            _logger.debug("  Checking if {} is entailed by current K", negationOfAntecedent);
+
+            boolean isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
+            if (!isNegationEntailed) {
+                _logger.debug("  NO, not entailed; stopping rank removal process with current K = {}", materialisedKB);
+                break;
+            }
+
+            _logger.debug("  YES, entailed; processing mini-ranks within rank {}: {}", 
+                    currentRank.getRankNumber(), currentRank.getFormulas());
+            // Generate mini-rank combinations and sort them descending by the number of formulas.
+            ModelRankCollection currentMiniRankCollection = ReasonerUtils.generateFormulaCombinations(currentRank, true);
+            currentMiniRankCollection.sort((a, b) -> Integer.compare(b.getFormulas().size(), a.getFormulas().size()));
+
+            for (ModelRank mini : currentMiniRankCollection) {
+                mini.setRankNumber(currentRank.getRankNumber());
+                miniBaseRanking.add(mini);
+            }
+
+            // Remove the current rank from the base ranking.
+            baseRankCollection.remove(0);
+            boolean stopProcessing = false;
+            int miniStepNumber = 1;
+            for (ModelRank currentMiniRank : currentMiniRankCollection) {
+                // If the mini-rank is empty or equal to the current rank, skip it.
+                if (currentMiniRank.isEmpty() || 
+                        currentMiniRank.getFormulas().size() == currentRank.getFormulas().size()) {
+                    continue;
+                }
+                // Build a temporary collection combining the remaining base ranks with the current mini-rank.
+                ModelRankCollection tempMiniBaseRank = new ModelRankCollection(baseRankCollection);
+                currentMiniRank.setRankNumber(currentRank.getRankNumber());
+                tempMiniBaseRank.add(currentMiniRank);
+                tempMiniBaseRank.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
+
+                _logger.debug("  Current Temp MiniBaseRank:");
+                for (ModelRank rank : tempMiniBaseRank) {
+                    _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+                }
+
+                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(tempMiniBaseRank);
+                _logger.debug("  Current K: {}", materialisedKB);
+                _logger.debug("  Checking if {} is entailed by current K", negationOfAntecedent);
+
+                isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
+                if (!isNegationEntailed) {
+                    stopProcessing = true;
+                    // Add remaining formulas as a new rank.
+                    ModelRank remainingFormulaRank = new ModelRank(currentRank.getRankNumber(), currentMiniRank.getFormulas());
+                    baseRankCollection.add(remainingFormulaRank);
+                    weakenedRanking.add(currentRank);
+
+                    var removedMiniRankFormulas = ReasonerUtils.removeFormulasFromKnowledgeBase(
+                            currentRank.getFormulas(), currentMiniRank.getFormulas());
+                    if (!removedMiniRankFormulas.isEmpty()) {
+                        removedRanking.add(new ModelRank(currentRank.getRankNumber(), removedMiniRankFormulas));
+                    }
+                    _logger.debug("  NO, not entailed; stopping rank removal process with current K = {}",
+                            ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection));
+                    break;
+                }
+                _logger.debug("  YES, entailed; ignoring mini rank {}: {}", miniStepNumber++, currentMiniRank.getFormulas());
+            }
+            if (stopProcessing) {
+                break outerLoop;
+            }
+            removedRanking.add(currentRank);
+            weakenedRanking.add(currentRank);
+        }
+
+        // Sort the resulting collections in descending order.
+        baseRankCollection.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
+        removedRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
+        weakenedRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
+
+        _logger.debug("-> Remaining Ranks:");
+        for (ModelRank rank : baseRankCollection) {
+            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+        }
+        _logger.debug("-> Removed Ranks:");
+        for (ModelRank rank : removedRanking) {
+            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
+        }
+
+        PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
+       var materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
+        boolean isQueryEntailed = !baseRankCollection.isEmpty() &&
+                _reasoner.query(materialisedKB, materialisedQueryFormula);
+        
+        KnowledgeBase entailmentKb = new KnowledgeBase();
+        String hasEntailed = "NO";
+        if (isQueryEntailed) {
+            entailmentKb = ReasonerUtils.toKnowledgeBase(baseRankCollection);
+            hasEntailed = "YES";
+        }
+        _logger.debug("Finally checking if {} is entailed by {}", materialisedQueryFormula, materialisedKB);
+        _logger.debug("Is Entailed: {}", hasEntailed);
+
+        long endTime = System.nanoTime();
+        double timeTaken = (endTime - startTime) / 1_000_000_000.0;
+               
+        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
+                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withQueryFormula(queryFormula)
+                .withBaseRanking(baseRank.getRanking())
+               // .withMiniBaseRanking(miniBaseRanking)
+                .withRemovedRanking(removedRanking)
+                .withRemainingRanking(baseRankCollection)
+                .withWeakenedRanking(weakenedRanking)
+                .withEntailmentKnowledgeBase(entailmentKb)
+                .withEntailed(isQueryEntailed)
+                .withTimeTaken(timeTaken)
+                .build();
+    }
+    
+    // @Override
     public ModelEntailment getEntailment5(
             ModelBaseRank baseRank,
             PlFormula queryFormula) {
@@ -212,7 +501,7 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
-                .withMiniBaseRanking(miniBaseRanking)
+               // .withMiniBaseRanking(miniBaseRanking)
                 .withRemovedRanking(removedRanking)
                 .withRemainingRanking(baseRankCollection)
                 .withWeakenedRanking(weakenedRanking)
@@ -222,291 +511,4 @@ public class LexicalReasonerImpl extends KlmReasonerBase implements IReasonerSer
                 .build();
     }
           
-    @Override
-    public ModelEntailment getEntailment(ModelBaseRank baseRank, PlFormula queryFormula) {
-        long startTime = System.nanoTime();
-        _logger.debug("==> Lexicographic Closure Entailment");
-
-        // Compute the negation of the antecedent of the query.
-        PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
-        PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
-        boolean isQueryEntailed = false;
-        
-       _logger.debug("-> BaseRank");
-        for (ModelRank rank : baseRank.getRanking()) {
-            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-        }
-        _logger.debug("-> Query, \u0391: {}", queryFormula);
-        _logger.debug("-> Antecedent Negation of \u0391: {}", negationOfAntecedent);
-       
-        ModelRankCollection otherRankCollection = new ModelRankCollection();
-        ModelRank infinityRank = new ModelRank();
-        
-        for (ModelRank rank : baseRank.getRanking()) {            
-            if (rank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
-                infinityRank = rank;
-            }
-            else {
-                otherRankCollection.add(rank);
-            }                            
-        }
-        
-        otherRankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
-        
-        ModelRankCollection removedRanking = new ModelRankCollection();
-        ModelRankCollection weakenedRanking = new ModelRankCollection();
-        ModelRankCollection miniBaseRanking = new ModelRankCollection();
-        
-        ModelRankCollection higherRanks = new ModelRankCollection();
-        List<List<PlFormula>> previousPowersets = new ArrayList<>();
-        
-        KnowledgeBase materialisedKB = new KnowledgeBase();
-        
-        ModelRankCollection allRankCollection = new ModelRankCollection(otherRankCollection.clone());
-
-        boolean stopNow = false;     
-        for (ModelRank currentRank : allRankCollection) {                           
-            if(stopNow) {
-                break;
-            }
-            
-            if(currentRank.isEmpty()) {
-                continue;
-            }
-            int rankNumber = currentRank.getRankNumber();
-            DisplayUtils.LogDebug(_logger, String.format("Rank := %s: %s", rankNumber, currentRank.getFormulas()));   
-                    
-            Map.Entry<ModelRankCollection, List<List<PlFormula>>> powersetTurple = ReasonerUtils.powersetIterative(otherRankCollection, rankNumber, previousPowersets);  
-            
-            higherRanks = powersetTurple.getKey();
-            var currentPowerset = powersetTurple.getValue();
-                       
-            int counter = 0;
-            for(var ff : currentPowerset){
-                DisplayUtils.LogDebug(_logger, String.format("PowerSet := %s-%s: %s", rankNumber, counter, ff));
-                counter++;
-            }
-            
-            ReasonerUtils.AddToList(previousPowersets, currentPowerset);
-                       
-            for(var powerset : currentPowerset){
-                
-                DisplayUtils.LogDebug(_logger, String.format("PowerSet := %s: %s", rankNumber, powerset));  
-                
-                //DisplayUtils.LogDebug(_logger, String.format("Current KB %s: %s\n %s\n %s", rankNumber, infinityRank, higherRanks, powerset)); 
-                
-                // Materialise the knowledge base from the current ranking collection.
-                var currentKb =  ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset); 
-                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(currentKb); 
-                
-                previousPowersets.add(ReasonerUtils.toFormulaList(currentKb));
-                
-                DisplayUtils.LogDebug(_logger, String.format("MaterialisedKB := %s: %s", rankNumber, materialisedKB));   
-                
-                boolean isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
-                if (isNegationEntailed) {
-                    _logger.debug("  YES-NegationOfAntecedent:Entailed; We continue to NEXT powersetEntry");                
-                }
-                else {
-                    _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");                       
-                     isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
-                     
-                     if(isQueryEntailed) {
-                            stopNow = true;
-                          _logger.debug("  YES-Query:Entailed; We STOP and EXIT");       
-                     }
-                     else{
-                          _logger.debug("  NO-Query:Entailed; We continue to NEXT powersetEntry");   
-                     }
-                         
-                }
-                
-                if(stopNow) {
-                    break;
-                }
-            }
-            
-            if(stopNow) {
-                break;
-            }                                                
-        }
-
-        long endTime = System.nanoTime();
-        double timeTaken = (endTime - startTime) / 1_000_000_000.0;
-        
-        if(!isQueryEntailed)
-        {
-            materialisedKB = new KnowledgeBase();
-        }
-               
-        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
-                .withKnowledgeBase(baseRank.getKnowledgeBase())
-                .withQueryFormula(queryFormula)
-                .withBaseRanking(baseRank.getRanking())
-                .withMiniBaseRanking(miniBaseRanking)
-                .withRemovedRanking(removedRanking)
-                .withRemainingRanking(baseRank.getRanking())
-                .withWeakenedRanking(weakenedRanking)
-                .withEntailmentKnowledgeBase(materialisedKB)
-                .withEntailed(isQueryEntailed)
-                .withTimeTaken(timeTaken)
-                .build();
-    }
-      
-    public ModelEntailment getEntailmentC(ModelBaseRank baseRank, PlFormula queryFormula) {
-        long startTime = System.nanoTime();
-        _logger.debug("==> Lexicographic Closure Entailment");
-
-        // Compute the negation of the antecedent of the query.
-        PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
-
-        // Clone and sort the base ranking in ascending order.
-        ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking().clone());
-        baseRankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
-
-        _logger.debug("-> BaseRank");
-        for (ModelRank rank : baseRankCollection) {
-            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-        }
-        _logger.debug("-> Query, α: {}", queryFormula);
-        _logger.debug("-> Antecedent Negation of α: {}", negationOfAntecedent);
-
-        ModelRankCollection removedRanking = new ModelRankCollection();
-        ModelRankCollection weakenedRanking = new ModelRankCollection();
-        ModelRankCollection miniBaseRanking = new ModelRankCollection();
-
-        int stepNumber = 1;
-        outerLoop:
-        while (!baseRankCollection.isEmpty()) {
-            ModelRank currentRank = baseRankCollection.get(0);
-            
-            // Materialise the knowledge base from the current ranking collection.
-            KnowledgeBase materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
-            
-              // Stop if the current rank is the infinity rank.
-            if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
-                _logger.debug("  Because current rank is ∞; stopping with current K = {}", materialisedKB);
-                break;
-            }
-
-            _logger.debug("-> Checking Entailment Step {}", stepNumber++);
-            _logger.debug("  Current BaseRank:");
-            for (ModelRank rank : baseRankCollection) {
-                _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-            }
-            _logger.debug("  Current K: {}", materialisedKB);
-            _logger.debug("  Checking if {} is entailed by current K", negationOfAntecedent);
-
-            boolean isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
-            if (!isNegationEntailed) {
-                _logger.debug("  NO, not entailed; stopping rank removal process with current K = {}", materialisedKB);
-                break;
-            }
-
-            _logger.debug("  YES, entailed; processing mini-ranks within rank {}: {}", 
-                    currentRank.getRankNumber(), currentRank.getFormulas());
-            // Generate mini-rank combinations and sort them descending by the number of formulas.
-            ModelRankCollection currentMiniRankCollection = ReasonerUtils.generateFormulaCombinations(currentRank, true);
-            currentMiniRankCollection.sort((a, b) -> Integer.compare(b.getFormulas().size(), a.getFormulas().size()));
-
-            for (ModelRank mini : currentMiniRankCollection) {
-                mini.setRankNumber(currentRank.getRankNumber());
-                miniBaseRanking.add(mini);
-            }
-
-            // Remove the current rank from the base ranking.
-            baseRankCollection.remove(0);
-            boolean stopProcessing = false;
-            int miniStepNumber = 1;
-            for (ModelRank currentMiniRank : currentMiniRankCollection) {
-                // If the mini-rank is empty or equal to the current rank, skip it.
-                if (currentMiniRank.isEmpty() || 
-                        currentMiniRank.getFormulas().size() == currentRank.getFormulas().size()) {
-                    continue;
-                }
-                // Build a temporary collection combining the remaining base ranks with the current mini-rank.
-                ModelRankCollection tempMiniBaseRank = new ModelRankCollection(baseRankCollection);
-                currentMiniRank.setRankNumber(currentRank.getRankNumber());
-                tempMiniBaseRank.add(currentMiniRank);
-                tempMiniBaseRank.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
-
-                _logger.debug("  Current Temp MiniBaseRank:");
-                for (ModelRank rank : tempMiniBaseRank) {
-                    _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-                }
-
-                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(tempMiniBaseRank);
-                _logger.debug("  Current K: {}", materialisedKB);
-                _logger.debug("  Checking if {} is entailed by current K", negationOfAntecedent);
-
-                isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
-                if (!isNegationEntailed) {
-                    stopProcessing = true;
-                    // Add remaining formulas as a new rank.
-                    ModelRank remainingFormulaRank = new ModelRank(currentRank.getRankNumber(), currentMiniRank.getFormulas());
-                    baseRankCollection.add(remainingFormulaRank);
-                    weakenedRanking.add(currentRank);
-
-                    var removedMiniRankFormulas = ReasonerUtils.removeFormulasFromKnowledgeBase(
-                            currentRank.getFormulas(), currentMiniRank.getFormulas());
-                    if (!removedMiniRankFormulas.isEmpty()) {
-                        removedRanking.add(new ModelRank(currentRank.getRankNumber(), removedMiniRankFormulas));
-                    }
-                    _logger.debug("  NO, not entailed; stopping rank removal process with current K = {}",
-                            ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection));
-                    break;
-                }
-                _logger.debug("  YES, entailed; ignoring mini rank {}: {}", miniStepNumber++, currentMiniRank.getFormulas());
-            }
-            if (stopProcessing) {
-                break outerLoop;
-            }
-            removedRanking.add(currentRank);
-            weakenedRanking.add(currentRank);
-        }
-
-        // Sort the resulting collections in descending order.
-        baseRankCollection.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
-        removedRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
-        weakenedRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
-
-        _logger.debug("-> Remaining Ranks:");
-        for (ModelRank rank : baseRankCollection) {
-            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-        }
-        _logger.debug("-> Removed Ranks:");
-        for (ModelRank rank : removedRanking) {
-            _logger.debug("   {}:{}", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas());
-        }
-
-        PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
-       var materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
-        boolean isQueryEntailed = !baseRankCollection.isEmpty() &&
-                _reasoner.query(materialisedKB, materialisedQueryFormula);
-        
-        KnowledgeBase entailmentKb = new KnowledgeBase();
-        String hasEntailed = "NO";
-        if (isQueryEntailed) {
-            entailmentKb = ReasonerUtils.toKnowledgeBase(baseRankCollection);
-            hasEntailed = "YES";
-        }
-        _logger.debug("Finally checking if {} is entailed by {}", materialisedQueryFormula, materialisedKB);
-        _logger.debug("Is Entailed: {}", hasEntailed);
-
-        long endTime = System.nanoTime();
-        double timeTaken = (endTime - startTime) / 1_000_000_000.0;
-               
-        return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
-                .withKnowledgeBase(baseRank.getKnowledgeBase())
-                .withQueryFormula(queryFormula)
-                .withBaseRanking(baseRank.getRanking())
-                .withMiniBaseRanking(miniBaseRanking)
-                .withRemovedRanking(removedRanking)
-                .withRemainingRanking(baseRankCollection)
-                .withWeakenedRanking(weakenedRanking)
-                .withEntailmentKnowledgeBase(entailmentKb)
-                .withEntailed(isQueryEntailed)
-                .withTimeTaken(timeTaken)
-                .build();
-    }
 }

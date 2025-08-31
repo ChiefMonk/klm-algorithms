@@ -30,7 +30,7 @@ public class ReasonerFactory {
             case ReasonerType.RationalClosure ->
                 new RationalClosureReasonerImpl();
             case ReasonerType.LexicographicClosure ->
-                new LexicalReasonerImpl();
+                new LexicographicClosureReasonerImpl();
             case ReasonerType.MinimalRelevantClosure ->
                 new MinimalRelevantReasonerImpl();
             case ReasonerType.BasicRelevantClosure ->
@@ -47,7 +47,7 @@ public class ReasonerFactory {
             case ReasonerType.RationalClosure ->
                  new RationalClosureJustificationService();
             case ReasonerType.LexicographicClosure ->
-                 new LexicoJustificationService();
+                 new LexicographicClosureJustificationService();
             case ReasonerType.MinimalRelevantClosure ->
                 new MinimalRelevantJustificationService();
              case ReasonerType.BasicRelevantClosure ->

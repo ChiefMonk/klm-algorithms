@@ -49,6 +49,7 @@ export function getEntailmentQueryResult(): IEntailementQueryResult | null {
   const storedValue = localStorage.getItem("entailmentQueryResult");
   const obj = storedValue ? JSON.parse(storedValue) : null;
 
+  console.log(obj);
   if (obj != null) {
     return {
       inferenceOperators: obj.inferenceOperators as InferenceOperator[],
@@ -64,11 +65,11 @@ export function getEntailmentQueryResult(): IEntailementQueryResult | null {
           ? LexicalEntailmentModel.create(obj.lexicalEntailment)
           : null,
       basicRelevantEntailment:
-        obj.relevantEntailment != null
+        obj.basicRelevantEntailment != null
           ? BasicRelevantEntailmentModel.create(obj.basicRelevantEntailment)
           : null,
       minimalRelevantEntailment:
-        obj.relevantEntailment != null
+        obj.minimalRelevantEntailment != null
           ? MinimalRelevantEntailmentModel.create(obj.minimalRelevantEntailment)
           : null,
     };

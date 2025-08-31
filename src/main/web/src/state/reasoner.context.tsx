@@ -23,6 +23,7 @@ import { ErrorModel } from "@/lib/models";
 
 interface ReasonerContextValue extends ReasonerState {
   dispatch: React.Dispatch<ReasonerAction>;
+  fetchDefaultKnowledgeBase: () => Promise<void>;
   fetchQueryInput: () => Promise<void>;
   fetchEntailmentQueryResult: (ops?: InferenceOperator[]) => Promise<void>;
   updateFormula: (formula: string) => Promise<void>;
@@ -60,6 +61,25 @@ export const ReasonerProvider = ({ children }: { children: ReactNode }) => {
     },
     [toast]
   );
+
+  const fetchDefaultKnowledgeBase = useCallback(async () => {
+    dispatch({ type: "SET_INPUT_PENDING", payload: true });
+    try {
+      const queryFormula = await api.fetchQueryFormula();
+      const knowledgeBase = await api.getDefaultKnowledgeBase();
+      const signature = await api.getSignatureKnowledgeBase(knowledgeBase);
+      const data = {
+        knowledgeBase,
+        signature,
+        queryFormula: state.queryInput?.queryFormula || queryFormula,
+      };
+      dispatch({ type: "SET_QUERY_INPUT", payload: data });
+      storage.saveQueryInput(data);
+    } catch (error) {
+      toastError(error);
+    }
+    dispatch({ type: "SET_INPUT_PENDING", payload: false });
+  }, [state.queryInput?.queryFormula, toastError]);
 
   const fetchQueryInput = useCallback(async () => {
     dispatch({ type: "SET_INPUT_PENDING", payload: true });
@@ -121,15 +141,14 @@ export const ReasonerProvider = ({ children }: { children: ReactNode }) => {
               )
             : null;
 
-            const minimalRelevantEntailment = inferenceOperators.includes(
-              InferenceOperator.MinimalRelevantClosure
-            )
-              ? await api.fetchMinimalRelevantEntailment(
-                  state.queryInput.queryFormula,
-                  baseRank
-                )
-              : null;
-  
+          const minimalRelevantEntailment = inferenceOperators.includes(
+            InferenceOperator.MinimalRelevantClosure
+          )
+            ? await api.fetchMinimalRelevantEntailment(
+                state.queryInput.queryFormula,
+                baseRank
+              )
+            : null;
 
           const rationalExplanation =
             rationalEntailment == null
@@ -318,6 +337,7 @@ export const ReasonerProvider = ({ children }: { children: ReactNode }) => {
       value={{
         ...state,
         dispatch,
+        fetchDefaultKnowledgeBase,
         fetchQueryInput,
         fetchEntailmentQueryResult,
         updateFormula,

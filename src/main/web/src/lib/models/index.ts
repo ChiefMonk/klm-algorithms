@@ -21,11 +21,13 @@ type EntailmentModelBase = {
   queryFormula: string;
   negation: string;
   knowledgeBase: string[];
+  entailmentKnowledgeBase: string[];
   signature: string[];
   entailed: boolean;
   baseRanking: Ranking[];
   miniBaseRanking: Ranking[];
   timeTaken: number;
+  justificationTime: number;
   removedRanking: Ranking[];
   remainingRanking: Ranking[];
   justification: string[][];
@@ -174,6 +176,8 @@ abstract class EntailmentModel {
   private _removedRanking: Ranking[];
   private _remainingRanking: Ranking[];
   private _justification: string[][];
+  private _entailmentKnowledgeBase: string[];
+  private _justificationTime: number;
 
   constructor({
     queryFormula,
@@ -187,16 +191,20 @@ abstract class EntailmentModel {
     removedRanking,
     remainingRanking,
     justification,
+    entailmentKnowledgeBase,
+    justificationTime,
     type,
   }: EntailmentModelBase) {
     this._queryFormula = queryFormula;
     this._negation = negation;
     this._knowledgeBase = knowledgeBase ?? [];
+    this._entailmentKnowledgeBase = (entailmentKnowledgeBase as string[]) ?? [];
     this._signature = signature ?? [];
     this._entailed = entailed;
     this._baseRanking = baseRanking ?? [];
     this._miniBaseRanking = miniBaseRanking ?? [];
     this._timeTaken = timeTaken;
+    this._justificationTime = justificationTime ?? 0;
     this._removedRanking = removedRanking ?? [];
     this._remainingRanking = remainingRanking ?? [];
     this._justification = justification ?? [];
@@ -247,8 +255,16 @@ abstract class EntailmentModel {
     return this._timeTaken;
   }
 
+  public get justifcationTime(): number {
+    return this._justificationTime;
+  }
+
   public get justification(): string[][] {
     return this._justification;
+  }
+
+  public get entailmentKnowledgeBase(): string[] {
+    return this._entailmentKnowledgeBase;
   }
 
   public abstract get remainingRanks(): Ranking[];
@@ -258,6 +274,7 @@ abstract class EntailmentModel {
       queryFormula: this._queryFormula,
       negation: this._negation,
       knowledgeBase: this._knowledgeBase,
+      entailmentKnowledgeBase: this._entailmentKnowledgeBase,
       signature: this._signature,
       entailed: this._entailed,
       baseRanking: this._baseRanking,
@@ -266,6 +283,7 @@ abstract class EntailmentModel {
       removedRanking: this._removedRanking,
       remainingRanking: this._remainingRanking,
       justification: this._justification,
+      justificationTime: this._justificationTime,
       type: this._type,
     };
   }
@@ -388,7 +406,9 @@ class MinimalRelevantEntailmentModel extends EntailmentModel {
     return super.toObject();
   }
 
-  public static create(obj: MinimalRelevantEntailment): MinimalRelevantEntailmentModel {
+  public static create(
+    obj: MinimalRelevantEntailment
+  ): MinimalRelevantEntailmentModel {
     return new MinimalRelevantEntailmentModel(obj);
   }
 }
@@ -423,7 +443,9 @@ class BasicRelevantEntailmentModel extends EntailmentModel {
     return super.toObject();
   }
 
-  public static create(obj: BasicRelevantEntailment): BasicRelevantEntailmentModel {
+  public static create(
+    obj: BasicRelevantEntailment
+  ): BasicRelevantEntailmentModel {
     return new BasicRelevantEntailmentModel(obj);
   }
 }
