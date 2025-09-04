@@ -9,6 +9,7 @@ import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "../NoResults";
 import { IBaseRankExplanation } from "@/lib/models";
 import { BaseRankContent } from "./BaseRankContent";
+import { Formula } from "../common/formulas";
 
 interface BaseRankExplanationProps {
   isLoading: boolean;
@@ -29,7 +30,7 @@ function BaseRankExplanation({
           The Base Rank Algorithm
         </CardTitle>
         <CardDescription>
-          Using the base rank algorithm to determine the initial ranks.
+          Using the BaseRank algorithm to determine the base ranking of statements in <Formula formula="\mathcal{K}" />.
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -4,6 +4,7 @@ import { RankingTable, SequenceTable } from "../tables/ranking-table";
 import { PartitioningProcedure } from "./PartitioningProcedure";
 import { IBaseRankExplanation } from "@/lib/models";
 import { RankConstruction } from "./RankConstruction";
+import { Formula } from "../common/formulas";
 
 interface BaseRankContentProps {
   baseRankExplanation: IBaseRankExplanation;
@@ -25,10 +26,10 @@ function BaseRankContent({ baseRankExplanation }: BaseRankContentProps) {
         />
         <p>The ranking is constructed as follows:</p>
         <RankConstruction
-          ranks={baseRankExplanation.ranks}
+          ranks={baseRankExplanation.ranks} 
           sequence={baseRankExplanation.sequence}
         />
-        <p>This results in the following ranking:</p>
+        <p>This results in the following final base ranking of statements in the knowledge base <Formula formula="\mathcal{K}" />:</p>
         <RankingTable ranking={baseRankExplanation.ranks} />
       </div>
     </div>

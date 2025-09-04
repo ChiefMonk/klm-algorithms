@@ -14,6 +14,11 @@ primary_region = "jnb"
   min_machines_running = 0
   processes = [ "app" ]
 
+[http_service.concurrency]
+  type = "requests"
+  soft_limit = 20
+  hard_limit = 50
+
 [[vm]]
   cpu_kind = "shared"
   cpus = 2
