@@ -3,6 +3,7 @@ package uct.cs.klm.algorithms.explanation;
 import java.util.ArrayList;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.ranking.ModelRank;
 
 /**
  *
@@ -10,7 +11,8 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
  */
 public interface IJustificationService 
 {   
-    public ArrayList<KnowledgeBase> computeJustification(           
+    public ArrayList<KnowledgeBase> computeAllJustifications(     
+            ModelRank infinityRank,
             KnowledgeBase remainingKnowledgeBase, 
             PlFormula query);
 }

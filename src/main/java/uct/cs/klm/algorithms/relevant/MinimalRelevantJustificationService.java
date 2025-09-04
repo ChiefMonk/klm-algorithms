@@ -7,6 +7,7 @@ import uct.cs.klm.algorithms.enums.ReasonerType;
 import uct.cs.klm.algorithms.explanation.IJustificationService;
 import uct.cs.klm.algorithms.explanation.JustificationServiceBase;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.ranking.ModelRank;
 
 
 /**
@@ -21,11 +22,13 @@ public class MinimalRelevantJustificationService extends JustificationServiceBas
     }
     
     @Override
-    public ArrayList<KnowledgeBase> computeJustification(
+    public ArrayList<KnowledgeBase> computeAllJustifications(
+            ModelRank infinityRank,
             KnowledgeBase remainingKnowledgeBase, 
             PlFormula queryFormula) 
     {   
-        return super.computeJustification(
+        return super.computeAllJustifications(
+                infinityRank,
                 ReasonerType.MinimalRelevantClosure,
                 remainingKnowledgeBase, 
                 queryFormula);            

@@ -18,6 +18,7 @@ import uct.cs.klm.algorithms.enums.ReasonerType;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.ModelHittingSetTree;
 import uct.cs.klm.algorithms.models.ModelNode;
+import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
@@ -25,39 +26,39 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
  * @author Chipo Hamayobe
  */
 public abstract class JustificationServiceBase {
-       
+
     protected final SatReasoner _reasoner;
 
     public JustificationServiceBase() {
         SatSolver.setDefaultSolver(new Sat4jSolver());
         _reasoner = new SatReasoner();
     }
-    
-    protected ArrayList<KnowledgeBase> computeJustification(
+
+    protected ArrayList<KnowledgeBase> computeAllJustifications(
+            ModelRank infinityRank,
             ReasonerType reasonerType,
             KnowledgeBase remainingKnowledgeBase,
             PlFormula queryFormula) {
-        
+
         System.out.println();
-        System.out.println(String.format("%s Justifications", reasonerType));     
+        System.out.println(String.format("%s Justifications", reasonerType));
         System.out.println(String.format("Query: %s", queryFormula));
 
         if (remainingKnowledgeBase == null || remainingKnowledgeBase.isEmpty()) {
             System.out.println("KB = {}");
             System.out.println("J = {}");
-            
+
             return new ArrayList<>();
         }
-       
+
         System.out.println(String.format("KB = %s", remainingKnowledgeBase));
-        
+
         remainingKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(remainingKnowledgeBase);
         queryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
-       
 
         // Construct root node
         KnowledgeBase rootJustification = computeSingleJustification(remainingKnowledgeBase, queryFormula);
-               
+
         ModelNode rootNode = new ModelNode(remainingKnowledgeBase, rootJustification);
 
         // Create a queue to keep track of nodes
@@ -67,7 +68,7 @@ public abstract class JustificationServiceBase {
         ModelHittingSetTree tree = new ModelHittingSetTree(rootNode);
 
         while (!queue.isEmpty()) {
-           
+
             ModelNode node = queue.poll();
 
             for (PlFormula formula : node.getJustification()) {
@@ -83,22 +84,41 @@ public abstract class JustificationServiceBase {
                 }
             }
         }
-              
-        ArrayList<KnowledgeBase> allJustifications = rootNode.getAllJustifications();
+
+        ArrayList<KnowledgeBase> allJustifications = new ArrayList<>();
+        var infinityRankKb = infinityRank.getFormulas();
+
+        if (infinityRankKb.isEmpty()) {
+            allJustifications = rootNode.getAllJustifications();
+        } else {
+            for (KnowledgeBase kb : rootNode.getAllJustifications()) {
+                
+                KnowledgeBase currentKb = new KnowledgeBase();
+                for (PlFormula formula : kb) {                    
+                    if (infinityRankKb.contains(formula)) {
+                        currentKb.add(formula);
+                    }
+                    else{
+                         currentKb.add(ReasonerUtils.toDematerialisedFormula(formula));
+                    }
+                        
+                }
+            }
+        }
+
         allJustifications.sort(Comparator.comparingInt(a -> a.size()));
-        
+
         System.out.println(String.format("Number of Justifications = %s", allJustifications.size()));
         int counter = 1;
-        for(KnowledgeBase kb : allJustifications)
-        {
-             System.out.println(String.format(" --> %s. J_%s = %s", counter, counter, kb)); 
-             counter ++;
-        }              
-            
+        for (KnowledgeBase kb : allJustifications) {
+            System.out.println(String.format(" --> %s. J_%s = %s", counter, counter, kb));
+            counter++;
+        }
+
         return allJustifications;
     }
-    
-    protected KnowledgeBase computeSingleJustification(
+
+    private KnowledgeBase computeSingleJustification(
             KnowledgeBase entailmentKb,
             PlFormula query) {
         KnowledgeBase result = new KnowledgeBase();
@@ -134,7 +154,7 @@ public abstract class JustificationServiceBase {
 
         while (result != sPrime) {
             sPrime = result;
-             result = ReasonerUtils.toCombinedKnowledgeBases(result, findRelatedFormulas(sigma, knowledgeBase));
+            result = ReasonerUtils.toCombinedKnowledgeBases(result, findRelatedFormulas(sigma, knowledgeBase));
             PlBeliefSet resultKownledgeBase = new PlBeliefSet(result);
 
             if (reasoner.query(resultKownledgeBase, query)) {
@@ -203,13 +223,13 @@ public abstract class JustificationServiceBase {
         List<KnowledgeBase> splitList = split(whole);
         KnowledgeBase left = splitList.get(0);
         KnowledgeBase right = splitList.get(1);
-       
+
         KnowledgeBase leftUnion = ReasonerUtils.toCombinedKnowledgeBases(support, left);
-          
+
         PlBeliefSet leftKB = new PlBeliefSet(leftUnion);
-       
+
         KnowledgeBase rightUnion = ReasonerUtils.toCombinedKnowledgeBases(support, right);
-         
+
         PlBeliefSet rightKB = new PlBeliefSet(rightUnion);
 
         if (reasoner.query(leftKB, query)) {
@@ -219,11 +239,11 @@ public abstract class JustificationServiceBase {
             return contractRecursive(support, right, query, reasoner);
         }
 
-        KnowledgeBase leftPrime = contractRecursive(rightUnion, left, query, reasoner);     
+        KnowledgeBase leftPrime = contractRecursive(rightUnion, left, query, reasoner);
         KnowledgeBase leftPrimeUnion = ReasonerUtils.toCombinedKnowledgeBases(support, leftPrime);
         KnowledgeBase rightPrime = contractRecursive(leftPrimeUnion, right, query, reasoner);
 
-        return  ReasonerUtils.toCombinedKnowledgeBases(leftPrime, rightPrime);
+        return ReasonerUtils.toCombinedKnowledgeBases(leftPrime, rightPrime);
     }
 
     private List<KnowledgeBase> split(KnowledgeBase whole) {

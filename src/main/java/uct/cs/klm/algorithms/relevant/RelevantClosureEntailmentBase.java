@@ -241,7 +241,10 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         var originalKb = baseRankCollection.getKnowledgeBase();
 
         IJustificationService justification = ReasonerFactory.createJustification(ReasonerType.BasicRelevantClosure);
-        var justificationCollection = justification.computeJustification(originalKb, negationOfAntecedent);
+        var justificationCollection = justification.computeAllJustifications(
+                baseRankCollection.getInfinityRank(),
+                originalKb, 
+                negationOfAntecedent);
 
         KnowledgeBase relevantKb = new KnowledgeBase();
 
@@ -523,7 +526,10 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         }
 
         IJustificationService justification = ReasonerFactory.createJustification(ReasonerType.BasicRelevantClosure);
-        var justificationCollection = justification.computeJustification(baseRankCollection.getKnowledgeBase(), negationOfAntecedent);
+        var justificationCollection = justification.computeAllJustifications(
+                baseRankCollection.getInfinityRank(),
+                baseRankCollection.getKnowledgeBase(), 
+                negationOfAntecedent);
 
         KnowledgeBase kb = new KnowledgeBase();
 

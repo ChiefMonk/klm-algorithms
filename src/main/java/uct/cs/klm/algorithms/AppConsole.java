@@ -157,7 +157,10 @@ public class AppConsole {
             
             DisplayUtils.LogDebug(_logger, String.format("Entailment := %s, %s", entailment.getEntailed(), entailment.getEntailmentKnowledgeBase()));            
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
-            var justificationKb = justification.computeJustification(entailment.getEntailmentKnowledgeBase(), queryFormula);
+            var justificationKb = justification.computeAllJustifications(
+                     entailment.getBaseRanking().getInfinityRank(), 
+                    entailment.getEntailmentKnowledgeBase(), 
+                    queryFormula);
             
             DisplayUtils.LogDebug(_logger,(String.format("Does %s entail %s", queryFormula,knolewdgeBase ))); 
             
