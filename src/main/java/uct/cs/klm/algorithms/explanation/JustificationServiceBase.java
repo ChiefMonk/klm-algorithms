@@ -92,17 +92,18 @@ public abstract class JustificationServiceBase {
             allJustifications = rootNode.getAllJustifications();
         } else {
             for (KnowledgeBase kb : rootNode.getAllJustifications()) {
-                
+
                 KnowledgeBase currentKb = new KnowledgeBase();
-                for (PlFormula formula : kb) {                    
+                for (PlFormula formula : kb) {
                     if (infinityRankKb.contains(formula)) {
                         currentKb.add(formula);
+                    } else {
+                        currentKb.add(ReasonerUtils.toDematerialisedFormula(formula));
                     }
-                    else{
-                         currentKb.add(ReasonerUtils.toDematerialisedFormula(formula));
-                    }
-                        
+
                 }
+
+                allJustifications.add(currentKb);
             }
         }
 
