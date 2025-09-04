@@ -16,7 +16,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
   const entailmentResultFormula = entailment.entailed
     ? toTex("\\mathcal{K} \\vapprox " + entailment.queryFormula)
     : toTex("\\mathcal{K} \\nvapprox " + entailment.queryFormula);
-
+   
   return (
     <Card>
       <CardHeader>
@@ -64,6 +64,15 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
           <div className="text-slate-500 font-medium">Entailment result</div>
           <div>
             <Formula formula={entailmentResultFormula} />
+          </div>
+
+          <div className="text-slate-500 font-medium">Deciding KB</div>
+          <div>            
+            <Kb                   
+                    formulas={entailment.entailmentKnowledgeBase}
+                    name={`\\mathcal{D}`}
+                    set
+                  />
           </div>
 
           {queryType === QueryType.Justification && (

@@ -74,7 +74,7 @@ export function FormulaCard({
     <Card className="h-full">
       <CardHeader className="space-y-0 pb-4">
         <CardTitle className="font-semibold text-center">
-          The Query Formula <Formula formula="(\alpha)" />
+          The Query Formula, <Formula formula="\alpha" />
         </CardTitle>
       </CardHeader>
       <CardContent className="flex justify-center">
