@@ -36,7 +36,7 @@ function Summary(): JSX.Element {
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Summary of Results</CardTitle>
         <CardDescription className="text-base">
-          A summary of entailment and justification algorithm results
+          A summary of defeasible entailment and justification algorithm results
         </CardDescription>
       </CardHeader>
       <CardContent>

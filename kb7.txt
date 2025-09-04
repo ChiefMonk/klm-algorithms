@@ -1,0 +1,8 @@
+animals ~> wild
+cats => pets
+animals ~> legs
+pets => animals
+pets ~> !wild
+lions => animals
+pets ~> legs
+

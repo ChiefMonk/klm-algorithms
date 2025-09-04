@@ -19,7 +19,7 @@ public class KnowledgeBaseServiceImpl implements IKnowledgeBaseService {
         Proposition wild = new Proposition("wild");
                 
         Proposition cats = new Proposition("cats");
-        Proposition lions = new Proposition("lion");
+        Proposition lions = new Proposition("lions");
 
         KnowledgeBase knowledgeBase = new KnowledgeBase();
        

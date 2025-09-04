@@ -168,7 +168,7 @@ const fetchRationalEntailment = async (
 ) => {
   try {
     console.log(
-      "POST: Rational Entailment Request: " +
+      "POST: Entailment Request: " +
         queryFormula +
         " " +
         baseRank.toString()
@@ -191,7 +191,7 @@ const fetchRationalExplanation = async (
   entailment: RationalEntailmentModel
 ) => {
   try {
-    console.log("POST: Rational Explanation Request:", entailment);
+    console.log("POST: Explanation Request:", entailment);
 
     const response = await axios.post(
       ENTAILMENT_EXPLANATION_URL("rational"),

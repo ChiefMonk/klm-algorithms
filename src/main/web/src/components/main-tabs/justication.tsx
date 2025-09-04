@@ -15,7 +15,7 @@ export function Justification({
       {queryType === QueryType.Justification && entailment && (
         <div>
           <h1 className="text-lg font-bold mb-2">Justification Algorithm</h1>
-          <Kb
+          The deciding knowledge base <Kb
             formulas={entailment.entailmentKnowledgeBase}
             name="\mathcal{D}"
             set

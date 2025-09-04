@@ -3,6 +3,7 @@ package uct.cs.klm.algorithms.relevant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
+import uct.cs.klm.algorithms.enums.ReasonerType;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.services.IReasonerService;
@@ -22,7 +23,7 @@ public class MinimalRelevantReasonerImpl extends RelevantClosureEntailmentBase i
 
         _logger.debug("==>Minimal Closure Entailment");
       
-        return super.determineEntailment(baseRank, queryFormula);
+        return super.determineEntailment(ReasonerType.MinimalRelevantClosure,baseRank, queryFormula);
       
     }       
 }

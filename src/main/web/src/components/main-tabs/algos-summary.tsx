@@ -68,14 +68,17 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
 
           {queryType === QueryType.Justification && (
             <>
-              <div className="text-slate-500 font-medium">Justifcation</div>
-              <div>
-                <Kb
-                  formulas={entailment.justification.flat()}
-                  name="\mathcal{J}_{1}"
-                  set
-                />
-              </div>
+              <div className="text-slate-500 font-medium">Justifcation Sets</div>
+              <div className="space-y-2">
+                {entailment.justification.map((just, index) => (
+                  <Kb
+                    key={index}
+                    formulas={just}
+                    name={`\\mathcal{J}_{${index + 1}}`}
+                    set
+                  />
+                ))}
+            </div>
             </>
           )}
         </div>
