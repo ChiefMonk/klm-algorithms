@@ -41,7 +41,7 @@ function LexicographicClosure({
       <CardContent>
         {!isLoading && lexicalEntailment && (
           <div>
-            <h1 className="text-lg font-bold mb-2">Entailment Algorithm</h1>
+            <h1 className="text-lg font-bold mb-2">Entailment Determination</h1>
             <QueryInputContainer
               knowledgeBase={lexicalEntailment.knowledgeBase}
               queryFormula={lexicalEntailment.queryFormula}

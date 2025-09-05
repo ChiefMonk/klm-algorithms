@@ -215,9 +215,9 @@ export function EvaluationQueryCard(): JSX.Element {
         {/* Inference and Algorithms Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Inference Operator and Algorithms</CardTitle>
+            <CardTitle>Entailment Algorithm Implementation Categories</CardTitle>
             <CardDescription>
-              Select inference operator and algorithms to evaluate or import
+              Select entailment algorithm and implementation category to evaluate or import
               evaluation data
             </CardDescription>
           </CardHeader>
@@ -226,14 +226,14 @@ export function EvaluationQueryCard(): JSX.Element {
               <RadioGroupField
                 form={form}
                 name="inferenceOperator"
-                label="Inference operator"
+                label=">Entailment Algorithm"
                 options={operatorOptions}
                 handleChange={handleChange}
               />
               <CheckboxGroupField
                 form={form}
                 name="algorithm"
-                label="Algorithms"
+                label="Implementation Category"
                 options={algorithmOptions}
                 handleChange={handleChange}
               />

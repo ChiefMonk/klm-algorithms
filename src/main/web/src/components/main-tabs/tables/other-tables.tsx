@@ -75,7 +75,7 @@ function EntailmentTable({
   const baseColumns: ColumnDef<AlgorithmResult>[] = [
     {
       accessorKey: "algorithm",
-      header: "Inference Operator",
+      header: "Entailment Algorithm",
       cell: ({ row }) => row.getValue("algorithm"),
       meta: {
         headerClassName: "min-w-[180px]",

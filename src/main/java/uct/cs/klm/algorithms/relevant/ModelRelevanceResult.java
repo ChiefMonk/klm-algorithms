@@ -14,13 +14,19 @@ import uct.cs.klm.algorithms.ranking.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelRelevanceResult {
     
+    private final ModelRankCollection _inconsistentRanking;
     private final ModelRankCollection _relevantRanking;
     private final ModelRankCollection _irrelevantRanking;
     
-    public ModelRelevanceResult(ModelRankCollection relevantRanking, ModelRankCollection irrelevantRanking) {
+    public ModelRelevanceResult(ModelRankCollection inconsistentRanking, ModelRankCollection relevantRanking, ModelRankCollection irrelevantRanking) {
+    _inconsistentRanking = inconsistentRanking;
     _relevantRanking = relevantRanking;
     _irrelevantRanking = irrelevantRanking;
   }
+    
+     public ModelRankCollection getInconsistentRanking() {
+        return _inconsistentRanking;
+    }
     
     public ModelRankCollection getRelevantRanking() {
         return _relevantRanking;

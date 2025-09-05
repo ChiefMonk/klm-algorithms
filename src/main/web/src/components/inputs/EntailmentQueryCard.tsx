@@ -54,7 +54,7 @@ export function EntailmentQueryCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Inference Operators</CardTitle>
+        <CardTitle>Entailment Algorithm</CardTitle>
         <CardDescription>Please select inference operator</CardDescription>
       </CardHeader>
       <CardContent>

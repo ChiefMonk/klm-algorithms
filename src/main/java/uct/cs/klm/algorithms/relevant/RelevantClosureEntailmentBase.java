@@ -180,7 +180,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                             isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
 
                             continueProcessing = false;
-                            if (isQueryEntailed) {                              
+                            if (isQueryEntailed) {
                                 _logger.debug(" => YES: We STOP and EXIT");
                             } else {
                                 _logger.debug(" => NO: We Continue");
@@ -242,31 +242,68 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
         var originalKb = baseRankCollection.getKnowledgeBase();
 
-        IJustificationService justification = ReasonerFactory.createJustification(ReasonerType.BasicRelevantClosure);
-        var justificationCollection = justification.computeAllJustifications(
+        IJustificationService justificationService = ReasonerFactory.createJustification(reasonerType);
+        var justificationCollection = justificationService.computeAllJustifications(
                 baseRankCollection.getInfinityRank(),
-                originalKb, 
+                originalKb,
                 negationOfAntecedent);
 
-        KnowledgeBase relevantKb = new KnowledgeBase();
+        KnowledgeBase incosistentKb = new KnowledgeBase();
 
         for (var justificationEntry : justificationCollection) {
             for (var formula : justificationEntry) {
 
                 var formulaMaterialised = ReasonerUtils.toMaterialisedFormula(formula);
 
-                if (!relevantKb.contains(formulaMaterialised)) {
-                    relevantKb.add(formulaMaterialised);
+                if (!incosistentKb.contains(formulaMaterialised)) {
+                    incosistentKb.add(formulaMaterialised);
                 }
             }
         }
 
+        KnowledgeBase miniKb = new KnowledgeBase();
+
+        if (reasonerType == ReasonerType.MinimalRelevantClosure) {
+            int counter = 0;
+            for (int i = 0; i < justificationCollection.size(); i++) {
+
+                var rank = baseRankCollection.getRank(counter);
+                var rankNumber = -1;
+
+                for (var formula : justificationCollection.get(i)) {
+
+                    var deMaterialised = ReasonerUtils.toDematerialisedFormula(formula);
+
+                    if (rank.getFormulas().contains(deMaterialised)) {
+                        if (rankNumber == -1) {
+                            rankNumber = rank.getRankNumber();
+                        }
+
+                        if (rank.getRankNumber() == rankNumber) {
+                            miniKb.add(deMaterialised);
+                        }
+                    }
+                }
+
+                if (rankNumber == -1) {
+                    i = i - 1;
+                    counter++;
+                }
+            }
+
+            System.out.println(String.format("   Mini := %s", miniKb.getFormulas()));
+        }
+
+        ModelRankCollection resultIncosistentRank = new ModelRankCollection();
         ModelRankCollection resultRelevantRank = new ModelRankCollection();
         ModelRankCollection resultIrrelevantRank = new ModelRankCollection();
 
         for (var currentRank : baseRankCollection) {
 
             var rankNumber = currentRank.getRankNumber();
+
+            var incosistentRank = new ModelRank(rankNumber);
+            var addIncosistentRank = false;
 
             var irrelevantRank = new ModelRank(rankNumber);
             boolean addIrrelevantRank = false;
@@ -278,14 +315,34 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
                 var formulaMaterialised = ReasonerUtils.toMaterialisedFormula(formula);
 
-                if (relevantKb.contains(formulaMaterialised)) {
-                    addRelevantRank = true;
-                    relevantRank.addFormula(formula);
-                } else {
-                    addIrrelevantRank = true;
-                    irrelevantRank.addFormula(formula);
+                if (incosistentKb.contains(formulaMaterialised)) {
+                    addIncosistentRank = true;
+                    incosistentRank.addFormula(formula);
                 }
 
+                if (reasonerType == ReasonerType.MinimalRelevantClosure) {
+                    if (ReasonerUtils.toMaterialisedKnowledgeBase(miniKb).contains(formulaMaterialised)) {
+                        addRelevantRank = true;
+                        relevantRank.addFormula(formula);
+                    } else {
+                        addIrrelevantRank = true;
+                        irrelevantRank.addFormula(formula);
+                    }
+
+                } else {
+                    if (incosistentKb.contains(formulaMaterialised)) {
+                        addRelevantRank = true;
+                        relevantRank.addFormula(formula);
+                    } else {
+                        addIrrelevantRank = true;
+                        irrelevantRank.addFormula(formula);
+                    }
+                }
+
+            }
+
+            if (addIncosistentRank) {
+                resultIncosistentRank.add(incosistentRank);
             }
 
             if (addRelevantRank) {
@@ -297,9 +354,10 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             }
         }
 
+        System.out.println(String.format("   I := %s", resultIncosistentRank.getKnowledgeBase().getFormulas()));
         System.out.println(String.format("   R := %s", resultRelevantRank.getKnowledgeBase().getFormulas()));
         System.out.println(String.format("   R- := %s", resultIrrelevantRank.getKnowledgeBase().getFormulas()));
 
-        return new ModelRelevanceResult(resultRelevantRank, resultIrrelevantRank);
-    }   
+        return new ModelRelevanceResult(resultIncosistentRank, resultRelevantRank, resultIrrelevantRank);
+    }
 }

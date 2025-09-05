@@ -42,7 +42,7 @@ function RationalClosureExplanation({
         {!isLoading && rationalExplanation && (
           <div className="space-y-6">
             <div>
-              <h1 className="text-lg font-bold mb-2">Entailment Algorithm</h1>
+              <h1 className="text-lg font-bold mb-2">Entailment Determination</h1>
               <Kb formulas={rationalExplanation.knowledgeBase} set />
               <div className="mb-6">
                 <QueryFormula formula={rationalExplanation.queryFormula} />
