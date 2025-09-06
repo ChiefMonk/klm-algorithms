@@ -14,5 +14,6 @@ public interface IJustificationService
     public ArrayList<KnowledgeBase> computeAllJustifications(     
             ModelRank infinityRank,
             KnowledgeBase remainingKnowledgeBase, 
-            PlFormula query);
+            PlFormula query,
+            boolean convertDefeasible);
 }

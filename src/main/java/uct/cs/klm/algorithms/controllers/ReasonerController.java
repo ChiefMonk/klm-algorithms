@@ -48,7 +48,8 @@ public class ReasonerController {
             var justificationKb = justification.computeAllJustifications(
                     entailment.getBaseRanking().getInfinityRank(), 
                     entailment.getEntailmentKnowledgeBase(), 
-                    queryFormula);
+                    queryFormula,
+                    true);
             
             double finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 

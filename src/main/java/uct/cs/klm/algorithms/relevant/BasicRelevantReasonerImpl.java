@@ -21,7 +21,7 @@ public class BasicRelevantReasonerImpl extends RelevantClosureEntailmentBase imp
             ModelBaseRank baseRank,
             PlFormula queryFormula) {
 
-        _logger.debug("==>Basic Closure Entailment");
+        _logger.debug("==>Basic Relevant Closure Entailment");
       
         return super.determineEntailment(ReasonerType.BasicRelevantClosure, baseRank, queryFormula);
       

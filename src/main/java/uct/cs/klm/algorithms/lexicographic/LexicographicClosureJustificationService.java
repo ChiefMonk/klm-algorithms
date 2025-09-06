@@ -25,12 +25,14 @@ public class LexicographicClosureJustificationService extends JustificationServi
     public ArrayList<KnowledgeBase> computeAllJustifications(
             ModelRank infinityRank,
             KnowledgeBase remainingKnowledgeBase, 
-            PlFormula queryFormula) 
+            PlFormula queryFormula,
+            boolean convertDefeasible) 
     {   
         return super.computeAllJustifications(
                 infinityRank,
                 ReasonerType.LexicographicClosure,
                 remainingKnowledgeBase, 
-                queryFormula);            
+                queryFormula,
+                convertDefeasible);            
     }
 }

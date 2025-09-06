@@ -160,7 +160,8 @@ public class AppConsole {
             var justificationKb = justification.computeAllJustifications(
                      entailment.getBaseRanking().getInfinityRank(), 
                     entailment.getEntailmentKnowledgeBase(), 
-                    queryFormula);
+                    queryFormula,
+                    true);
             
             DisplayUtils.LogDebug(_logger,(String.format("Does %s entail %s", queryFormula,knolewdgeBase ))); 
             

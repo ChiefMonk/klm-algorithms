@@ -105,7 +105,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 counter++;
             }
             
-            ReasonerUtils.AddToList(previousPowersets, currentPowerset);
+            previousPowersets = ReasonerUtils.AddToList(previousPowersets, currentPowerset);
                        
             for(var powerset : currentPowerset){
                 
@@ -114,10 +114,11 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 //DisplayUtils.LogDebug(_logger, String.format("Current KB %s: %s\n %s\n %s", rankNumber, infinityRank, higherRanks, powerset)); 
                 
                 // Materialise the knowledge base from the current ranking collection.
-                var currentKb =  ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset); 
+                var currentKb =  ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset, null); 
                 materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(currentKb); 
                 
                 previousPowersets.add(ReasonerUtils.toFormulaList(currentKb));
+                previousPowersets.add(powerset);
                 
                 DisplayUtils.LogDebug(_logger, String.format("MaterialisedKB := %s: %s", rankNumber, materialisedKB));   
                 
@@ -128,9 +129,8 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 else {
                     _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");                       
                      isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
-                     
-                     if(isQueryEntailed) {
-                            stopNow = true;
+                     stopNow = true;
+                     if(isQueryEntailed) {                          
                           _logger.debug("  YES-Query:Entailed; We STOP and EXIT");       
                      }
                      else{

@@ -1,6 +1,7 @@
 package uct.cs.klm.algorithms.models;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
@@ -11,11 +12,11 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a defeasible knowledge base of propositional formulae.
- * 
+ *
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za
  */
+public class KnowledgeBase extends PlBeliefSet {
 
-public class KnowledgeBase extends PlBeliefSet {    
     /**
      * Creates new (empty) knowledge base.
      */
@@ -31,40 +32,39 @@ public class KnowledgeBase extends PlBeliefSet {
     public KnowledgeBase(Collection<? extends PlFormula> formulas) {
         super(formulas);
     }
-    
+
     public KnowledgeBase(KnowledgeBase knowledgeBase) {
-         this(knowledgeBase.formulas);                 
+        this(knowledgeBase.formulas);
     }
-     
-    public Set<PlFormula> getFormulas()
-    {
-         return this.formulas;
-    }       
-     
-     public boolean removeFormula(PlFormula formula) {
-      
-      if(this.formulas.isEmpty())
-       {
-           return true;
-       }
-      
-      if(this.formulas.remove(formula))
-      {
-          return true;
-      }
-      
-      if(this.formulas.remove(ReasonerUtils.toMaterialisedFormula(formula)))
-      {
-          return true;
-      }
-      
-      return this.formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
-  }
-     
-     public void addKnowledgeBase(KnowledgeBase knowledgeBase) {       
-        this.addAll(knowledgeBase);       
+
+    public Set<PlFormula> getFormulas() {
+        return this.formulas;
     }
-               
+
+    public boolean removeFormula(PlFormula formula) {
+
+        if (this.formulas.isEmpty()) {
+            return true;
+        }
+
+        if (this.formulas.remove(formula)) {
+            return true;
+        }
+
+        if (this.formulas.remove(ReasonerUtils.toMaterialisedFormula(formula))) {
+            return true;
+        }
+
+        return this.formulas.remove(ReasonerUtils.toDematerialisedFormula(formula));
+    }
+
+    public void addKnowledgeBase(KnowledgeBase knowledgeBase) {
+        this.addAll(knowledgeBase);
+    }
+    
+     public void addKnowledgeBase(List<PlFormula> formulas) {
+        this.addAll(formulas);
+    }
 
     /**
      * Computes union of this knowledge base with a collection of other
@@ -133,16 +133,14 @@ public class KnowledgeBase extends PlBeliefSet {
         });
         return result;
     }
-    
+
     public KnowledgeBase materialisedKnowledgeBase() {
         KnowledgeBase result = new KnowledgeBase();
         this.forEach(formula -> {
             if (formula instanceof DefeasibleImplication defeasibleImplication) {
                 result.add(new Implication(defeasibleImplication.getFormulas()));
-            }
-            else
-            {
-                 result.add(formula);
+            } else {
+                result.add(formula);
             }
         });
         return result;
@@ -181,42 +179,41 @@ public class KnowledgeBase extends PlBeliefSet {
         });
         return new KnowledgeBase[]{defeasible, classical};
     }
-    
-    public KnowledgeBase getClassicalFormulas() {      
+
+    public KnowledgeBase getClassicalFormulas() {
         KnowledgeBase classical = new KnowledgeBase();
         this.forEach(formula -> {
             if (!(formula instanceof DefeasibleImplication)) {
-                 classical.add(formula);
-            }
-        });
-        return classical;
-    }
-    
-    public KnowledgeBase getDefeasibleFormulas() {      
-        KnowledgeBase classical = new KnowledgeBase();
-        this.forEach(formula -> {
-            if (formula instanceof DefeasibleImplication) {
-                 classical.add(formula);
+                classical.add(formula);
             }
         });
         return classical;
     }
 
-    public boolean remove(PlFormula formula) {      
-        return this.formulas.remove(formula);        
+    public KnowledgeBase getDefeasibleFormulas() {
+        KnowledgeBase classical = new KnowledgeBase();
+        this.forEach(formula -> {
+            if (formula instanceof DefeasibleImplication) {
+                classical.add(formula);
+            }
+        });
+        return classical;
     }
-    
+
+    public boolean remove(PlFormula formula) {
+        return this.formulas.remove(formula);
+    }
+
     public void removeAll(KnowledgeBase knowledgeBase) {
-        
+
         KnowledgeBase result = new KnowledgeBase(this);
-        
-        for(PlFormula formula : knowledgeBase)
-        {
+
+        for (PlFormula formula : knowledgeBase) {
             this.formulas.remove(formula);
-        }       
+        }
     }
-    
-    public void removeAll(ModelRank rank) {        
-       removeAll(rank.getFormulas());
-    }   
+
+    public void removeAll(ModelRank rank) {
+        removeAll(rank.getFormulas());
+    }
 }

@@ -21,7 +21,7 @@ public class MinimalRelevantReasonerImpl extends RelevantClosureEntailmentBase i
             ModelBaseRank baseRank,
             PlFormula queryFormula) {
 
-        _logger.debug("==>Minimal Closure Entailment");
+        _logger.debug("==>Minimal Relevant Closure Entailment");
       
         return super.determineEntailment(ReasonerType.MinimalRelevantClosure,baseRank, queryFormula);
       

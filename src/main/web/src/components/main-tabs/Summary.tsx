@@ -13,11 +13,12 @@ import { QueryInputContainer } from "./common/query-input";
 
 import { useReasonerContext } from "@/state/reasoner.context";
 import { AlgosSummary } from "./algos-summary";
-import { InferenceOperator } from "@/lib/models";
+import { InferenceOperator, QueryType } from "@/lib/models";
 import { Formula } from "./common/formulas";
 
-function Summary(): JSX.Element {
+function Summary(): JSX.Element { 
   const {
+    queryType,
     resultPending: isLoading,
     queryInput,
     entailmentQueryResult,
@@ -67,7 +68,10 @@ function Summary(): JSX.Element {
 
             <div>
               <h4 className="scroll-m-20 mb-4 text-lg font-bold tracking-tight">
-                Algorithms
+
+                  {queryType === QueryType.Justification
+        ? "Results of Entailment and Explanation Algorithms"
+        : "Results of Entailment Algorithms"}        
               </h4>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-12">
                 {rationalEntailment && (
@@ -102,7 +106,7 @@ function Summary(): JSX.Element {
 
             <div>
               <h4 className="scroll-m-20  text-lg font-bold tracking-tight">
-                Time Taken
+                Algorithm Execution Times (in seconds)
               </h4>
               <TimesTable
                 baseRank={baseRank}

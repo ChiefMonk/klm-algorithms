@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tweetyproject.logics.pl.syntax.Implication;
@@ -39,8 +40,6 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             PlFormula queryFormula) {
 
         long startTime = System.nanoTime();
-
-        System.out.println("==>Relevant Closure Entailment");
 
         PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
         PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
@@ -85,6 +84,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             var relevanceResult = GetRelevantRanks(reasonerType, baseRankCollection, negationOfAntecedent);
             relevantRanking = relevanceResult.getCorrectRelevantRanking();
             irrelevantRanking = relevanceResult.getCorrectIrrelevantRanking();
+            var irrelevantKb =  irrelevantRanking.getKnowledgeBase();
 
             continueProcessing = !relevantRanking.isEmpty();
 
@@ -119,7 +119,6 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             ModelRankCollection allRankCollection = new ModelRankCollection(otherRankCollection.clone());
 
             List<List<PlFormula>> previousPowersets = new ArrayList<>();
-            KnowledgeBase previousIrrelevantRankFormalas = new KnowledgeBase();
 
             ModelRankCollection higherRanks = new ModelRankCollection();
 
@@ -134,7 +133,14 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     var relevantRank = relevantRanking.getRank(rankNumber);
                     var irrelevantRank = ReasonerUtils.removeFormulasFromRank(currentRank, relevantRank.getFormulas());
 
-                    previousIrrelevantRankFormalas.addAll(irrelevantRank.getFormulas());
+                    var powerKnowledgeBase = ReasonerUtils.removeFormulasFromKnowledgeBase(
+                            relevantRanking.getKnowledgeBase(),
+                            relevantRank.getFormulas());
+
+                    if (relevantRank.isEmpty()) {
+                        continueProcessing = false;
+                        break;
+                    }
 
                     if (currentRank.isEmpty() || relevantRank.isEmpty()) {
                         continue;
@@ -143,42 +149,55 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     DisplayUtils.LogDebug(_logger, String.format("Current Rank := %s: %s", rankNumber, currentRank.getFormulas()));
                     DisplayUtils.LogDebug(_logger, String.format("Relevant Rank := %s: %s", rankNumber, relevantRank.getFormulas()));
                     DisplayUtils.LogDebug(_logger, String.format("Irrelevant Rank := %s: %s", rankNumber, irrelevantRank.getFormulas()));
-                    DisplayUtils.LogDebug(_logger, String.format("All Irrelevant Formalas. := %s: %s", rankNumber, previousIrrelevantRankFormalas.getFormulas()));
+                    DisplayUtils.LogDebug(_logger, String.format("Power KnowledgeBase. := %s: %s", rankNumber, powerKnowledgeBase.getFormulas()));
+
+                    previousPowersets = previousPowersets.stream().distinct().collect(Collectors.toList());
 
                     Map.Entry<ModelRankCollection, List<List<PlFormula>>> powersetTurple = ReasonerUtils.powersetIterative(relevantRanking, rankNumber, previousPowersets);
 
                     higherRanks = powersetTurple.getKey();
                     var currentPowerset = powersetTurple.getValue();
 
+                    DisplayUtils.LogDebug(_logger, String.format("HigherRanks := %s: %s", rankNumber, higherRanks.getKnowledgeBase().getFormulas()));
+
                     int counter = 0;
                     for (var ff : currentPowerset) {
-                        DisplayUtils.LogDebug(_logger, String.format("PowerSet := %s-%s: %s", rankNumber, counter, ff));
+                        DisplayUtils.LogDebug(_logger, String.format("Current Powerset := %s-%s: %s", rankNumber, counter, ff));
+                        counter++;
+                    }
+                   
+                    counter = 0;
+                    for (var ff : previousPowersets) {
+                        DisplayUtils.LogDebug(_logger, String.format("Previous Powersets := %s-%s: %s", rankNumber, counter, ff));
                         counter++;
                     }
 
-                    ReasonerUtils.AddToList(previousPowersets, currentPowerset);
+                   // currentPowerset.add(new ArrayList<>());                   
 
                     for (var powerset : currentPowerset) {
 
-                        DisplayUtils.LogDebug(_logger, String.format("Current Set Before := %s: %s", rankNumber, powerset));
-                        powerset.addAll(previousIrrelevantRankFormalas.getFormulas());
-                        DisplayUtils.LogDebug(_logger, String.format("Current Set After := %s: %s", rankNumber, powerset));
+                        DisplayUtils.LogDebug(_logger, String.format("=> Current Powerset Set Before := %s: %s", rankNumber, powerset));
+
+                        if (!powerset.isEmpty()) {
+                            previousPowersets.add(powerset);
+                        }
+                                              
+                        DisplayUtils.LogDebug(_logger, String.format("Current Powerset Set After := %s: %s", rankNumber, powerset));
 
                         // Materialise the knowledge base from the current ranking collection.
-                        var currentKb = ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset);
+                        var currentKb = ReasonerUtils.toKnowledgeBase(infinityRank, higherRanks, powerset, irrelevantKb);
                         materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(currentKb);
-
+                        
                         previousPowersets.add(ReasonerUtils.toFormulaList(currentKb));
 
-                        DisplayUtils.LogDebug(_logger, String.format("MaterialisedKB := %s: %s", rankNumber, materialisedKB));
+                        DisplayUtils.LogDebug(_logger, String.format("=> Materialised KB := %s: %s", rankNumber, materialisedKB));
 
                         isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
                         if (isNegationEntailed) {
-                            _logger.debug("  YES-NegationOfAntecedent:Entailed; We continue to NEXT powersetEntry");
+                            _logger.debug("=> YES-NegationOfAntecedent:Entailed; We continue to NEXT powersetEntry");
                         } else {
                             _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
                             isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
-
                             continueProcessing = false;
                             if (isQueryEntailed) {
                                 _logger.debug(" => YES: We STOP and EXIT");
@@ -246,7 +265,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         var justificationCollection = justificationService.computeAllJustifications(
                 baseRankCollection.getInfinityRank(),
                 originalKb,
-                negationOfAntecedent);
+                negationOfAntecedent,
+                false);
 
         KnowledgeBase incosistentKb = new KnowledgeBase();
 

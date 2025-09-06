@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 public final class ReasonerUtils {
 
     private static final Logger _logger = LoggerFactory.getLogger(ReasonerUtils.class);
-     
+
     public static KnowledgeBase toCombinedKnowledgeBases(
             KnowledgeBase firstKb,
             KnowledgeBase secondKb) {
@@ -36,8 +37,8 @@ public final class ReasonerUtils {
 
         return result;
     }
-    
-     /**
+
+    /**
      * Retrieves the antecedents of statements with implication.
      *
      * @param knowledgeBase
@@ -46,7 +47,7 @@ public final class ReasonerUtils {
     public static KnowledgeBase getAntecedentFormulas(
             KnowledgeBase knowledgeBase) {
 
-         KnowledgeBase antecedents = new KnowledgeBase();
+        KnowledgeBase antecedents = new KnowledgeBase();
         knowledgeBase.forEach(formula -> {
             if (formula instanceof Implication implication) {
                 antecedents.add(implication.getFirstFormula());
@@ -54,9 +55,8 @@ public final class ReasonerUtils {
         });
         return antecedents;
     }
-     
-  
-     /**
+
+    /**
      * Convert defeasible implication to classical implication.
      *
      * @param formula Classical implication formula
@@ -70,8 +70,8 @@ public final class ReasonerUtils {
 
         return formula;
     }
-    
-       /**
+
+    /**
      * Convert classical implication to defeasible implication.
      *
      * @param formula Defeasible implication formula.
@@ -84,7 +84,6 @@ public final class ReasonerUtils {
 
         return formula;
     }
-
 
     public static KnowledgeBase toMaterialisedKnowledgeBase(KnowledgeBase knowledgeBase) {
 
@@ -100,47 +99,52 @@ public final class ReasonerUtils {
     public static KnowledgeBase toMaterialisedKnowledgeBase(ModelRank rank) {
         return toMaterialisedKnowledgeBase(rank.getFormulas().materialisedKnowledgeBase());
     }
-    
-    public static KnowledgeBase toKnowledgeBase(ModelRank infinityRank, ModelRankCollection higherRanks, List<PlFormula> powersetEntry) {
-        
-        List<PlFormula> allFormulas =  new ArrayList<>();
-        
+
+    public static KnowledgeBase toKnowledgeBase(ModelRank infinityRank, ModelRankCollection higherRanks, List<PlFormula> powersetEntry, KnowledgeBase irrelevantKb) {
+
+        List<PlFormula> allFormulas = new ArrayList<>();
+
         allFormulas.addAll(infinityRank.getFormulas());
-        
+
         allFormulas.addAll(higherRanks.getKnowledgeBase());
-              
+
         var powersetKb = new KnowledgeBase(powersetEntry);
-        allFormulas.addAll(powersetKb);    
-        
+        allFormulas.addAll(powersetKb);
+
         powersetKb.addAll(allFormulas);
         
-        return powersetKb;                
+        if(irrelevantKb != null && !irrelevantKb.isEmpty())
+        {
+            powersetKb.addAll(irrelevantKb);
+        }
+
+        return powersetKb;
     }
-    
+
     public static KnowledgeBase toMaterialisedKnowledgeBase(ModelRank infinityRank, ModelRankCollection higherRanks, List<PlFormula> powersetEntry) {
-        
-        List<PlFormula> allFormulas =  new ArrayList<>();
-        
+
+        List<PlFormula> allFormulas = new ArrayList<>();
+
         allFormulas.addAll(infinityRank.getFormulas());
-        
+
         allFormulas.addAll(toMaterialisedKnowledgeBase(higherRanks));
-              
+
         var powersetKb = new KnowledgeBase(powersetEntry);
-        allFormulas.addAll(powersetKb.materialisedKnowledgeBase());    
-        
+        allFormulas.addAll(powersetKb.materialisedKnowledgeBase());
+
         powersetKb.addAll(allFormulas);
-        
-        return powersetKb.materialisedKnowledgeBase();                
+
+        return powersetKb.materialisedKnowledgeBase();
     }
 
     public static KnowledgeBase toMaterialisedKnowledgeBase(ArrayList<ModelRank> baseRank) {
         return toMaterialisedKnowledgeBase(toKnowledgeBase(baseRank).materialisedKnowledgeBase());
     }
-    
+
     public static KnowledgeBase toMaterialisedKnowledgeBase(List<ModelRank> baseRank) {
         return toMaterialisedKnowledgeBase(toKnowledgeBase(baseRank).materialisedKnowledgeBase());
     }
-       
+
     public static ModelRankCollection toModelRankCollection(ArrayList<ModelRank> baseRank) {
 
         ModelRankCollection result = new ModelRankCollection();
@@ -151,8 +155,6 @@ public final class ReasonerUtils {
 
         return result;
     }
-    
-     
 
     public static KnowledgeBase toKnowledgeBase(List<ModelRank> baseRank) {
 
@@ -176,7 +178,7 @@ public final class ReasonerUtils {
         }
         return formulaList;
     }
-    
+
     public static List<PlFormula> toFormulaList(KnowledgeBase knowledgeBase) {
 
         List<PlFormula> formulaList = new ArrayList<>();
@@ -272,17 +274,19 @@ public final class ReasonerUtils {
     }
 
     public static KnowledgeBase removeFormulasFromKnowledgeBase(
-            KnowledgeBase originalKnowledgeBase,
-            KnowledgeBase formulasKnowledgeBase) {
+            KnowledgeBase currentKb,
+            KnowledgeBase removeKb) {
 
-        KnowledgeBase result = new KnowledgeBase(originalKnowledgeBase);
+        KnowledgeBase result = new KnowledgeBase(currentKb);
 
-        if (formulasKnowledgeBase == null || formulasKnowledgeBase.isEmpty()) {
+        if (removeKb == null || removeKb.isEmpty()) {
             return result;
         }
 
-        for (var formula : formulasKnowledgeBase) {
+        for (var formula : removeKb) {
             result.removeFormula(formula);
+            result.removeFormula(toMaterialisedFormula(formula));
+            result.removeFormula(toDematerialisedFormula(formula));
         }
 
         return result;
@@ -343,7 +347,7 @@ public final class ReasonerUtils {
 
         return generateFormulaCombinations(theRank, ignoreInfinityRank);
     }
-    
+
     public static ModelRankCollection generateFormulaCombinations(ModelRank rank, boolean ignoreInfinityRank) {
 
         ArrayList<ModelRank> rankCollection = generateFormulaCombinationList(rank, ignoreInfinityRank);
@@ -405,11 +409,10 @@ public final class ReasonerUtils {
 
         return modelRankings;
     }
-    
-    public static double ToTimeDifference(long startTime, long endTime)
-    {
+
+    public static double ToTimeDifference(long startTime, long endTime) {
         return (endTime - startTime) / 1_000_000_000.0;
-    }       
+    }
 
     private static List<List<PlFormula>> generateFormulaCombinations(List<PlFormula> formulaList, int size) {
 
@@ -433,36 +436,77 @@ public final class ReasonerUtils {
 
         return combinations;
     }
-    
+
     public static List<List<PlFormula>> AddToList(List<List<PlFormula>> addTo, List<List<PlFormula>> addFrom) {
-        for(List<PlFormula> list : addFrom) {
+        for (List<PlFormula> list : addFrom) {
             addTo.add(list);
         }
-        
+
         return addTo;
     }
 
-    public static Map.Entry<ModelRankCollection, List<List<PlFormula>>>  powersetIterative(ModelRankCollection rankCollection, int currentRank,  List<List<PlFormula>> previousRankSets) {
-        
+    public static Map.Entry<ModelRankCollection, List<List<PlFormula>>> powersetIterative(ModelRankCollection rankCollection, int currentRank, List<List<PlFormula>> previousPowersets) {
+
         rankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
         
+        previousPowersets = previousPowersets.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
         List<PlFormula> formulaList = new ArrayList<>();
         ModelRankCollection outputRanks = new ModelRankCollection();
-        
-        for(ModelRank rank : rankCollection) {
-            
-            if(rank.getRankNumber() > currentRank) {
+
+        for (ModelRank rank : rankCollection) {
+
+            if (rank.getRankNumber() > currentRank) {
                 outputRanks.add(rank);
                 continue;
             }
-            
+
             formulaList.addAll(rank.getFormulas());
-        }             
+        }
         
+        int counter = 0;
+        if(previousPowersets.isEmpty())
+        {           
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::previousRankSets := %s", previousPowersets));               
+        }
+        else
+        {         
+          for (var ff : previousPowersets) {
+                DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::previousRankSets := %s: %s", counter, ff));  
+                counter++;
+            }  
+        }
+        
+        /*
+        int counter = 0;
+        if(previousRankSets.isEmpty())
+        {           
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::previousRankSets := %s", previousRankSets));               
+        }
+        else
+        {
+          for (var ff : previousRankSets) {
+                DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::previousRankSets := %s: %s", counter, ff));  
+                counter++;
+            }  
+        }
+        
+        for (var ff : outputRanks) {
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::OutputRanks := %s: %s", ff.getRankNumber(), ff.getFormulas()));           
+        }
+        
+        counter = 0;
+        for (var ff : formulaList) {
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::formulaList := %s: %s", counter, ff));     
+            counter++;
+        }
+         */
         List<List<PlFormula>> result = new ArrayList<>();
         int n = formulaList.size();
-        int totalSubsets = 1 << n; // 2^n
-        
+        int totalSubsets = 1 << n;
+
         for (int i = 1; i < totalSubsets; i++) {
             List<PlFormula> subset = new ArrayList<>();
             for (int j = 0; j < n; j++) {
@@ -473,43 +517,55 @@ public final class ReasonerUtils {
             }
             result.add(subset);
         }
-        
-        //for(List<PlFormula> prev : previousRankSets) { 
-        //    DisplayUtils.LogDebug(_logger, String.format("PreviousRankSets := %s", prev));
-       // }
-         
-        List<List<PlFormula>> finalResult = new ArrayList<>();
-        
-        for(List<PlFormula> list : result) { 
-            
-            //DisplayUtils.LogDebug(_logger, String.format("CurrentList := %s", list));
-            
-            if(previousRankSets.contains(list)) {
-                 continue;
-            }
-            
-           boolean exists = previousRankSets.stream().anyMatch(ls -> ls.size()==list.size() && new HashSet<>(ls).equals(new HashSet<>(list)));
-           
-           if(exists) {
-                 continue;
-            }
-                                   
-            finalResult.add(list);                        
+
+        /*
+        counter = 0;
+        for (var ff : result) {
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::result := %s: %s", counter, ff));
+            counter++;
         }
+        */
+
+        List<List<PlFormula>> finalResult = new ArrayList<>();
+
+        for (List<PlFormula> list : result) {
+           
+            DisplayUtils.LogDebug(_logger, String.format("---powersetIterative::CurrentList := %s", list));
+
+            if (previousPowersets.contains(list)) {
+                continue;
+            }
+
+            boolean exists = previousPowersets.stream().anyMatch(ls -> ls.size() == list.size() && new HashSet<>(ls).equals(new HashSet<>(list)));
+
+            if (exists) {
+                continue;
+            }
+
+            finalResult.add(list);
+        }
+
+        finalResult.sort(Comparator.comparingInt(List<PlFormula>::size).reversed());
         
-        finalResult.sort(Comparator.comparingInt(List<PlFormula>::size).reversed()); 
-                
+        finalResult.add(new ArrayList<>());          
+        
+        counter = 0;
+        for (var ff : finalResult) {
+            DisplayUtils.LogDebug(_logger, String.format(" ==> powersetIterative::FinalResult := %s: %s", counter, ff));
+            counter++;
+        }
+
         return new AbstractMap.SimpleEntry<>(outputRanks, finalResult);
     }
-    
+
     public static List<List<PlFormula>> powersetIterative(ModelRank rank, boolean startSmall) {
-        
+
         var rankList = toFormulaList(rank);
-        
+
         List<List<PlFormula>> result = new ArrayList<>();
         int n = rankList.size();
         int totalSubsets = 1 << n; // 2^n
-        
+
         for (int i = 1; i < totalSubsets; i++) {
             List<PlFormula> subset = new ArrayList<>();
             for (int j = 0; j < n; j++) {
@@ -520,30 +576,30 @@ public final class ReasonerUtils {
             }
             result.add(subset);
         }
-        
+
         result.sort(Comparator.comparingInt(List::size));
-        
-        if(!startSmall) {
-          result = result.reversed();
+
+        if (!startSmall) {
+            result = result.reversed();
         }
         return result;
     }
-    
+
     public static ModelRank removeFormulasFromRank(ModelRank currentRank, KnowledgeBase knowledgeBase) {
-        
+
         ModelRank resultRank = new ModelRank(currentRank.getRankNumber());
-        
+
         var materialKb = toMaterialisedKnowledgeBase(knowledgeBase);
-        
+
         for (PlFormula formula : currentRank.getFormulas()) {
-            
+
             var materialFormula = toMaterialisedFormula(formula);
-            
+
             if (!materialKb.contains(materialFormula)) {
-                    resultRank.addFormula(formula);
+                resultRank.addFormula(formula);
             }
         }
-    
+
         return resultRank;
     }
 }

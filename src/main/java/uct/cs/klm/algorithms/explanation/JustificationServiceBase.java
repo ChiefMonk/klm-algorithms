@@ -38,7 +38,8 @@ public abstract class JustificationServiceBase {
             ModelRank infinityRank,
             ReasonerType reasonerType,
             KnowledgeBase remainingKnowledgeBase,
-            PlFormula queryFormula) {
+            PlFormula queryFormula,
+            boolean convertDefeasible) {
 
         System.out.println();
         System.out.println(String.format("%s Justifications", reasonerType));

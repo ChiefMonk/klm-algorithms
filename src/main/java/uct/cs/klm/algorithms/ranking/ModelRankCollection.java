@@ -72,6 +72,15 @@ public class ModelRankCollection extends ArrayList<ModelRank> implements Cloneab
         return result.orElse(null);
     }
     
+     public ModelRank getBelowOrEqualRank(int rankNumber) {
+        Optional<ModelRank> result = this.stream()
+                .filter(p -> p.getRankNumber() <= rankNumber)
+                .findFirst();
+
+        // If result is empty, return null; otherwise, return the value
+        return result.orElse(null);
+    }
+    
     public ModelRank getInfinityRank() {
        return getRank(Symbols.INFINITY_RANK_NUMBER);
     }

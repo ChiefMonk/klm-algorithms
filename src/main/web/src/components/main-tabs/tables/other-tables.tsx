@@ -176,7 +176,7 @@ function TimesTable({
   const baseColumns: ColumnDef<TimesResult>[] = [
     {
       accessorKey: "algorithm",
-      header: "Algorithm",
+      header: "Entailment Algorithm",
       cell: ({ row }) => row.getValue("algorithm"),
       meta: {
         headerClassName: "min-w-[180px]",
@@ -185,7 +185,7 @@ function TimesTable({
     },
     {
       accessorKey: "timeTaken",
-      header: "Time Taken (in seconds)",
+      header: "Entailment Determination",
       cell: ({ row }) => {
         const value = row.getValue("timeTaken") as string;
         return <TexFormula>{value}</TexFormula>;
@@ -201,7 +201,7 @@ function TimesTable({
 
   const justificationColumn: ColumnDef<TimesResult> = {
     accessorKey: "justificationTimeTaken",
-    header: "Justification Time (in seconds)",
+    header: "Entailment Determination",
     cell: ({ row }) => {
       const value = row.getValue("justificationTimeTaken") as
         | string
