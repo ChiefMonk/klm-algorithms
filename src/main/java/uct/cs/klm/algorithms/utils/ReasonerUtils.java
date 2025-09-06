@@ -547,7 +547,7 @@ public final class ReasonerUtils {
 
         finalResult.sort(Comparator.comparingInt(List<PlFormula>::size).reversed());
         
-        finalResult.add(new ArrayList<>());          
+        //finalResult.add(new ArrayList<>());          
         
         counter = 0;
         for (var ff : finalResult) {

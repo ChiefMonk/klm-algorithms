@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +94,8 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
             }
             int rankNumber = currentRank.getRankNumber();
             DisplayUtils.LogDebug(_logger, String.format("Rank := %s: %s", rankNumber, currentRank.getFormulas()));   
-                    
+                
+            previousPowersets = previousPowersets.stream().distinct().collect(Collectors.toList());
             Map.Entry<ModelRankCollection, List<List<PlFormula>>> powersetTurple = ReasonerUtils.powersetIterative(otherRankCollection, rankNumber, previousPowersets);  
             
             higherRanks = powersetTurple.getKey();
