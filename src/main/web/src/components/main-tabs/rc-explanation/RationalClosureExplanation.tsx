@@ -32,10 +32,9 @@ function RationalClosureExplanation({
         <CardTitle className="text-2xl font-bold">Rational Closure</CardTitle>
         <CardDescription className="text-base">
           {/* Rational closure description */}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim tenetur
-          omnis temporibus, corrupti dolorem debitis accusantium nihil quod
-          soluta eligendi, impedit odit sunt! Qui, distinctio necessitatibus
-          atque accusantium recusandae non.
+          Rational closure is the most conservative form of defeasible entailment. This means that anything entailed by rational closure will also be entailed by the other common forms of defeasible
+entailment.
+         
         </CardDescription>
       </CardHeader>
       <CardContent>

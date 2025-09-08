@@ -40,7 +40,7 @@ export function MainContent() {
         />
         {inferenceOperators && inferenceOperators.length > 0 && (
           <Tabs defaultValue="summary">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-5 flex-wrap h-auto space-y-1'">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-6 flex-wrap h-auto space-y-1'">
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="baseRankExplanation">Base Rank</TabsTrigger>
               {inferenceOperators.includes(
