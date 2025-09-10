@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { InferenceOperator } from "@/lib/models";
+import { InferenceOperator, QueryType } from "@/lib/models";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -21,7 +21,7 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { INFERENCE_OPERATORS } from "@/lib/constants";
-import { BrainIcon, Trash2Icon } from "lucide-react";
+import { BrainIcon, BrainCog, Trash2Icon } from "lucide-react";
 
 const formSchema = z.object({
   inferenceOperator: z
@@ -32,7 +32,9 @@ const formSchema = z.object({
 });
 
 export function EntailmentQueryCard() {
+
   const reasoner = useReasonerContext();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +57,7 @@ export function EntailmentQueryCard() {
     <Card>
       <CardHeader>
         <CardTitle>Entailment Algorithm</CardTitle>
-        <CardDescription>Please select inference operator</CardDescription>
+        <CardDescription>Please select the entailment algorithm</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -101,10 +103,19 @@ export function EntailmentQueryCard() {
             />
             <div className="flex justify-end">
               <div className="flex flex-col gap-8 w-48 mt-auto">
-                <Button type="submit">
-                  <BrainIcon className="mr-2" />
-                  Query
-                </Button>
+
+              {reasoner.queryType === QueryType.Justification ? (
+  <Button type="submit">
+    <BrainCog className="mr-2" />
+    Determine Justifications
+  </Button>
+) : (
+  <Button type="submit">
+    <BrainIcon className="mr-2" />
+    Determine Entailments
+  </Button>
+)}
+              
                 {reasoner.entailmentQueryResult && (
                   <Button
                     type="button"
@@ -112,7 +123,7 @@ export function EntailmentQueryCard() {
                     onClick={handleChange}
                   >
                     <Trash2Icon className="mr-2" />
-                    Clear
+                    Reset Results
                   </Button>
                 )}
               </div>

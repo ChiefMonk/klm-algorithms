@@ -66,7 +66,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
             <Formula formula={entailmentResultFormula} />
           </div>
 
-          <div className="text-slate-500 font-medium">Deciding KB</div>
+          <div className="text-slate-500 font-medium">Deciding Statements</div>
           <div>            
             <Kb                   
                     formulas={entailment.entailmentKnowledgeBase}
