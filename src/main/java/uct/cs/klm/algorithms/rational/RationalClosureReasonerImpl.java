@@ -26,9 +26,7 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
     
     public RationalClosureReasonerImpl() {
         super();
-    }
-    
-      
+    }          
 
     @Override
     public ModelEntailment getEntailment(
@@ -142,8 +140,21 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         // The query is entailed only if the negation is not entailed and the query is entailed.
         boolean isQueryEntailed = _reasoner.query(finalMaterialisedKB, materialisedQueryFormula);
         
-        
-      KnowledgeBase entailmentKb = new KnowledgeBase();
+        KnowledgeBase entailmentKb = new KnowledgeBase();
+         
+        if(!isQueryEntailed)
+        {
+            var infinityRank = baseRankCollection.getInfinityRank();
+            isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
+            
+            if(isQueryEntailed)
+            {
+                entailmentKb = infinityRank.getFormulas();
+                remainingRanking = new ModelRankCollection(infinityRank);
+                removedRanking = baseRankCollection.getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+            }
+        }
+             
         String hasEntailed = "NO";
         if (isQueryEntailed) {
             entailmentKb = ReasonerUtils.toKnowledgeBase(remainingRanking);

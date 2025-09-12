@@ -75,6 +75,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
         ModelRankCollection removedRanking = new ModelRankCollection();
         ModelRankCollection weakenedRanking = new ModelRankCollection();
         ModelRankCollection miniBaseRanking = new ModelRankCollection();
+        ModelRankCollection remainingRanking = new ModelRankCollection();
         
         ModelRankCollection higherRanks = new ModelRankCollection();
         List<List<PlFormula>> previousPowersets = new ArrayList<>();
@@ -150,6 +151,21 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 break;
             }                                                
         }
+        
+        KnowledgeBase entailmentKb = new KnowledgeBase();
+        
+        if(!isQueryEntailed)
+        {           
+            isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
+            
+            if(isQueryEntailed)
+            {
+                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(infinityRank);
+                entailmentKb = infinityRank.getFormulas();
+                remainingRanking = new ModelRankCollection(infinityRank);
+                removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+            }
+        }
 
         long endTime = System.nanoTime();
         double timeTaken = (endTime - startTime) / 1_000_000_000.0;
@@ -165,7 +181,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 .withBaseRanking(baseRank.getRanking())
                 //.withMiniBaseRanking(miniBaseRanking)
                 .withRemovedRanking(removedRanking)
-                .withRemainingRanking(baseRank.getRanking())
+                .withRemainingRanking(remainingRanking)
                 .withWeakenedRanking(weakenedRanking)
                 .withEntailmentKnowledgeBase(materialisedKB)
                 .withEntailed(isQueryEntailed)
