@@ -41,7 +41,7 @@ function MinimalRelevantClosure({
       <CardContent>
         {!isLoading && minimalRelevantEntailment && (
           <div>
-            <h1 className="text-lg font-bold mb-2">Entailment Algorithm</h1>
+            <h1 className="text-lg font-bold mb-2">Entailment Determination</h1>
             <Kb formulas={minimalRelevantEntailment.knowledgeBase} set />
             <div className="mb-6">
               <QueryFormula formula={minimalRelevantEntailment.queryFormula} />

@@ -30,6 +30,9 @@ import {
   LoaderCircle,
   Square,
   Triangle,
+  Star,
+  Squircle,
+  Stamp,
 } from "lucide-react";
 import { timestampFilename } from "@/lib/utils/file-name";
 
@@ -41,8 +44,11 @@ interface EvaluationChartProps {
 
 const ALL_ALGORITHMS: Algorithm[] = [
   Algorithm.Naive,
+  Algorithm.NaiveIndex,
   Algorithm.Binary,
+  Algorithm.BinaryIndex,
   Algorithm.Ternary,
+  Algorithm.TernaryIndex,
   Algorithm.PowerSet,
 ];
 
@@ -83,9 +89,12 @@ export function EvaluationChart({
 
   const algoColors = {
     [Algorithm.Naive]: "--chart-1",
-    [Algorithm.Binary]: "--chart-2",
-    [Algorithm.Ternary]: "--chart-3",
-    [Algorithm.PowerSet]: "--chart-4",
+    [Algorithm.NaiveIndex]: "--chart-2",
+    [Algorithm.Binary]: "--chart-3",
+    [Algorithm.BinaryIndex]: "--chart-4",
+    [Algorithm.Ternary]: "--chart-5",
+    [Algorithm.TernaryIndex]: "--chart-6",
+    [Algorithm.PowerSet]: "--chart-7",
   };
 
   Array.from(presentAlgos).forEach((algo) => {
@@ -97,8 +106,11 @@ export function EvaluationChart({
 
   const algoIcons = {
     [Algorithm.Naive]: Square,
+    [Algorithm.NaiveIndex]: Stamp,
     [Algorithm.Binary]: Circle,
-    [Algorithm.Ternary]: Diamond,
+    [Algorithm.BinaryIndex]: Squircle,
+    [Algorithm.Ternary]: Star,
+    [Algorithm.TernaryIndex]: Diamond,    
     [Algorithm.PowerSet]: Triangle,
   };
 

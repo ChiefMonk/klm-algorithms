@@ -7,8 +7,11 @@ enum InferenceOperator {
 
 enum Algorithm {
   Naive = "Naive",
+  NaiveIndex = "NaiveIndex",
   Binary = "Binary",
+  BinaryIndex = "BinaryIndex",
   Ternary = "Ternary",
+  TernaryIndex = "TernaryIndex",
   PowerSet = "PowerSet",
 }
 
