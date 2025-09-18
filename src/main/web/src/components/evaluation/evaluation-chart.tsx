@@ -33,6 +33,7 @@ import {
   Star,
   Squircle,
   Stamp,
+  Heart,
 } from "lucide-react";
 import { timestampFilename } from "@/lib/utils/file-name";
 
@@ -50,6 +51,8 @@ const ALL_ALGORITHMS: Algorithm[] = [
   Algorithm.Ternary,
   Algorithm.TernaryIndex,
   Algorithm.PowerSet,
+  Algorithm.PowerSetCombined,
+  Algorithm.PowerSetSubset,
 ];
 
 export function EvaluationChart({
@@ -95,6 +98,8 @@ export function EvaluationChart({
     [Algorithm.Ternary]: "--chart-5",
     [Algorithm.TernaryIndex]: "--chart-6",
     [Algorithm.PowerSet]: "--chart-7",
+    [Algorithm.PowerSetCombined]: "--chart-8",
+    [Algorithm.PowerSetSubset]: "--chart-9",
   };
 
   Array.from(presentAlgos).forEach((algo) => {
@@ -110,8 +115,10 @@ export function EvaluationChart({
     [Algorithm.Binary]: Circle,
     [Algorithm.BinaryIndex]: Squircle,
     [Algorithm.Ternary]: Star,
-    [Algorithm.TernaryIndex]: Diamond,    
+    [Algorithm.TernaryIndex]: Diamond,
     [Algorithm.PowerSet]: Triangle,
+    [Algorithm.PowerSetCombined]: Triangle,
+    [Algorithm.PowerSetSubset]: Heart,
   };
 
   return (

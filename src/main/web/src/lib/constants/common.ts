@@ -20,24 +20,55 @@ export const INFERENCE_OPERATORS: ReadonlyMap<InferenceOperator, string> =
   ]);
 
 export const ALGORITHMS: ReadonlyMap<Algorithm, string> = new Map([
+  [Algorithm.Naive, "Naive"],
+  [Algorithm.NaiveIndex, "Naive Index"],
+  [Algorithm.Binary, "Binary"],
+  [Algorithm.BinaryIndex, "Binary Index"],
+  [Algorithm.Ternary, "Ternary"],
+  [Algorithm.TernaryIndex, "Ternary Index"],
+  [Algorithm.PowerSet, "Power Set"],
+  [Algorithm.PowerSetCombined, "Power Set Combined"],
+  [Algorithm.PowerSetSubset, "Power Set Subset"],
+]);
+
+export const ALGORITHMS_RATC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "RatCNaive: The Naive Implementation"],
-  [Algorithm.NaiveIndex, "RatCNaiveIndex: The Naive with Indexing Implementation"],
+  [
+    Algorithm.NaiveIndex,
+    "RatCNaiveIndex: The Naive with Indexing Implementation",
+  ],
   [Algorithm.Binary, "RatCBinary: Binary Search Implementation"],
-  [Algorithm.BinaryIndex, "RatCBinaryIndexing: Binary Search with Indexing Implementation"],
+  [
+    Algorithm.BinaryIndex,
+    "RatCBinaryIndexing: Binary Search with Indexing Implementation",
+  ],
   [Algorithm.Ternary, "RatCTernary: Ternary Search Implementation"],
-  [Algorithm.TernaryIndex, "RatCTernaryIndexing: Ternary Search with Indexing Implementation"], 
+  [
+    Algorithm.TernaryIndex,
+    "RatCTernaryIndexing: Ternary Search with Indexing Implementation",
+  ],
 ]);
 
 export const ALGORITHMS_LEXC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "LexCNaive: The Naive Implementation"],
-  [Algorithm.PowerSet, "LexCPowerSet: The PowerSet Implementation"],
+  [
+    Algorithm.PowerSetCombined,
+    "LexCPowerSetCombined: The PowerSet Combined Implementation",
+  ],
+  [
+    Algorithm.PowerSetSubset,
+    "LexCPowerSetSubset: The PowerSet Subset Implementation",
+  ],
   [Algorithm.Binary, "LexCBinary: Binary Search Implementation"],
   [Algorithm.Ternary, "LexCTernary: Ternary Search Implementation"],
 ]);
 
 export const ALGORITHMS_RELC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "RelCNaive: The Naive Implementation"],
-  [Algorithm.PowerSet, "RelCPowerSet: The PowerSet Implementation"],
+  [
+    Algorithm.PowerSetCombined,
+    "RelCPowerSetCombined: The PowerSet Combined Implementation",
+  ],
   [Algorithm.Binary, "RelCBinary: Binary Search Implementation"],
   [Algorithm.Ternary, "RelCTernary: Ternary Search Implementation"],
 ]);

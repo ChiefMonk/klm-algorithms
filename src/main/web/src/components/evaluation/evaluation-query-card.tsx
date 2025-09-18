@@ -1,14 +1,21 @@
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { EvaluationFormSchema, EvaluationFormSchemaType } from "@/lib/schemas";
-import { EvaluationConstants } from "@/lib/constants";
+import {
+  ALGORITHMS_LEXC,
+  ALGORITHMS_RATC,
+  ALGORITHMS_RELC,
+  EvaluationConstants,
+} from "@/lib/constants";
 import {
   Distribution,
   CharacterSet,
   Generator,
   InferenceOperator,
+  IFormFieldOption,
+  Algorithm,
 } from "@/lib/models";
 
 import { useReasonerContext } from "@/state/reasoner.context";
@@ -33,7 +40,6 @@ import {
 } from "../form-fields";
 
 import {
-  algorithmOptions,
   characterSetOptions,
   complexityOptions,
   connectiveOptions,
@@ -53,6 +59,9 @@ import { ChartArea, DownloadIcon, Trash2Icon } from "lucide-react";
  */
 export function EvaluationQueryCard(): JSX.Element {
   const reasoner = useReasonerContext();
+  const [algOptions, setAlgOptions] = useState<IFormFieldOption<Algorithm>[]>(
+    []
+  );
 
   const defaultValues = {
     parameters: {
@@ -90,6 +99,31 @@ export function EvaluationQueryCard(): JSX.Element {
     }
   }, [form, reasoner.evaluation]);
 
+  const inferenceOperator = form.watch("inferenceOperator");
+  useEffect(() => {
+    const algs = () => {
+      switch (inferenceOperator) {
+        case InferenceOperator.RationalClosure:
+          return ALGORITHMS_RATC;
+        case InferenceOperator.LexicographicClosure:
+          return ALGORITHMS_LEXC;
+        case InferenceOperator.BasicRelevantClosure:
+        case InferenceOperator.MinimalRelevantClosure:
+          return ALGORITHMS_RELC;
+        default:
+          throw new Error("Unknown inference operator");
+      }
+    };
+
+    const options: IFormFieldOption<Algorithm>[] = Array.from(
+      algs().entries()
+    ).map(([key, value]) => ({
+      label: value,
+      value: key,
+    }));
+    setAlgOptions(options);
+  }, [form, inferenceOperator]);
+
   const numberOfRanks = form.watch("parameters.numberOfRanks");
 
   // Ensure defeasible implications >= number of ranks
@@ -116,9 +150,13 @@ export function EvaluationQueryCard(): JSX.Element {
     });
   };
 
-  const handleChange = () => {
+  const handleChange = (operatorChange = false) => {
     reasoner.deleteEvaluation();
+    if (operatorChange) {
+      form.setValue("algorithm", []);
+    }
   };
+
   return (
     <Form {...form}>
       <div className="flex flex-col gap-6">
@@ -215,10 +253,12 @@ export function EvaluationQueryCard(): JSX.Element {
         {/* Inference and Algorithms Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Entailment Algorithm Implementation Categories</CardTitle>
+            <CardTitle>
+              Entailment Algorithm Implementation Categories
+            </CardTitle>
             <CardDescription>
-              Select entailment algorithm and implementation category to evaluate or import
-              evaluation data
+              Select entailment algorithm and implementation category to
+              evaluate or import evaluation data
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -226,15 +266,15 @@ export function EvaluationQueryCard(): JSX.Element {
               <RadioGroupField
                 form={form}
                 name="inferenceOperator"
-                label=">Entailment Algorithm"
+                label="Entailment Algorithm"
                 options={operatorOptions}
-                handleChange={handleChange}
+                handleChange={() => handleChange(true)}
               />
               <CheckboxGroupField
                 form={form}
                 name="algorithm"
                 label="Implementation Category"
-                options={algorithmOptions}
+                options={algOptions}
                 handleChange={handleChange}
               />
               <div className="flex justify-end">

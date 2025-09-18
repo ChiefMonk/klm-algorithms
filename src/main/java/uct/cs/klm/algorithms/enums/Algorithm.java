@@ -2,7 +2,12 @@ package uct.cs.klm.algorithms.enums;
 
 public enum Algorithm {
     Naive,
+    NaiveIndex,
     Binary,
+    BinaryIndex,
     Ternary,
-    PowerSet
+    TernaryIndex,
+    PowerSet,
+    PowerSetCombined,
+    PowerSetSubset
 }

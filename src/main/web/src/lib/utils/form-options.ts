@@ -2,14 +2,12 @@ import {
   DISTRIBUTIONS,
   CHARACTER_SETS,
   GENERATORS,
-  ALGORITHMS,
   INFERENCE_OPERATORS,
 } from "../constants";
 import {
   Complexity,
   Connective,
   InferenceOperator,
-  Algorithm,
   Distribution,
   CharacterSet,
   Generator,
@@ -56,20 +54,6 @@ export const operatorOptions: IFormFieldOption<InferenceOperator>[] =
     label: INFERENCE_OPERATORS.get(operator) || InferenceOperator[operator],
     value: operator,
   }));
-
-/**
- * Generates select options for supported evaluation algorithms.
- *
- * Each option includes the enum value as both label and value.
- *
- * @returns {IFormFieldOption<Algorithm>[]} An array of select options for evaluation algorithms.
- */
-export const algorithmOptions: IFormFieldOption<Algorithm>[] = Object.values(
-  Algorithm
-).map((algorithm) => ({
-  label: ALGORITHMS.get(algorithm) || Algorithm[algorithm],
-  value: algorithm,
-}));
 
 /**
  * Generates select options for distributions.

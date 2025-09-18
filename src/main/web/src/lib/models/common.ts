@@ -13,6 +13,8 @@ enum Algorithm {
   Ternary = "Ternary",
   TernaryIndex = "TernaryIndex",
   PowerSet = "PowerSet",
+  PowerSetCombined = "PowerSetCombined",
+  PowerSetSubset = "PowerSetSubset",
 }
 
 enum QueryType {

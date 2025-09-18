@@ -229,8 +229,23 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             }
 
         }
-
+        
         KnowledgeBase entailmentKb = new KnowledgeBase();
+        
+        if(!isQueryEntailed)
+        {
+            var infinityRank = baseRankCollection.getInfinityRank();
+            isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
+            
+            if(isQueryEntailed)
+            {
+                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(infinityRank);
+                entailmentKb = infinityRank.getFormulas();
+                remainingRanking = new ModelRankCollection(infinityRank);
+                removedRanking = baseRankCollection.getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+            }
+        }
+       
         String hasEntailed = "NO";
         if (isQueryEntailed) {
             entailmentKb = materialisedKB;
