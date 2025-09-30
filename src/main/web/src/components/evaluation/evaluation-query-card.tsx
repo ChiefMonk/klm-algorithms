@@ -194,7 +194,7 @@ export function EvaluationQueryCard(): JSX.Element {
               <SelectField
                 form={form}
                 name="parameters.characterSet"
-                label="Character Set"
+                label="Atomic Symbol Character Set"
                 options={characterSetOptions}
                 handleChange={handleChange}
               />
