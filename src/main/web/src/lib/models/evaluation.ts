@@ -1,10 +1,11 @@
 import { InferenceOperator, Algorithm } from "./common";
 
 enum Distribution {
-  Flat = "Flat",
-  LinearGrowth = "LinearGrowth",
-  LinearDecline = "LinearDecline",
-  Random = "Random",
+  Uniform = "Uniform",
+  Linear = "Linear",
+  ReversedLinear = "ReversedLinear",
+  Exponential  = "Exponential",
+  ReversedExponential = "ReversedExponential",
 }
 
 enum Complexity {
@@ -21,7 +22,7 @@ enum Connective {
 }
 
 enum CharacterSet {
-  Greek = "Greek",
+  LowerLatin = "LowerLatin" 
 }
 
 enum Generator {

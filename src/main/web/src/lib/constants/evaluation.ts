@@ -8,8 +8,8 @@ import {
   Generator,
 } from "../models";
 
-const NUMBER_OF_RANKS_MIN = 1;
-const NUMBER_OF_RANKS_MAX = 10;
+const NUMBER_OF_RANKS_MIN = 5;
+const NUMBER_OF_RANKS_MAX = 20;
 const NUMBER_OF_DI_MAX = 50;
 
 /**
@@ -72,10 +72,11 @@ export const EvaluationConstants: EvaluationConstantsType = {
 };
 
 export const DISTRIBUTIONS: ReadonlyMap<Distribution, string> = new Map([
-  [Distribution.Flat, "Flat Distribution"],
-  [Distribution.LinearGrowth, "Linear Growth"],
-  [Distribution.LinearDecline, "Linear Decline"],
-  [Distribution.Random, "Random Distribution"],
+  [Distribution.Uniform, "Uniform Distribution"],
+  [Distribution.Linear, "Linear Growth Distribution"],
+  [Distribution.ReversedLinear, "Reversed Linear Growth Distribution"],
+  [Distribution.Exponential, "Exponential Growth Distribution"],
+  [Distribution.ReversedExponential, "Reversed Exponential Growth Distribution"],
 ]);
 
 export const COMPLEXITIES: ReadonlyMap<Complexity, string> = new Map([
@@ -92,7 +93,7 @@ export const CONNECTIVES: ReadonlyMap<Connective, string> = new Map([
 ]);
 
 export const CHARACTER_SETS: ReadonlyMap<CharacterSet, string> = new Map([
-  [CharacterSet.Greek, "Greek Alphabet Lowercase"],
+  [CharacterSet.LowerLatin, "Lowercase Latin Alphabet"],
 ]);
 
 export const GENERATORS: ReadonlyMap<Generator, string> = new Map([

@@ -492,9 +492,11 @@ class ErrorModel extends Error {
 }
 
 enum DistributionType {
-  Flat = "Flat",
+  Uniform = "Uniform",
   Linear = "Linear",
-  Random = "Random",
+  ReversedLinear = "ReversedLinear",
+  Exponential = "Exponential",
+  ReversedExponential = "ReversedExponential",
 }
 
 enum Complexity {

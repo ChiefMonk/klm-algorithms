@@ -171,7 +171,7 @@ public class AppGenerator
             System.out.println("Greek & altlatin character sets require code page 65001");
             System.out.println("Can set this in the terminal using 'chcp 65001'");
             System.out.print("> ");
-            String characterSet = in.next(); // The character set used for the atoms
+            String characterSet = "lowerlatin"; // The character set used for the atoms
             while (!validCharacterSet(characterSet)){
                 System.out.println("Enter valid character set [lowerlatin, upperlatin, altlatin, greek]:");
                 System.out.print("> ");

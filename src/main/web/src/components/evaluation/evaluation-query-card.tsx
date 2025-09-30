@@ -67,13 +67,13 @@ export function EvaluationQueryCard(): JSX.Element {
     parameters: {
       numberOfRanks: 7,
       numberOfDefeasibleImplications: 21,
-      distribution: Distribution.Flat,
+      distribution: Distribution.Uniform,
       antecedentComplexity: [],
       consequentComplexity: [],
       simpleDiOnly: false,
       reuseConsequent: false,
       connective: [],
-      characterSet: CharacterSet.Greek,
+      characterSet: CharacterSet.LowerLatin,
       generator: Generator.Optimized,
     },
     algorithm: [],
@@ -206,7 +206,8 @@ export function EvaluationQueryCard(): JSX.Element {
                 handleChange={handleChange}
               />
             </div>
-
+            
+            
             <div className="grid grid-cols-3 gap-8">
               <CheckboxGroupField
                 form={form}

@@ -58,10 +58,10 @@ function GenerateKbForm({ handleReset, handleSumbit }: GenerateKbFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      numberOfRanks: 1,
-      distributionType: DistributionType.Flat,
+      numberOfRanks: 10,
+      distributionType: DistributionType.Uniform,
       complexity: Complexity.Low,
-      numberOfDefeasibleImplications: 1,
+      numberOfDefeasibleImplications: 30,
     },
   });
 
