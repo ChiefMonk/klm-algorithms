@@ -10,6 +10,8 @@ import {
   EvaluationConstants,
 } from "@/lib/constants";
 import {
+  Complexity,
+  Connective,
   Distribution,
   CharacterSet,
   Generator,
@@ -41,8 +43,6 @@ import {
 
 import {
   characterSetOptions,
-  complexityOptions,
-  connectiveOptions,
   distributionOptions,
   generatorOptions,
   operatorOptions,
@@ -68,11 +68,11 @@ export function EvaluationQueryCard(): JSX.Element {
       numberOfRanks: 7,
       numberOfDefeasibleImplications: 21,
       distribution: Distribution.Uniform,
-      antecedentComplexity: [],
-      consequentComplexity: [],
-      simpleDiOnly: false,
-      reuseConsequent: false,
-      connective: [],
+      antecedentComplexity: [Complexity.Low],
+      consequentComplexity: [Complexity.Low],
+      simpleDiOnly: true,
+      reuseConsequent: true,
+      connective: [Connective.Disjunction, Connective.Conjunction],
       characterSet: CharacterSet.LowerLatin,
       generator: Generator.Optimized,
     },
@@ -207,7 +207,7 @@ export function EvaluationQueryCard(): JSX.Element {
               />
             </div>
             
-            
+            {/* 
             <div className="grid grid-cols-3 gap-8">
               <CheckboxGroupField
                 form={form}
@@ -231,6 +231,7 @@ export function EvaluationQueryCard(): JSX.Element {
                 handleChange={handleChange}
               />
             </div>
+ */}
 
             <div className="grid grid-cols-3 gap-8">
               <SwitchField

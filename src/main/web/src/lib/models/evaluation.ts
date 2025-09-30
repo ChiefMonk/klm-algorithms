@@ -15,10 +15,10 @@ enum Complexity {
 }
 
 enum Connective {
-  Disjunction = "Disjunction (∨)",
-  Conjunction = "Conjunction (∧)",
-  Implication = "Implication (→)",
-  BiImplication = "Bi-implication (↔)",
+  Disjunction = "Disjunction",
+  Conjunction = "Conjunction",
+  Implication = "Implication",
+  BiImplication = "BiImplication",
 }
 
 enum CharacterSet {
