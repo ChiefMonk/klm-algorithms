@@ -14,22 +14,19 @@ enum Complexity {
 }
 
 enum Connective {
-  Disjunction = "Disjunction",
-  Conjunction = "Conjunction",
-  Implication = "Implication",
-  BiImplication = "BiImplication",
+  Disjunction = "Disjunction (∨)",
+  Conjunction = "Conjunction (∧)",
+  Implication = "Implication (→)",
+  BiImplication = "Bi-implication (↔)",
 }
 
 enum CharacterSet {
-  LowerLatin = "LowerLatin",
-  UpperLatin = "UpperLatin",
-  AltLatin = "AltLatin",
   Greek = "Greek",
 }
 
 enum Generator {
-  Standard = "Standard",
   Optimized = "Optimized",
+  Standard = "Standard", 
 }
 
 interface IEvaluationQueryParams {

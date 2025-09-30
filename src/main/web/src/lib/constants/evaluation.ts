@@ -85,20 +85,17 @@ export const COMPLEXITIES: ReadonlyMap<Complexity, string> = new Map([
 ]);
 
 export const CONNECTIVES: ReadonlyMap<Connective, string> = new Map([
-  [Connective.Disjunction, "Disjunction"],
-  [Connective.Conjunction, "Conjunction"],
-  [Connective.Implication, "Implication"],
-  [Connective.BiImplication, "Bi-implication"],
+  [Connective.Disjunction, "Disjunction (∨)"],
+  [Connective.Conjunction, "Conjunction (∧)"],
+  [Connective.Implication, "Implication (→)"],
+  [Connective.BiImplication, "Bi-implication (↔)"],
 ]);
 
 export const CHARACTER_SETS: ReadonlyMap<CharacterSet, string> = new Map([
-  [CharacterSet.LowerLatin, "Lowercase Latin"],
-  [CharacterSet.UpperLatin, "Uppercase Latin"],
-  [CharacterSet.AltLatin, "Alternative Latin"],
-  [CharacterSet.Greek, "Greek Letters"],
+  [CharacterSet.Greek, "Greek Alphabet Lowercase"],
 ]);
 
 export const GENERATORS: ReadonlyMap<Generator, string> = new Map([
-  [Generator.Standard, "Standard Generator"],
-  [Generator.Optimized, "Optimized Generator"],
+  [Generator.Optimized, "Optimized Generator Algorithm"],
+  [Generator.Standard, "Standard Generator Algorithm"], 
 ]);

@@ -27,3 +27,4 @@ replay_pid*
 dependency-reduced-pom.xml
 target/
 .idea/
+/src/main/web/package-lock.json

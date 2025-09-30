@@ -1,8 +1,5 @@
 package uct.cs.klm.algorithms.enums;
 
 public enum CharacterSet {
-    LowerLatin,
-    UpperLatin,
-    AltLatin,
-    Greek,
+    Greek   
 }

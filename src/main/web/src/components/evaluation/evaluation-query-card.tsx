@@ -65,16 +65,16 @@ export function EvaluationQueryCard(): JSX.Element {
 
   const defaultValues = {
     parameters: {
-      numberOfRanks: 1,
-      numberOfDefeasibleImplications: 1,
+      numberOfRanks: 7,
+      numberOfDefeasibleImplications: 21,
       distribution: Distribution.Flat,
       antecedentComplexity: [],
       consequentComplexity: [],
       simpleDiOnly: false,
       reuseConsequent: false,
       connective: [],
-      characterSet: CharacterSet.LowerLatin,
-      generator: Generator.Standard,
+      characterSet: CharacterSet.Greek,
+      generator: Generator.Optimized,
     },
     algorithm: [],
     inferenceOperator:
@@ -173,21 +173,21 @@ export function EvaluationQueryCard(): JSX.Element {
               <NumberInputField
                 form={form}
                 name="parameters.numberOfRanks"
-                label="Number of ranks"
+                label="Total Number of Ranks"
                 min={EvaluationConstants.NUMBER_OF_RANKS_MIN}
                 handleChange={handleChange}
               />
               <NumberInputField
                 form={form}
                 name="parameters.numberOfDefeasibleImplications"
-                label="Number of defeasible implications"
+                label="Total Number of Defeasible Statements"
                 min={numberOfRanks}
                 handleChange={handleChange}
               />
               <SelectField
                 form={form}
                 name="parameters.distribution"
-                label="Distribution"
+                label="Statement Distribution"
                 options={distributionOptions}
                 handleChange={handleChange}
               />
@@ -211,21 +211,21 @@ export function EvaluationQueryCard(): JSX.Element {
               <CheckboxGroupField
                 form={form}
                 name="parameters.antecedentComplexity"
-                label="Antecedent complexity"
+                label="Statement Antecedent Complexity"
                 options={complexityOptions}
                 handleChange={handleChange}
               />
               <CheckboxGroupField
                 form={form}
                 name="parameters.consequentComplexity"
-                label="Consequent complexity"
+                label="Statement Consequent Complexity"
                 options={complexityOptions}
                 handleChange={handleChange}
               />
               <CheckboxGroupField
                 form={form}
                 name="parameters.connective"
-                label="Connectives"
+                label="Logical Statement Connectives"
                 options={connectiveOptions}
                 handleChange={handleChange}
               />

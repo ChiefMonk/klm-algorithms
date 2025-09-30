@@ -76,7 +76,7 @@ public class AppConsole {
             */
                       
                                                   
-           ExecuteResoner("mrelc", baseRank, knowledgeBase, queryFormula);           
+           ExecuteResoner("brelc", baseRank, knowledgeBase, queryFormula);           
 
         } catch (IOException ex) {            
             _logger.error("Error message", ex);           
