@@ -107,7 +107,7 @@ export function EntailmentQueryCard() {
               {reasoner.queryType === QueryType.Justification ? (
   <Button type="submit">
     <BrainCog className="mr-2" />
-    Determine Justifications
+    Determine Entailment and Justification
   </Button>
 ) : (
   <Button type="submit">

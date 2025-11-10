@@ -1,7 +1,7 @@
 import { EntailmentModel, InferenceOperator, QueryType } from "@/lib/models";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { toTex } from "@/lib/formula";
-import { Formula, Kb } from "./common/formulas";
+import { Formula, Kb, KbSimple } from "./common/formulas";
 import { INFERENCE_OPERATORS } from "@/lib/constants";
 import { useReasonerContext } from "@/state/reasoner.context";
 
@@ -16,7 +16,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
   const entailmentResultFormula = entailment.entailed
     ? toTex("\\mathcal{K} \\vapprox " + entailment.queryFormula)
     : toTex("\\mathcal{K} \\nvapprox " + entailment.queryFormula);
-   
+
   return (
     <Card>
       <CardHeader>
@@ -29,50 +29,102 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
           className="grid items-baseline"
           style={{ gridTemplateColumns: "auto 1fr", gap: "0.5rem 2rem" }}
         >
-          <div className="text-slate-500 font-medium">Remaining ranks</div>
+
+          <div className="text-slate-500 font-medium">
+            {operator === InferenceOperator.RationalClosure
+              ? "Discarded ranks"
+              : "Discarded statements"}</div>
           <div>
-            {(() => {
-              const items = entailment.remainingRanking.sort(
-                (a, b) => a.rankNumber - b.rankNumber
-              );
-              if (!items || items.length === 0) return null;
-              if (items.length === 1) {
-                return (
-                  <Formula formula={`\\mathcal{R}_{${items[0].rankNumber}}`} />
+            {operator === InferenceOperator.RationalClosure ? (
+              (() => {
+                const items = entailment.removedRanking.sort(
+                  (a, b) => a.rankNumber - b.rankNumber
                 );
-              }
-              return items.map((rank, i) => {
-                const isLast = i === items.length - 1;
-                if (isLast) {
+                if (!items || items.length === 0) return null;
+                if (items.length === 1) {
                   return (
-                    <span key={i}>
-                      and{" "}
-                      <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
-                    </span>
+                    <Formula formula={`\\mathcal{R}_{${items[0].rankNumber}}`} />
                   );
-                } else {
-                  return (
-                    <span key={i}>
+                }
+                return items.map((rank, i) => {
+                  const isLast = i === items.length - 1;
+                  if (isLast) {
+                    return (
+                      <span key={i}>
+                        and{" "}
+                        <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span key={i}>
+                        <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
+                        {i < items.length - 2 ? ", " : " "}
+                      </span>
+                    );
+                  }
+                });
+              })()
+            ) : (
+              <KbSimple
+                formulas={entailment.removedKnowledgeBase}               
+                set
+              />
+            )}
+          </div>
+
+
+          <div className="text-slate-500 font-medium">
+            {operator === InferenceOperator.RationalClosure
+              ? "Remaining ranks"
+              : "Remaining statements"}</div>
+          <div>
+            {operator === InferenceOperator.RationalClosure ? (
+              (() => {
+                const items = [...entailment.remainingRanking].sort(
+                  (a, b) => a.rankNumber - b.rankNumber
+                );
+
+                if (!items?.length) return null;
+
+                if (items.length === 1) {
+                  return <Formula formula={`\\mathcal{R}_{${items[0].rankNumber}}`} />;
+                }
+
+                return items.map((rank, i) => {
+                  const isLast = i === items.length - 1;
+                  return isLast ? (
+                    <span key={rank.rankNumber ?? i}>
+                      and <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
+                    </span>
+                  ) : (
+                    <span key={rank.rankNumber ?? i}>
                       <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
                       {i < items.length - 2 ? ", " : " "}
                     </span>
                   );
-                }
-              });
-            })()}
+                });
+              })()
+            ) : (
+              <KbSimple
+                formulas={entailment.remainingKnowledgeBase}               
+                set
+              />
+            )}
+          </div>
+
+
+          <div className="text-slate-500 font-medium">Deciding Statements</div>
+          <div>
+            <Kb
+              formulas={entailment.entailmentKnowledgeBase}
+              name={`\\mathcal{D}`}
+              set
+            />
           </div>
           <div className="text-slate-500 font-medium">Entailment result</div>
           <div>
             <Formula formula={entailmentResultFormula} />
-          </div>
-
-          <div className="text-slate-500 font-medium">Deciding Statements</div>
-          <div>            
-            <Kb                   
-                    formulas={entailment.entailmentKnowledgeBase}
-                    name={`\\mathcal{D}`}
-                    set
-                  />
           </div>
 
           {queryType === QueryType.Justification && (
@@ -87,7 +139,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
                     set
                   />
                 ))}
-            </div>
+              </div>
             </>
           )}
         </div>

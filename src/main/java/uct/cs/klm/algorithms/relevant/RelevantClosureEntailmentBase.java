@@ -229,26 +229,27 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             }
 
         }
-        
-        KnowledgeBase entailmentKb = new KnowledgeBase();
-        
+              
+        if(isQueryEntailed)
+        {     
+            remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKB, false);           
+            removedRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, remainingRanking.getKnowledgeBase(), true);
+        }
+                              
         if(!isQueryEntailed)
-        {
+        {           
             var infinityRank = baseRankCollection.getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
             
             if(isQueryEntailed)
-            {
-                materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(infinityRank);
-                entailmentKb = infinityRank.getFormulas();
+            {                           
                 remainingRanking = new ModelRankCollection(infinityRank);
-                removedRanking = baseRankCollection.getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+                removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
             }
         }
        
         String hasEntailed = "NO";
-        if (isQueryEntailed) {
-            entailmentKb = materialisedKB;
+        if (isQueryEntailed) {          
             hasEntailed = "YES";
         }
 
@@ -258,20 +259,18 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             _logger.debug("Finally checking if {} is entailed by {}", materialisedQueryFormula, materialisedKB);
             _logger.debug("Is Entailed: {} in {}", hasEntailed, finalTime);
         }
-
-        long endTime = System.nanoTime();
-
+      
         return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
-                .withRemovedRanking(new ModelRankCollection())
-                .withRemainingRanking(baseRankCollection)
+                .withRemovedRanking(removedRanking)
+                .withRemainingRanking(remainingRanking)
                 .withRelevantRankCollection(relevantRanking)
                 .withIrrelevantRankCollection(irrelevantRanking)
-                .withEntailmentKnowledgeBase(entailmentKb)
+                .withEntailmentKnowledgeBase(remainingRanking.getKnowledgeBase())
                 .withEntailed(isQueryEntailed)
-                .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
+                .withTimeTaken(finalTime)
                 .build();
     }
 

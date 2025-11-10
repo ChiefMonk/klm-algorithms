@@ -1,6 +1,5 @@
 package uct.cs.klm.algorithms.rational;
 
-import java.util.Collections;
 import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,9 +140,9 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         boolean isQueryEntailed = _reasoner.query(finalMaterialisedKB, materialisedQueryFormula);
         
         KnowledgeBase entailmentKb = new KnowledgeBase();
-         
+                
         if(!isQueryEntailed)
-        {
+        {        
             var infinityRank = baseRankCollection.getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
             
@@ -159,7 +158,7 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         if (isQueryEntailed) {
             entailmentKb = ReasonerUtils.toKnowledgeBase(remainingRanking);
             hasEntailed = "YES";
-        }
+        }               
         
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
         

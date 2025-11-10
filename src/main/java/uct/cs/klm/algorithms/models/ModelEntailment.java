@@ -58,10 +58,18 @@ public abstract class ModelEntailment {
     }
 
     public ModelRankCollection getRemovedRanking() {
+        if(_removedRanking == null || _removedRanking.isEmpty())
+        {
+            return new ModelRankCollection();
+        }
         return _removedRanking;
     }
 
     public ModelRankCollection getRemainingRanking() {
+        if(_remainingRanking == null || _remainingRanking.isEmpty())
+        {
+            return new ModelRankCollection();
+        }
         return _remainingRanking;
     }
 
@@ -71,6 +79,14 @@ public abstract class ModelEntailment {
 
     public KnowledgeBase getEntailmentKnowledgeBase() {
         return _entailmentKnowledgeBase;
+    }
+    
+    public KnowledgeBase getRemovedKnowledgeBase() {
+        return getRemovedRanking().getKnowledgeBase();
+    }
+    
+    public KnowledgeBase getRemainingKnowledgeBase() {
+        return getRemainingRanking().getKnowledgeBase();
     }
 
     public ModelRankCollection getRemainingRanks() {
@@ -170,8 +186,7 @@ public abstract class ModelEntailment {
 
         private ModelRankCollection _removedRanking;
         private ModelRankCollection _remainingRanking;
-        private KnowledgeBase _entailmentKnowledgeBase;
-             
+        private KnowledgeBase _entailmentKnowledgeBase;           
 
         public T withRemovedRanking(ModelRankCollection removedRanking) {
 

@@ -22,6 +22,8 @@ type EntailmentModelBase = {
   negation: string;
   knowledgeBase: string[];
   entailmentKnowledgeBase: string[];
+  removedKnowledgeBase: string[];
+  remainingKnowledgeBase: string[];
   signature: string[];
   entailed: boolean;
   baseRanking: Ranking[];
@@ -177,6 +179,8 @@ abstract class EntailmentModel {
   private _remainingRanking: Ranking[];
   private _justification: string[][];
   private _entailmentKnowledgeBase: string[];
+  private _removedKnowledgeBase: string[];
+  private _remainingKnowledgeBase: string[];
   private _justificationTime: number;
 
   constructor({
@@ -192,6 +196,8 @@ abstract class EntailmentModel {
     remainingRanking,
     justification,
     entailmentKnowledgeBase,
+    removedKnowledgeBase,
+    remainingKnowledgeBase,
     justificationTime,
     type,
   }: EntailmentModelBase) {
@@ -199,6 +205,8 @@ abstract class EntailmentModel {
     this._negation = negation;
     this._knowledgeBase = knowledgeBase ?? [];
     this._entailmentKnowledgeBase = (entailmentKnowledgeBase as string[]) ?? [];
+    this._removedKnowledgeBase = (removedKnowledgeBase as string[]) ?? [];
+    this._remainingKnowledgeBase = (remainingKnowledgeBase as string[]) ?? [];
     this._signature = signature ?? [];
     this._entailed = entailed;
     this._baseRanking = baseRanking ?? [];
@@ -267,6 +275,14 @@ abstract class EntailmentModel {
     return this._entailmentKnowledgeBase;
   }
 
+  public get remainingKnowledgeBase(): string[] {
+    return this._remainingKnowledgeBase;
+  }
+
+  public get removedKnowledgeBase(): string[] {
+    return this._removedKnowledgeBase;
+  }
+
   public abstract get remainingRanks(): Ranking[];
 
   public toObject(): EntailmentModelBase {
@@ -275,6 +291,8 @@ abstract class EntailmentModel {
       negation: this._negation,
       knowledgeBase: this._knowledgeBase,
       entailmentKnowledgeBase: this._entailmentKnowledgeBase,
+      removedKnowledgeBase: this._removedKnowledgeBase,
+      remainingKnowledgeBase: this._remainingKnowledgeBase,
       signature: this._signature,
       entailed: this._entailed,
       baseRanking: this._baseRanking,

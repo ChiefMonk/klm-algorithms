@@ -71,6 +71,21 @@ export function Kb({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
   );
 }
 
+export function KbSimple({formulas, set = false }: KbProps) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center"}}>
+      {set && <Formula formula={`\\{\\;`} />}
+      {formulas.map((formula, index, array) => (
+        <span key={index} style={{ display: "flex", alignItems: "center" }}>
+          <Formula formula={formula} />
+          {index < array.length - 1 && <Formula formula=",\;" />}
+        </span>
+      ))}
+      {set && <Formula formula="\;\}" />}
+    </div>
+  );
+}
+
 export function Kb2({ name = "\\mathcal{K}", formulas, set = false }: KbProps) {
   return (
     <div className="line-clamp-1">

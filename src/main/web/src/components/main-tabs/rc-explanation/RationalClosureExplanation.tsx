@@ -30,10 +30,9 @@ function RationalClosureExplanation({
     <Card className="w-full h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Rational Closure</CardTitle>
-        <CardDescription className="text-base">
-          {/* Rational closure description */}
-          Rational closure is the most conservative form of defeasible entailment. This means that anything entailed by rational closure will also be entailed by the other common forms of defeasible
-entailment.
+        <CardDescription className="text-base text-xl md:text-xl">         
+          Rational Closure is a KLM inference mechanism for non-monotonic reasoning that ranks defeasible statements by their level of exceptionality. During entailment checking, lower (more typical) ranks are iteratively discarded until consistent higher-ranked worlds remain. A defeasible formula  
+<Formula formula=" \alpha \mid\sim \beta" /> holds if <Formula formula="\beta" /> is true in all minimal <Formula formula="\alpha" />-worlds, yielding a unique, consistent, and computationally efficient defeasible entailment relation. 
          
         </CardDescription>
       </CardHeader>
