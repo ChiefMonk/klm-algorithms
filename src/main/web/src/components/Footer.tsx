@@ -1,5 +1,4 @@
 import github from "@/assets/github-mark.svg";
-import { APP_VERSION } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 interface FooterProps {
@@ -18,7 +17,7 @@ function Footer({ className }: FooterProps) {
       >
         <img src={github} alt="GitHub logo" className="w-6 mr-2" />
         <span>
-          KLM-Style Entailment and Explanation Algorithms {APP_VERSION}
+          KLM-Style Entailment and Explanation Algorithms
         </span>
       </a>
     </footer>

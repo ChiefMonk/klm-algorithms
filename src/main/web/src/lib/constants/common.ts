@@ -9,7 +9,7 @@ export const SCREEN_WIDTH_SIZE = 95;
 /**
  * Application version (Date).
  */
-export const APP_VERSION = "v2024.10.01";
+export const APP_VERSION = "v2.11.2";
 
 export const INFERENCE_OPERATORS: ReadonlyMap<InferenceOperator, string> =
   new Map([

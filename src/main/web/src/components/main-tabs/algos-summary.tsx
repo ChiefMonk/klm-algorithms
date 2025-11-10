@@ -112,16 +112,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
               />
             )}
           </div>
-
-
-          <div className="text-slate-500 font-medium">Deciding Statements</div>
-          <div>
-            <Kb
-              formulas={entailment.entailmentKnowledgeBase}
-              name={`\\mathcal{D}`}
-              set
-            />
-          </div>
+          
           <div className="text-slate-500 font-medium">Entailment result</div>
           <div>
             <Formula formula={entailmentResultFormula} />
@@ -129,6 +120,14 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
 
           {queryType === QueryType.Justification && (
             <>
+            <div className="text-slate-500 font-medium">Deciding Statements</div>
+          <div>
+            <Kb
+              formulas={entailment.entailmentKnowledgeBase}
+              name={`\\mathcal{D}`}
+              set
+            />
+          </div>
               <div className="text-slate-500 font-medium">Justifcation Sets</div>
               <div className="space-y-2">
                 {entailment.justification.map((just, index) => (
