@@ -21,10 +21,8 @@ public abstract class ModelEntailment {
     
     protected ModelRankCollection _removedRanking;       
     protected ModelRankCollection _remainingRanking; 
-    
-    protected KnowledgeBase _removedKnowledgeBase;       
-    protected KnowledgeBase _remainingKnowledgeBase;   
-      
+    private ModelRankCollection _relevantRanking;
+         
     protected KnowledgeBase _entailmentKnowledgeBase;       
     protected ArrayList<KnowledgeBase> _justification;
 
@@ -40,7 +38,8 @@ public abstract class ModelEntailment {
         _removedRanking = builder._removedRanking;
         _justification = new ArrayList<>();
         _remainingRanking = builder._remainingRanking;
-        _entailmentKnowledgeBase = builder._entailmentKnowledgeBase;        
+        _entailmentKnowledgeBase = builder._entailmentKnowledgeBase;   
+        _relevantRanking = builder._relevantRanking;
     }
 
     public KnowledgeBase getKnowledgeBase() {
@@ -72,6 +71,14 @@ public abstract class ModelEntailment {
         }
         return _remainingRanking;
     }
+    
+     public ModelRankCollection getRelevantRanking() {
+        if(_relevantRanking == null || _relevantRanking.isEmpty())
+        {
+            return new ModelRankCollection();
+        }
+        return _relevantRanking;
+    }
 
     public ModelRankCollection getBaseRanking() {
         return _baseRanking;
@@ -87,6 +94,10 @@ public abstract class ModelEntailment {
     
     public KnowledgeBase getRemainingKnowledgeBase() {
         return getRemainingRanking().getKnowledgeBase();
+    }
+    
+    public KnowledgeBase getRelevantKnowledgeBase() {
+        return getRelevantRanking().getKnowledgeBase();
     }
 
     public ModelRankCollection getRemainingRanks() {
@@ -187,7 +198,8 @@ public abstract class ModelEntailment {
         private ModelRankCollection _removedRanking;
         private ModelRankCollection _remainingRanking;
         private KnowledgeBase _entailmentKnowledgeBase;           
-
+        private ModelRankCollection _relevantRanking;
+ 
         public T withRemovedRanking(ModelRankCollection removedRanking) {
 
             if (removedRanking != null && !removedRanking.isEmpty()) {
@@ -205,6 +217,16 @@ public abstract class ModelEntailment {
             }
 
             _remainingRanking = remainingRanking;
+            return self();
+        }
+        
+         public T withRelevantRanking(ModelRankCollection relevantRanking) {
+
+            if (relevantRanking != null && !relevantRanking.isEmpty()) {
+                relevantRanking.sort(Comparator.comparing(ModelRank::getRankNumber).reversed());
+            }
+
+            _relevantRanking = relevantRanking;
             return self();
         }
 

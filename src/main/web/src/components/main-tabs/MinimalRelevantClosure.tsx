@@ -10,7 +10,7 @@ import { NoResults } from "./NoResults";
 import { RankingTable } from "./tables/ranking-table";
 import { MinimalRelevantEntailmentModel } from "@/lib/models";
 import { Explanation } from "./common/explanations";
-import { Kb, QueryFormula } from "./common/formulas";
+import { Kb, QueryFormula, Formula } from "./common/formulas";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
 
@@ -48,7 +48,7 @@ function MinimalRelevantClosure({
             </div>
             <div className="mb-6">
               <p className="mb-3">
-                Relevant closure starts with the initial rankings constructed by
+              Minimal Relevant Closure starts with the initial rankings constructed by
                 the <i>BaseRank</i> algorithm.
               </p>
               <p className="font-medium">
@@ -56,7 +56,25 @@ function MinimalRelevantClosure({
               </p>
               <RankingTable
                 ranking={minimalRelevantEntailment.baseRanking}
-                caption="Ranks constructed by the Base Rank algorithm"
+               caption="The BaseRank of statements in the Knowledge Base"
+              />
+
+<p className="font-medium">Relevant Statements to the Negation of Query Antecedent, <Formula formula={minimalRelevantEntailment.negation} /></p>
+              <RankingTable
+                ranking={minimalRelevantEntailment.relevantRanking}
+                caption="The discarded statements from the Knowledge base"
+              />
+
+<p className="font-medium">Discarded Statements by Minimal Relevant Closure Algorithm</p>
+              <RankingTable
+                ranking={minimalRelevantEntailment.removedRanking}
+                caption="The discarded statements from the Knowledge base"
+              />
+
+              <p className="font-medium">Remaining Statements by Minimal Relevant Closure Algorithm</p>
+              <RankingTable
+                ranking={minimalRelevantEntailment.remainingRanking}
+                caption="The remaining statements from the BaseRank"
               />
             </div>
             <Explanation

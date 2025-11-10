@@ -24,6 +24,7 @@ type EntailmentModelBase = {
   entailmentKnowledgeBase: string[];
   removedKnowledgeBase: string[];
   remainingKnowledgeBase: string[];
+  relevantKnowledgeBase: string[];
   signature: string[];
   entailed: boolean;
   baseRanking: Ranking[];
@@ -32,6 +33,7 @@ type EntailmentModelBase = {
   justificationTime: number;
   removedRanking: Ranking[];
   remainingRanking: Ranking[];
+  relevantRanking: Ranking[];
   justification: string[][];
   type: EntailmentType;
 };
@@ -177,10 +179,12 @@ abstract class EntailmentModel {
   private _timeTaken: number;
   private _removedRanking: Ranking[];
   private _remainingRanking: Ranking[];
+  private _relevantRanking: Ranking[];
   private _justification: string[][];
   private _entailmentKnowledgeBase: string[];
   private _removedKnowledgeBase: string[];
   private _remainingKnowledgeBase: string[];
+  private _relevantKnowledgeBase: string[];
   private _justificationTime: number;
 
   constructor({
@@ -194,10 +198,12 @@ abstract class EntailmentModel {
     timeTaken,
     removedRanking,
     remainingRanking,
+    relevantRanking,
     justification,
     entailmentKnowledgeBase,
     removedKnowledgeBase,
     remainingKnowledgeBase,
+    relevantKnowledgeBase,
     justificationTime,
     type,
   }: EntailmentModelBase) {
@@ -207,6 +213,7 @@ abstract class EntailmentModel {
     this._entailmentKnowledgeBase = (entailmentKnowledgeBase as string[]) ?? [];
     this._removedKnowledgeBase = (removedKnowledgeBase as string[]) ?? [];
     this._remainingKnowledgeBase = (remainingKnowledgeBase as string[]) ?? [];
+    this._relevantKnowledgeBase = (relevantKnowledgeBase as string[]) ?? [];
     this._signature = signature ?? [];
     this._entailed = entailed;
     this._baseRanking = baseRanking ?? [];
@@ -215,6 +222,7 @@ abstract class EntailmentModel {
     this._justificationTime = justificationTime ?? 0;
     this._removedRanking = removedRanking ?? [];
     this._remainingRanking = remainingRanking ?? [];
+    this._relevantRanking = relevantRanking ?? [];
     this._justification = justification ?? [];
     this._type = type;
   }
@@ -259,6 +267,10 @@ abstract class EntailmentModel {
     return this._remainingRanking;
   }
 
+  public get relevantRanking(): Ranking[] {
+    return this._relevantRanking;
+  }
+
   public get timeTaken(): number {
     return this._timeTaken;
   }
@@ -282,6 +294,9 @@ abstract class EntailmentModel {
   public get removedKnowledgeBase(): string[] {
     return this._removedKnowledgeBase;
   }
+  public get relevantKnowledgeBase(): string[] {
+    return this._relevantKnowledgeBase;
+  }
 
   public abstract get remainingRanks(): Ranking[];
 
@@ -293,6 +308,7 @@ abstract class EntailmentModel {
       entailmentKnowledgeBase: this._entailmentKnowledgeBase,
       removedKnowledgeBase: this._removedKnowledgeBase,
       remainingKnowledgeBase: this._remainingKnowledgeBase,
+      relevantKnowledgeBase: this._relevantKnowledgeBase,
       signature: this._signature,
       entailed: this._entailed,
       baseRanking: this._baseRanking,
@@ -300,6 +316,7 @@ abstract class EntailmentModel {
       timeTaken: this._timeTaken,
       removedRanking: this._removedRanking,
       remainingRanking: this._remainingRanking,
+      relevantRanking: this._relevantRanking,
       justification: this._justification,
       justificationTime: this._justificationTime,
       type: this._type,
