@@ -30,12 +30,9 @@ function MinimalRelevantClosure({
         <CardTitle className="text-2xl font-bold">
           Mininal Relevant Closure
         </CardTitle>
-        <CardDescription className="text-base">
-          {/* Mininal Relevant closure description */}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim tenetur
-          omnis temporibus, corrupti dolorem debitis accusantium nihil quod
-          soluta eligendi, impedit odit sunt! Qui, distinctio necessitatibus
-          atque accusantium recusandae non.
+        <CardDescription className="text-base text-xl md:text-xl">
+          <b>Minimal Relevant Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Casini et al.</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>MinimalRelevantClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the knowledge base.
+          Minimal Relevant Closure can be seen as a refinement of Rational Closure, where we only retract the statements in a less specific rank that actually disagree with more specific statements in higher ranks with respect to the antecedent of the query, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -48,11 +45,10 @@ function MinimalRelevantClosure({
             </div>
             <div className="mb-6">
               <p className="mb-3">
-                Minimal Relevant Closure starts with the initial rankings constructed by
-                the <i>BaseRank</i> algorithm.
+                Basic Relevant Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
               </p>
               <p className="font-medium">
-                Output of the <i>BaseRank</i> algorithm
+                Base Rank of statements in <Formula formula="\mathcal{K}" />:
               </p>
               <RankingTableWithout
                 ranking={minimalRelevantEntailment.baseRanking}
@@ -80,6 +76,8 @@ function MinimalRelevantClosure({
             <Justification
               queryType={queryType}
               entailment={minimalRelevantEntailment}
+              queryFormula={minimalRelevantEntailment.queryFormula}
+              entailed={minimalRelevantEntailment.entailed}
             />
           </div>
         )}

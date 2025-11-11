@@ -18,7 +18,7 @@ function RationalClosureRankChek({
           <RankingTable ranking={check.ranks} />
           <div className="ml-8 py-4 space-y-2">
             <p>
-              Check if the above ranks entail{" "}
+              We check and determine if the above union of ranks entails the negation of the query antecedent,{" "}
               <Formula formula={check.antecedentNegation} />
             </p>
             <p>
@@ -30,7 +30,7 @@ function RationalClosureRankChek({
               </span>
               {!check.isConsistent && (
                 <span>
-                  Remove rank{" "}
+                <br />Becase the knowledge base is still consistency with respect to <Formula formula={check.antecedentNegation} />, we remove the most typical rank,{" "}
                   <Formula
                     formula={`\\mathcal{R}_{${check.removedRank.rankNumber}}`}
                   />
@@ -38,7 +38,7 @@ function RationalClosureRankChek({
               )}
               {check.isConsistent && (
                 <span>
-                  Stop removing ranks and check if the remaining ranks entail{" "}
+                   <br /> We now stop discarding ranks and check if the remaining ranks entail the query,{" "}
                   <Formula formula={explanation.queryFormula} />
                 </span>
               )}

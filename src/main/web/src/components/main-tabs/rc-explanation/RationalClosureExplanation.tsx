@@ -33,9 +33,9 @@ function RationalClosureExplanation({
         <CardDescription className="text-base text-xl md:text-xl">           
 <b>Rational Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b> and <b>Magidor</b>, and the entailment algorithms implemented here
  build on the version proposed by <b>Casini et al</b>. 
- The algorithm operates in two sub-phases—<b><i>BaseRank</i></b> and <b><i>RationalClosure</i></b> —and functions by assigning a ranking of typicality to the knowledge base. 
+ The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>RationalClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the knowledge base. 
  When an inconsistency arises during entailment computation, the algorithm removes the most typical information from the knowledge base to restore consistency. 
- The <b><i>BaseRank</i></b> phase determines these rankings, where statements with lower ranks represent more typical information.
+ The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
 
         </CardDescription>
       </CardHeader>
@@ -50,10 +50,11 @@ function RationalClosureExplanation({
               </div>
               <div className="mb-6 space-y-4">
                 <p>
-                  Rational closure starts with the initial rankings constructed
-                  by the <i>BaseRank</i> algorithm.
+                  Rational Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
                 </p>
-
+                <p className="font-medium">
+                Base Rank of statements in <Formula formula="\mathcal{K}" />:
+              </p>
                 <RationalClosureRankChek explanation={rationalExplanation} />
               </div>
               <div>
@@ -61,7 +62,7 @@ function RationalClosureExplanation({
                 <Formula
                   formula={buildFinalEntailmentCheck(rationalExplanation)}
                 />
-                {"  "}. Therefore Therefore{" "}
+                {"  "}. <br />Therefore, we conclude that the knowledge base{" "}
                 <EntailResult
                   formula={rationalExplanation.queryFormula}
                   entailed={rationalExplanation.isEntailed}
@@ -72,6 +73,8 @@ function RationalClosureExplanation({
             <Justification
               queryType={queryType}
               entailment={entailmentQueryResult?.rationalEntailment || null}
+              queryFormula={rationalExplanation.queryFormula}
+              entailed={rationalExplanation.isEntailed}
             />
           </div>
         )}

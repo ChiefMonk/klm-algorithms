@@ -50,6 +50,13 @@ export function EntailResult({ formula, entailed }: EntailResultProps) {
   return <Formula formula={result} />;
 }
 
+export function EntailResultPrime({ formula, entailed }: EntailResultProps) {
+  const KPrime = "\\mathcal{\\overrightarrow{K^\\prime}} \\subseteq \\mathcal{\\overrightarrow{K}}";
+  const symbol = entailed ? "\\models" : "\\not\\models";
+  const result = KPrime + " " + symbol + " " + formula;
+  return <Formula formula={result} />;
+}
+
 interface KbProps {
   name?: string;
   formulas: string[];

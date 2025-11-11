@@ -4,7 +4,7 @@ import {
   LexicalEntailmentModel,
   Ranking,
 } from "@/lib/models";
-import { AllRanks, AllRanksEntail, EntailResult, Formula } from "./formulas";
+import { AllRanks, AllRanksEntail, EntailResult, EntailResultPrime, Formula } from "./formulas";
 import { RankingTable } from "../tables/ranking-table";
 import { RefinedRankingTable } from "../tables/refined-ranking";
 
@@ -143,30 +143,29 @@ interface EntailmentCheckProps {
 }
 
 function EntailmentCheck({
-  entailment: { baseRanking, remainingRanks, queryFormula, entailed },
+  entailment: { baseRanking, remainingRanks, removedRanking, queryFormula, entailed },
 }: EntailmentCheckProps) {
   const start = baseRanking.length - remainingRanks.length;
   const end = baseRanking.length - 1;
   const classical = queryFormula.replaceAll("~>", "=>");
+  const classicalRemaining = remainingRanks.flatMap(rank => rank.formulas).join(", ").replaceAll("~>", "=>");
+  const classicalRemoved = removedRanking.flatMap(rank => rank.formulas).join(", ").replaceAll("~>", "=>");
+
 
   return (
     <div className="space-y-4">
       <p>
-        Now we check if the final ranks <AllRanks start={start} end={end} />{" "}
-        entail the formula <Formula formula={classical} />.
+        We now check if the remaining ranked materialised statements <Formula formula={"\\mathcal{\\overrightarrow{K^\\prime}}"} /> {" "}={" "} <AllRanks start={start} end={end} />{" "} <Formula formula={"\\setminus"} /> <Formula formula="\{" /><Formula formula={classicalRemoved} /><Formula formula="\}" />
+        {" "} entails the query <Formula formula={classical} />.
       </p>
       <p>
-        If follows that{" "}
-        <AllRanksEntail
-          start={start}
-          end={end}
-          formula={classical}
-          entailed={entailed}
-        />
-        .
+        Thats is, does <Formula formula={"\\mathcal{\\overrightarrow{K^\\prime}}"} /> {" "}={" "} <Formula formula="\{" /><Formula formula={classicalRemaining} /><Formula formula="\}" /> <Formula formula={"\\models"} />  <Formula formula={classical} />?
       </p>
       <p>
-        Therefore <EntailResult formula={queryFormula} entailed={entailed} />.
+        If follows that {" "} <EntailResultPrime formula={queryFormula} entailed={entailed} />.
+      </p>
+      <p>
+       Therefore, we conclude that the knowledge base <EntailResult formula={queryFormula} entailed={entailed} />. 
       </p>
     </div>
   );
@@ -241,7 +240,7 @@ export function Explanation({ entailment, className }: ExplanationProps) {
         )}
       </div>
       <div>
-        <p className="font-medium">Final ranks</p>
+        <p className="font-medium">The Deciding Knowledge Base <Formula formula={"\\mathcal{D} \\subseteq \\mathcal{K}"} /></p>
         <RankingTable ranking={entailment.remainingRanks} />
       </div>
       <EntailmentCheck entailment={entailment} />

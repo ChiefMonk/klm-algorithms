@@ -1,40 +1,58 @@
 import { EntailmentModel, QueryType } from "@/lib/models";
 import { Kb } from "./common/formulas";
+import {  EntailResult,Formula } from "./common/formulas";
 
 interface JustificationProps {
   queryType: QueryType;
   entailment: EntailmentModel | null;
+  entailed: boolean;
+  queryFormula: string 
 }
 
 export function Justification({
   queryType,
   entailment,
-}: JustificationProps): JSX.Element {
-  return (
-    <>
-      {queryType === QueryType.Justification && entailment && (
-        <div>
-          <h1 className="text-lg font-bold mb-2">Justification-based Explanation Algorithm</h1>
-          The Deciding Knowledge Base: <Kb
-            formulas={entailment.entailmentKnowledgeBase}
-            name="\mathcal{D}"
-            set
-          />
-          <div className="my-6"></div>
+  queryFormula,
+  entailed,
+}: JustificationProps): JSX.Element | null {
+  // Render nothing unless we’re in Justification mode and have data
+  if (queryType !== QueryType.Justification || !entailment) return null;
 
-          The Justification Sets:
+  const hasJustifications =
+    Array.isArray(entailment.justification) && entailment.justification.length > 0;
+
+  return (
+    <div>
+      <h1 className="text-lg font-bold mb-2">
+        Justification-based Explanation Algorithm
+      </h1>
+
+      <p className="mb-2">The Deciding Knowledge Base:</p>
+      <Kb
+        formulas={entailment.entailmentKnowledgeBase}
+        name={`\\mathcal{D}`}
+        set
+      />
+
+      <div className="my-6" />
+
+      {hasJustifications && (
+        <>
+          <p className="mb-2">
+            The Justification sets for{" "}
+            <EntailResult formula={queryFormula} entailed={entailed} /> from <Formula formula={"\\mathcal{D} \\subseteq \\mathcal{K}"} /> :
+          </p>
 
           {entailment.justification.map((just, index) => (
-                  <Kb
-                    key={index}
-                    formulas={just}
-                    name={`\\mathcal{J}_{${index + 1}}`}
-                    set
-                  />
-                ))}
-         
-        </div>
+            <Kb
+              key={index}
+              formulas={just}
+              name={`\\mathcal{J}_{${index + 1}}`}
+              set
+            />
+          ))}
+        </>
       )}
-    </>
+    </div>
   );
 }
