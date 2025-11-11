@@ -53,7 +53,12 @@ const rankColumns: ColumnDef<RefinedRanking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("subsetSize") as number;
       return (
-        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+       // <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>
+        {idx === ConstantValues.INFINITY_RANK_NUMBER
+          ? '\\mathcal{R}_{\\infty}'
+          : `\\mathcal{R}_{${idx.toString()}}`}
+      </TexFormula>
       );
     },
     filterFn: "weakEquals",

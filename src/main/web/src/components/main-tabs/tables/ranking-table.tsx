@@ -47,7 +47,12 @@ const rankColumns: ColumnDef<Ranking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
       return (
-        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+        //<TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>
+        {idx === ConstantValues.INFINITY_RANK_NUMBER
+          ? '\\mathcal{R}_{\\infty}'
+          : `\\mathcal{R}_{${idx.toString()}}`}
+      </TexFormula>
       );
     },
     filterFn: "weakEquals",
@@ -74,7 +79,12 @@ const sequenceColumns: ColumnDef<Ranking>[] = [
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
       return (
-        <TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+        //<TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
+        <TexFormula>
+        {idx === ConstantValues.INFINITY_RANK_NUMBER
+          ? '\\mathcal{R}_{\\infty}'
+          : `\\mathcal{R}_{${idx.toString()}}`}
+      </TexFormula>
       );
     },
     filterFn: "weakEquals",
@@ -96,6 +106,21 @@ function RankingTable({
       data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
       filter={ranking.length != 0}
       caption={caption}
+    />
+  );
+}
+
+function RankingTableWithout({
+  ranking, 
+}: {
+  ranking: Ranking[];
+}) {
+  
+  return (
+    <DataTable
+      columns={rankColumns}
+      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
+      filter={ranking.length != 0}    
     />
   );
 }
@@ -157,4 +182,4 @@ function SequenceTable({
   );
 }
 
-export { RankingTable, RankingOfRanksTable, SequenceTable };
+export { RankingTable, RankingOfRanksTable, SequenceTable, RankingTableWithout };

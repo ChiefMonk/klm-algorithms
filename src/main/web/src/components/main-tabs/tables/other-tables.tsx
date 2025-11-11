@@ -201,7 +201,7 @@ function TimesTable({
 
   const justificationColumn: ColumnDef<TimesResult> = {
     accessorKey: "justificationTimeTaken",
-    header: "Entailment Determination",
+    header: "Justification Determination",
     cell: ({ row }) => {
       const value = row.getValue("justificationTimeTaken") as
         | string

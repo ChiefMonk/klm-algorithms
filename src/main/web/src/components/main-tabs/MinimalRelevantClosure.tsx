@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTable } from "./tables/ranking-table";
+import { RankingTableWithout } from "./tables/ranking-table";
 import { MinimalRelevantEntailmentModel } from "@/lib/models";
 import { Explanation } from "./common/explanations";
 import { Kb, QueryFormula, Formula } from "./common/formulas";
@@ -48,33 +48,29 @@ function MinimalRelevantClosure({
             </div>
             <div className="mb-6">
               <p className="mb-3">
-              Minimal Relevant Closure starts with the initial rankings constructed by
+                Minimal Relevant Closure starts with the initial rankings constructed by
                 the <i>BaseRank</i> algorithm.
               </p>
               <p className="font-medium">
                 Output of the <i>BaseRank</i> algorithm
               </p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={minimalRelevantEntailment.baseRanking}
-               caption="The BaseRank of statements in the Knowledge Base"
               />
 
-<p className="font-medium">Relevant Statements to the Negation of Query Antecedent, <Formula formula={minimalRelevantEntailment.negation} /></p>
-              <RankingTable
+              <p className="font-medium">Relevant Statements to the Negation of Query Antecedent, <Formula formula={minimalRelevantEntailment.negation} /></p>
+              <RankingTableWithout
                 ranking={minimalRelevantEntailment.relevantRanking}
-                caption="The discarded statements from the Knowledge base"
               />
 
-<p className="font-medium">Discarded Statements by Minimal Relevant Closure Algorithm</p>
-              <RankingTable
+              <p className="font-medium">Discarded Statements by Minimal Relevant Closure Algorithm</p>
+              <RankingTableWithout
                 ranking={minimalRelevantEntailment.removedRanking}
-                caption="The discarded statements from the Knowledge base"
               />
 
               <p className="font-medium">Remaining Statements by Minimal Relevant Closure Algorithm</p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={minimalRelevantEntailment.remainingRanking}
-                caption="The remaining statements from the BaseRank"
               />
             </div>
             <Explanation

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTable } from "./tables/ranking-table";
+import { RankingTableWithout } from "./tables/ranking-table";
 import { BasicRelevantEntailmentModel } from "@/lib/models";
 import { Explanation } from "./common/explanations";
 import { Kb, QueryFormula, Formula } from "./common/formulas";
@@ -55,28 +55,24 @@ function BasicRelevantClosure({
               <p className="font-medium">
                 Output of the <i>BaseRank</i> algorithm
               </p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={basicRelevantEntailment.baseRanking}
-               caption="The BaseRank of statements in the Knowledge Base"
               />
 
-<p className="font-medium">Relevant Statements to the Negation of Query Antecedent, <Formula formula={basicRelevantEntailment.negation} /></p>
-              <RankingTable
-                ranking={basicRelevantEntailment.relevantRanking}
-                caption="The discarded statements from the Knowledge base"
+              <p className="font-medium">Relevant Statements to the negation of Query Antecedent, <Formula formula={basicRelevantEntailment.negation} /></p>
+              <RankingTableWithout
+                ranking={basicRelevantEntailment.relevantRanking}               
               />
 
 
-<p className="font-medium">Discarded Statements by Basic Relevant Closure Algorithm</p>
-              <RankingTable
+              <p className="font-medium">Discarded Statements by Basic Relevant Closure Algorithm</p>
+              <RankingTableWithout
                 ranking={basicRelevantEntailment.removedRanking}
-                caption="The discarded statements from the Knowledge base"
               />
 
               <p className="font-medium">Remaining Statements by Basic Relevant Closure Algorithm</p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={basicRelevantEntailment.remainingRanking}
-                caption="The remaining statements from the BaseRank"
               />
             </div>
             <Explanation

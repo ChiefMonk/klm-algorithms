@@ -35,9 +35,16 @@ function Summary(): JSX.Element {
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Summary of Results</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+        {queryType === QueryType.Justification
+        ? "Summary of Entailment and Explanation Algorithm Results"
+        : "Summary of Entailment Algorithm Results"}        
+          </CardTitle>
+
         <CardDescription className="text-base">
-          A summary of defeasible entailment and justification algorithm results
+        {queryType === QueryType.Justification
+        ? "A summary of defeasible entailment and justification algorithm results"
+        : "A summary of defeasible entailment algorithm results"}             
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -61,7 +68,7 @@ function Summary(): JSX.Element {
             </div>
             <div>
               <h4 className="scroll-m-20 text-lg font-bold tracking-tight">
-                Base Rank of statements in <Formula formula="\mathcal{K}" />
+                Base Rank of statements in <Formula formula="\mathcal{K}" /> produced by the <i>BaseRank</i> algorithm
               </h4>
               <RankingTable ranking={baseRank?.ranking || []} />
             </div>

@@ -7,12 +7,13 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTable } from "./tables/ranking-table";
+import { RankingTableWithout } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import { LexicalEntailmentModel } from "@/lib/models";
 import { Explanation } from "./common/explanations";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
+import { Formula } from "./common/formulas";
 
 interface LexicographicClosureProps {
   isLoading: boolean;
@@ -52,23 +53,20 @@ function LexicographicClosure({
               </p>
 
               <p className="font-medium">
-                The BaseRanking of Statements by the <i>BaseRank</i> algorithm
+              Base Rank of statements in <Formula formula="\mathcal{K}" /> produced by the <i>BaseRank</i> algorithm              
               </p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={lexicalEntailment.baseRanking}
-                caption="The BaseRank of statements in the Knowledge Base"
               />
 
               <p className="font-medium">Discarded Statements by Lexigraphic Closure Algorithm</p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={lexicalEntailment.removedRanking}
-                caption="The discarded statements from the Knowledge base"
               />
 
               <p className="font-medium">Remaining Statements by Lexigraphic Closure Algorithm</p>
-              <RankingTable
+              <RankingTableWithout
                 ranking={lexicalEntailment.remainingRanking}
-                caption="The remaining statements from the BaseRank"
               />
              
             </div>

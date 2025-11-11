@@ -30,10 +30,13 @@ function RationalClosureExplanation({
     <Card className="w-full h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Rational Closure</CardTitle>
-        <CardDescription className="text-base text-xl md:text-xl">         
-          Rational Closure is a KLM inference mechanism for non-monotonic reasoning that ranks defeasible statements by their level of exceptionality. During entailment checking, lower (more typical) ranks are iteratively discarded until consistent higher-ranked worlds remain. A defeasible formula  
-<Formula formula=" \alpha \mid\sim \beta" /> holds if <Formula formula="\beta" /> is true in all minimal <Formula formula="\alpha" />-worlds, yielding a unique, consistent, and computationally efficient defeasible entailment relation. 
-         
+        <CardDescription className="text-base text-xl md:text-xl">           
+<b>Rational Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b> and <b>Magidor</b>, and the entailment algorithms implemented here
+ build on the version proposed by <b>Casini et al</b>. 
+ The algorithm operates in two sub-phases—<b><i>BaseRank</i></b> and <b><i>RationalClosure</i></b> —and functions by assigning a ranking of typicality to the knowledge base. 
+ When an inconsistency arises during entailment computation, the algorithm removes the most typical information from the knowledge base to restore consistency. 
+ The <b><i>BaseRank</i></b> phase determines these rankings, where statements with lower ranks represent more typical information.
+
         </CardDescription>
       </CardHeader>
       <CardContent>
