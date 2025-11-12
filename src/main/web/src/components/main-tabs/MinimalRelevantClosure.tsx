@@ -30,7 +30,7 @@ function MinimalRelevantClosure({
         <CardTitle className="text-2xl font-bold">
           Mininal Relevant Closure
         </CardTitle>
-        <CardDescription className="text-base text-xl md:text-xl">
+        <CardDescription className="text-base text-lg">      
           <b>Minimal Relevant Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Casini et al.</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>MinimalRelevantClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the knowledge base.
           Minimal Relevant Closure can be seen as a refinement of Rational Closure, where we only retract the statements in a less specific rank that actually disagree with more specific statements in higher ranks with respect to the antecedent of the query, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
         </CardDescription>

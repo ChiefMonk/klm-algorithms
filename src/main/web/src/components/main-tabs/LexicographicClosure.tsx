@@ -31,7 +31,7 @@ function LexicographicClosure({
         <CardTitle className="text-2xl font-bold">
           Lexicographic Closure
         </CardTitle>
-        <CardDescription className="text-base text-xl md:text-xl">           
+        <CardDescription className="text-base text-lg">           
         <b>Lexicographic Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>LexicographicClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the knowledge base. 
         Lexicographic Closure can be seen as a refinement of Rational Closure, where we remove single statements instead of entire ranks when inconsistencies arise during the reasoning process, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
         </CardDescription>
