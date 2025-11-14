@@ -1,15 +1,12 @@
 package uct.cs.klm.algorithms.models;
 
 /**
- * <h1> ValidationResultModel </h1>
- * The ValidationResult Model.
+ * This class represents a model formula validation for a given query.
  * 
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  * @version 1.0.1
- * @param <T>
- * @since 2023-07-03
+ * @since 2024-01-01
  */
-
 public class ModelFormulaValidation<T> {
  private final boolean _isValid;
     private final String  _message;

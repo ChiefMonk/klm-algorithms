@@ -7,6 +7,13 @@ import uct.cs.klm.algorithms.enums.InferenceOperator;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * This class models evaluation data for a given query set.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 public class EvaluationData {
     @JsonProperty(required = true)
     private String querySetLabel;

@@ -10,6 +10,8 @@ import uct.cs.klm.algorithms.utils.Symbols;
  * This class models defeasible implication of propositional logic.
  * 
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class DefeasibleImplication extends Implication {
 

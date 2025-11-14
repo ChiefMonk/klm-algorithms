@@ -4,10 +4,13 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.enums.TautologyType;
 
 /**
- * This class represents a ranked knowledge base.
- *
+ * This class represents a model formula for a given query.
+ * 
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
+
 public class ModelFormula {
 
     private PlFormula _formula;

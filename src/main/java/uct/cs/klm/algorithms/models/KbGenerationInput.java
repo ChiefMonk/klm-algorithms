@@ -3,6 +3,13 @@ package uct.cs.klm.algorithms.models;
 import uct.cs.klm.algorithms.enums.Complexity;
 import uct.cs.klm.algorithms.enums.Distribution;
 
+/**
+ * This class models an knowledge base generation input for a given query set.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 public class KbGenerationInput {
     private int numberOfRanks;
     private Distribution distributionType;
