@@ -5,48 +5,34 @@ This repository contains software developed as part of the dissertation '<i><str
 ### Table of Contents
 1. [About the Tool](#about) 
 2. [Requirements](#req)
-3. [Compilation](#compile)
-4. [Usage or Execution](#usage)
-5. [Contributors](#cont)
-6. [References](#refs)
+3. [Compilation and Usage](#compile)
+4. [Contributors](#cont)
+5. [References](#refs)
 
 <a name="about"></a>
-## 1. About the <i><strong>klm-algorithms</strong></i>
+## 1. About <i><strong>klm-algorithms</strong></i>
 <i><strong>klm-algorithms</strong></i> is a modular software tool for computing <strong>defeasible entailment</strong> and <strong>justification-based explanations</strong> within the <strong>Kraus–Lehmann–Magidor (KLM)</strong> framework for non-monotonic reasoning. The tool implements the three principal KLM inference operators, <strong>Rational Closure</strong>, <strong>Lexicographic Closure</strong>, <strong>Basic Relevant Closure</strong>, and <strong>Minimal Relevant Closure</strong>, together with multiple optimised algorithmic variants for each operator.
 
 The system provides a unified environment for:
-- Maven 4.0+
-- Java 20+
-- Constructing and editing propositional knowledge bases
-- Defining defeasible conditionals of the form $ \alpha \mid\!\sim \beta $
+- Constructing and editing propositional defeasible knowledge bases
+- Defining defeasible statements
 - Computing defeasible consequences under different KLM inference strategies
 - Generating minimal justification sets, explaining why each conclusion holds
 - Comparing algorithmic behaviour across operators and datasets
 
-In addition to operator-specific justification procedures, the tool includes a <strong>universal justification algorithm</strong> capable of extracting all justifications from any deciding knowledge base, regardless of the inference operator that generated it.
+In addition to operator-specific justification procedures, the tool includes a <strong>universal justification algorithm</strong> that extracts all justifications from any deciding knowledge base, regardless of the inference operator that generated it.
 
 Designed for both researchers and practitioners, KLM-Algorithms supports reproducible experimentation, scalable testing on synthetic and benchmark datasets, and visual exploration of entailments and explanations. It aims to provide a practical, extensible platform for studying defeasible reasoning, evaluating reasoning algorithms, and developing explainable AI systems grounded in formal logic.
 
-## Screenshots 
+<a name="req"></a>
+## 2. Requirements
+- Maven 4.0+
+- Java 21+
 
-![Query Inputs](data/images/app-formulas.png)
-
-![Summary](data/images/app-summary.png)
-
-![Base Rank](data/images/app-base.png)
-
-![Rational Closure](data/images/app-rational.png)
-
-![Lexicograhic Closure](data/images/app-lex.png)
-
-
-## Requirements
-
-* Maven 3.9.8+
-* Java 21+
-
-## Compilation & Usage
+<a name="compile"></a>
+## 3. Compilation and Usage
 There's a binary under `app/` folder which can be run without need for compilation. However, it still requires Java 21+. To run the binary run java -jar `app/klm-algorithms-1.0-SNAPSHOT.jar` and go to `http://localhost:8080/`.
+
 ### Compilation
 ```bash
 mvn clean package
@@ -56,3 +42,18 @@ mvn clean package
 java -jar target/klm-algorithms-1.0-SNAPSHOT.jar
 ```
 After running the above command, visit `http://localhost:8080/` on your web browser. Chek the **Syntax** before sending the queries.
+
+### Live Deployment 
+Alternately, you can just access the live web deployement at [https://klm-algorithms.fly.dev](https://klm-algorithms.fly.dev).
+
+<a name="cont"></a>
+## 4. Contributors
+* [Chipo Hamayobe (chipo@cs.uct.ac.za)](https://github.com/chiefmonk) - Project Lead
+
+<a name="refs"></a>
+## 5. References
+* ### The TweetyProject - [http://tweetyproject.org](http://tweetyproject.org)
+The <strong>TweetyProject</strong> consists of diverse Java libraries that embody strategies for knowledge representation formalisms, encompassing classical logics, conditional logics, and probabilistic logics.
+
+* ### The SAT4J SAT Solver - [http://www.sat4j.org](http://www.sat4j.org)
+The <strong>SAT4J SAT Solver</strong> is a Java library designed to solve problems related to boolean satisfaction and optimisation.
