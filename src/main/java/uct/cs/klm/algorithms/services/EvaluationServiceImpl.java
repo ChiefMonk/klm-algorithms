@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class EvaluationServiceImpl implements EvaluationService {
+
     private final ObjectMapper mapper = JavalinJackson.defaultMapper();
     private final ObjectWriter writer = mapper.writer().withDefaultPrettyPrinter();
 
@@ -38,6 +39,12 @@ public class EvaluationServiceImpl implements EvaluationService {
     public EvaluationModel evaluate(EvaluationQuery query) {
         EvaluationQueryParams params = query.parameters();
 
+        String evaluation1 = "Category 1 Test Cases";
+        String evaluation2 = "Category 2 Test Cases";
+        String evaluation3 = "Category 3 Test Cases";
+        String evaluation4 = "Category 4 Test Cases";
+  
+
         // Example: Overriding query params for one of the evaluation
         EvaluationQueryParams params1 = new EvaluationQueryParams(
                 100, // Overrides params.numberOfRanks()
@@ -51,8 +58,8 @@ public class EvaluationServiceImpl implements EvaluationService {
                 params.characterSet(),
                 params.generator()
         );
-        EvaluationGroup group1 = evaluationGroup("Evaluation 1",  new EvaluationQuery(params1, query.inferenceOperator(), query.algorithms()));
 
+        EvaluationGroup group1 = evaluationGroup(evaluation1, new EvaluationQuery(params1, query.inferenceOperator(), query.algorithms()));
 
         EvaluationQueryParams params2 = new EvaluationQueryParams(
                 params.numberOfRanks(),
@@ -67,19 +74,52 @@ public class EvaluationServiceImpl implements EvaluationService {
                 params.generator()
         );
 
-        EvaluationGroup group2 = evaluationGroup("Evaluation 2",  new EvaluationQuery(params2, query.inferenceOperator(), query.algorithms()));
-        EvaluationGroup group3 = evaluationGroup("Evaluation 3",  query);
-        EvaluationGroup group4 = evaluationGroup("Evaluation 4",  query);
+        EvaluationGroup group2 = evaluationGroup(evaluation2, new EvaluationQuery(params2, query.inferenceOperator(), query.algorithms()));
+
+        EvaluationQueryParams params3 = new EvaluationQueryParams(
+                params.numberOfRanks(),
+                params.distribution(),
+                params.numberOfDefeasibleImplications(),
+                false, // Overrides params.simpleDiOnly()
+                params.reuseConsequent(),
+                params.antecedentComplexity(),
+                params.consequentComplexity(),
+                params.connective(),
+                params.characterSet(),
+                params.generator()
+        );
+
+        EvaluationGroup group3 = evaluationGroup(evaluation3, new EvaluationQuery(params3, query.inferenceOperator(), query.algorithms()));
+
+        EvaluationQueryParams params4 = new EvaluationQueryParams(
+                params.numberOfRanks(),
+                params.distribution(),
+                params.numberOfDefeasibleImplications(),
+                false, // Overrides params.simpleDiOnly()
+                params.reuseConsequent(),
+                params.antecedentComplexity(),
+                params.consequentComplexity(),
+                params.connective(),
+                params.characterSet(),
+                params.generator()
+        );
+
+        EvaluationGroup group4 = evaluationGroup(evaluation4, new EvaluationQuery(params4, query.inferenceOperator(), query.algorithms()));
 
         return new EvaluationModel(query, List.of(group1, group2, group3, group4));
+       
     }
 
     public EvaluationGroup evaluationGroup(String evaluationName, EvaluationQuery query) {
         ReasonerType reasonerType = switch (query.inferenceOperator()) {
-            case RationalClosure -> ReasonerType.RationalClosure;
-            case LexicographicClosure -> ReasonerType.LexicographicClosure;
-            case BasicRelevantClosure -> ReasonerType.BasicRelevantClosure;
-            case MinimalRelevantClosure ->  ReasonerType.MinimalRelevantClosure;
+            case RationalClosure ->
+                ReasonerType.RationalClosure;
+            case LexicographicClosure ->
+                ReasonerType.LexicographicClosure;
+            case BasicRelevantClosure ->
+                ReasonerType.BasicRelevantClosure;
+            case MinimalRelevantClosure ->
+                ReasonerType.MinimalRelevantClosure;
         };
 
         IReasonerService reasoner = ReasonerFactory.createEntailment(reasonerType);
@@ -93,7 +133,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         PlFormula formula = formulaService.getQueryFormula();
 
-        for (String testQuery : List.of("R1", "Rn", "alpha_same", "alpha_dist", "alpha_half")) {
+        for (String testQuery : List.of("First Rank", "Last Rank", "Random Rank", "Same Antecedents", "Different Antecedents", "Mixed Antecedents")) {
             EvaluationData data = new EvaluationData(testQuery, operator);
 
             for (Algorithm algo : selectedAlgorithms) {

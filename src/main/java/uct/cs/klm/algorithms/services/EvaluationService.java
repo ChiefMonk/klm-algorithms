@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import uct.cs.klm.algorithms.enums.ReasonerType;
 
 public interface EvaluationService {
     EvaluationModel evaluate(EvaluationQuery query);

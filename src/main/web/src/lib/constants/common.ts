@@ -35,7 +35,7 @@ export const ALGORITHMS_RATC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "RatCNaive: The Naive Implementation"],
   [
     Algorithm.NaiveIndex,
-    "RatCNaiveIndex: The Naive with Indexing Implementation",
+    "RatCNaiveIndexIndexing: The Naive with Indexing Implementation",
   ],
   [Algorithm.Binary, "RatCBinary: Binary Search Implementation"],
   [
@@ -53,11 +53,11 @@ export const ALGORITHMS_LEXC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "LexCNaive: The Naive Implementation"],
   [
     Algorithm.PowerSetCombined,
-    "LexCPowerSetCombined: The PowerSet Combined Implementation",
+    "LexCPowerSetCombined: The Combined Knowledge Bases Implementation",
   ],
   [
     Algorithm.PowerSetSubset,
-    "LexCPowerSetSubset: The PowerSet Subset Implementation",
+    "LexCPowerSetSubset: The Subset Knowledge Bases Implementation",
   ],
   [Algorithm.Binary, "LexCBinary: Binary Search Implementation"],
   [Algorithm.Ternary, "LexCTernary: Ternary Search Implementation"],
@@ -67,7 +67,11 @@ export const ALGORITHMS_RELC: ReadonlyMap<Algorithm, string> = new Map([
   [Algorithm.Naive, "RelCNaive: The Naive Implementation"],
   [
     Algorithm.PowerSetCombined,
-    "RelCPowerSetCombined: The PowerSet Combined Implementation",
+    "RelCPowerSetCombined: The Combined Knowledge Bases Implementation",
+  ],
+  [
+    Algorithm.PowerSetSubset,
+    "RelCPowerSetSubset: The Subset Knowledge Bases Implementation",
   ],
   [Algorithm.Binary, "RelCBinary: Binary Search Implementation"],
   [Algorithm.Ternary, "RelCTernary: Ternary Search Implementation"],

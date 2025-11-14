@@ -56,8 +56,8 @@ export function EntailmentQueryCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Entailment Algorithm</CardTitle>
-        <CardDescription>Please select the entailment algorithm</CardDescription>
+        <CardTitle> {reasoner.queryType === QueryType.Justification ? ("Entailment and Justification Algorithms") : ("Entailment Algorithms")}</CardTitle>
+        <CardDescription> {reasoner.queryType === QueryType.Justification ? ("Please select the entailment and justification algorithms you would like determined") : ("Please select the entailment algorithms you would like determined")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

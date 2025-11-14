@@ -24,7 +24,7 @@ public class KlmBenchmark {
     @Param({"RationalClosure", "LexicographicClosure", "RelevantClosure"})
     private String inferenceOpName;
 
-    @Param({"R1", "Rn", "alpha_same", "alpha_dist", "alpha_half"})
+    @Param({"First Rank", "Last Rank", "Same Antecedents", "Different Antecedents", "Mixed Antecedents"})
     private String querySet;
 
     private InferenceOperator operator;
