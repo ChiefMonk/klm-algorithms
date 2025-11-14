@@ -1,5 +1,3 @@
-<img src="images\uct_logo.png" width="100px" style="text-align:center;float:center;" />
-
 # <i><strong>klm-algorithms</strong></i> [![Deploy to Fly.io](https://github.com/chiefmonk/klm-algorithms/actions/workflows/main.yml/badge.svg)](https://github.com/chiefmonk/klm-algorithms/actions/workflows/main.yml)
 
 This repository contains software developed as part of the dissertation '<i><strong>Implementation and Evaluation of KLM-Style Defeasible Entailment and Explanation Algorithms</strong></i>', submitted in fulfilment of the requirements for the degree of Master of Science in the Department of Computer Science, Faculty of Science, University of Cape Town.
