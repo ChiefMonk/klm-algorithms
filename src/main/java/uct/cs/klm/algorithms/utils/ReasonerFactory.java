@@ -9,22 +9,26 @@ import uct.cs.klm.algorithms.services.*;
 
 public class ReasonerFactory {
 
-     public static ReasonerType createReasonerType(String type) {
+    public static ReasonerType createReasonerType(String type) {
         return switch (type) {
             case "rational" ->
                 ReasonerType.RationalClosure;
+            case "ratc" ->
+                ReasonerType.RationalClosure;
             case "lexical" ->
-               ReasonerType.LexicographicClosure;
+                ReasonerType.LexicographicClosure;
+            case "lexc" ->
+                ReasonerType.LexicographicClosure;
             case "mrelc" ->
                 ReasonerType.MinimalRelevantClosure;
-             case "brelc" ->
+            case "brelc" ->
                 ReasonerType.BasicRelevantClosure;
 
             default ->
                 throw new IllegalArgumentException("Unknown reasoner: " + type);
         };
     }
-     
+
     public static IReasonerService createEntailment(ReasonerType reasonerType) {
         return switch (reasonerType) {
             case ReasonerType.RationalClosure ->
@@ -42,19 +46,19 @@ public class ReasonerFactory {
     }
 
     public static IJustificationService createJustification(ReasonerType reasonerType) {
-        
+
         return switch (reasonerType) {
             case ReasonerType.RationalClosure ->
-                 new RationalClosureJustificationService();
+                new RationalClosureJustificationService();
             case ReasonerType.LexicographicClosure ->
-                 new LexicographicClosureJustificationService();
+                new LexicographicClosureJustificationService();
             case ReasonerType.MinimalRelevantClosure ->
                 new MinimalRelevantJustificationService();
-             case ReasonerType.BasicRelevantClosure ->
+            case ReasonerType.BasicRelevantClosure ->
                 new BasicRelevantJustificationService();
 
             default ->
                 throw new IllegalArgumentException("Unknown reasoner: " + reasonerType);
-        };               
+        };
     }
 }

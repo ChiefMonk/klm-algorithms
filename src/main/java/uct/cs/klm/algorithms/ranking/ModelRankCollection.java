@@ -95,8 +95,12 @@ public class ModelRankCollection extends ArrayList<ModelRank> implements Cloneab
         return kb;
     }
     
-    public KnowledgeBase getKnowledgeBaseExcept(int exceptRank) {       
+     public KnowledgeBase getKnowledgeBaseExcept(int exceptRank) {       
         return getRankingCollectonExcept(exceptRank).getKnowledgeBase();
+    }
+    
+    public ModelRankCollection getRankingCollectonExceptInfinity() {       
+        return getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
     }
     
     public ModelRankCollection getRankingCollectonExcept(int exceptRank) {

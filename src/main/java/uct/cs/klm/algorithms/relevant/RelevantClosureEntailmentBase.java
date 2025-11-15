@@ -95,6 +95,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
             if (isQueryEntailed) {
                 continueProcessing = false;
+            } else {
+                _logger.debug("  But the query is not entailed by the remaining statements");
             }
         }
 
@@ -137,6 +139,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                 isQueryEntailed = _reasoner.query(materialisedKb, materialisedQueryFormula);
                 if (isQueryEntailed) {
                     continueProcessing = false;
+                } else {
+                    _logger.debug("  But the query is not entailed by the remaining statements");
                 }
             }
 
@@ -180,9 +184,9 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         }
 
         if (isQueryEntailed) {
-            _logger.debug(String.format("-> YES, %s entails %s", materialisedKb, queryFormula));
+            _logger.debug(String.format("-> Entailment:YES : %s entails %s", materialisedKb, queryFormula));
         } else {
-            _logger.debug(String.format("-> NO, %s does not entail %s", materialisedKb, queryFormula));
+            _logger.debug(String.format("-> Entailment:NO : %s does not entail %s", materialisedKb, queryFormula));
         }
 
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
