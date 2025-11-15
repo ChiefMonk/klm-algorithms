@@ -36,7 +36,7 @@ const formSchema = z.object({
 
 interface FormulaCardProps {
   isLoading: boolean;
-  queryFormula: string;
+  queryFormula?: string;
   updateFormula: (formula: string) => void;
 }
 
@@ -45,24 +45,27 @@ export function FormulaCard({
   queryFormula,
   updateFormula,
 }: FormulaCardProps) {
+
+  const effectiveQueryFormula = queryFormula || "cats~>wild";
+
   const [editing, setEditing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { formula: queryFormula },
+    defaultValues: { formula: effectiveQueryFormula },
   });
 
   useEffect(() => {
-    form.reset({ formula: queryFormula });
-  }, [form, queryFormula]);
+    form.reset({ formula: effectiveQueryFormula });
+  }, [form, effectiveQueryFormula]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     updateFormula(values.formula);
-    form.reset({ formula: queryFormula });
+    form.reset({ formula: effectiveQueryFormula });
     setEditing(false);
   };
 
   const handleCancel = () => {
-    form.reset({ formula: queryFormula });
+    form.reset({ formula: effectiveQueryFormula });
     setEditing(false);
   };
 
@@ -80,7 +83,7 @@ export function FormulaCard({
       <CardContent className="flex justify-center">
         {!editing && (
           <div className="w-full flex flex-col gap-4 items-center">
-            <Formula formula={queryFormula} />
+            <Formula formula={queryFormula}  />
 
             <div className="w-full max-w-sm flex items-center justify-center mt-4">
               <Button

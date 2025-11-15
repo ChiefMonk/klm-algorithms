@@ -31,11 +31,17 @@ export function AllRanksEntail({
 }
 
 interface FormulaProps {
-  formula: string;
+  formula?: string;
+  defaultFormula?: string;
 }
 
-export function Formula({ formula }: FormulaProps) {
-  return <TexFormula>{toTex(formula)}</TexFormula>;
+export function Formula({ formula, defaultFormula }: FormulaProps) {
+  const safeFormula =
+    (formula?.trim() || "") !== ""
+      ? formula!.trim()
+      : defaultFormula ?? "";
+
+  return <TexFormula>{toTex(safeFormula)}</TexFormula>;
 }
 
 interface EntailResultProps {
