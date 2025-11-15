@@ -138,20 +138,17 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
             boolean isQueryEntailed,
             long startTime) {
 
-        ModelRankCollection remainingRanking = new ModelRankCollection();
-        ModelRankCollection removedRanking = new ModelRankCollection();
+        ModelRankCollection remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKb, false);
+        ModelRankCollection removedRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, remainingRanking.getKnowledgeBase(), true);
 
-        if (isQueryEntailed) {
-            remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKb, false);
-            removedRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, remainingRanking.getKnowledgeBase(), true);
-        } else {
+        if (!isQueryEntailed) {           
             var infinityRank = baseRank.getRanking().clone().getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
 
             if (isQueryEntailed) {
                 remainingRanking = new ModelRankCollection(infinityRank);
                 removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
-            }
+            }            
         }
 
         if (isQueryEntailed) {
