@@ -47,8 +47,175 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking().clone());
         Collections.sort(baseRankCollection, (o1, o2) -> Integer.compare(o1.getRankNumber(), o2.getRankNumber()));
 
-        System.out.println(String.format("->Query: %s", queryFormula));
-        System.out.println(String.format("->Query Antecedent Negation: %s", negationOfAntecedent));
+        _logger.debug(String.format("->Query: %s", queryFormula));
+        _logger.debug(String.format("->Query Antecedent Negation: %s", negationOfAntecedent));
+
+        ModelRelevanceResult relevanceResult = GetRelevantRanks(reasonerType, baseRankCollection, negationOfAntecedent);
+        ModelRankCollection relevantRanking = relevanceResult.getCorrectRelevantRanking();
+        ModelRankCollection relevantRankingAll = relevanceResult.getRelevantRanking();
+        ModelRankCollection irrelevantRanking = relevanceResult.getCorrectIrrelevantRanking();
+        ModelRankCollection irrelevantRankingAll = relevanceResult.getIrrelevantRanking();
+
+        ModelRankCollection nonRelevantRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, relevantRanking.getKnowledgeBase(), true);
+
+        _logger.debug("R+All: {}", relevantRankingAll.getKnowledgeBase());
+        _logger.debug("R+: {}", relevantRanking.getKnowledgeBase());
+
+        _logger.debug("->R+ Ranking");
+        for (ModelRank rank : relevantRanking) {
+            _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+        }
+
+        _logger.debug("R-All: {}", irrelevantRankingAll.getKnowledgeBase());
+        _logger.debug("R-: {}", irrelevantRanking.getKnowledgeBase());
+
+        _logger.debug("->R- Ranking");
+        for (ModelRank rank : irrelevantRanking) {
+            _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+        }
+
+        _logger.debug("->Non RelevantRanking All");
+        for (ModelRank rank : nonRelevantRanking) {
+            _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+        }
+
+        var materialisedKb = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
+
+        _logger.debug(String.format("-> Checking if full KB is consistent with query %s", materialisedKb));
+
+        boolean continueProcessing = true;
+        boolean isQueryEntailed = false;
+        boolean isNegationEntailed = _reasoner.query(materialisedKb, negationOfAntecedent);
+
+        if (isNegationEntailed) {
+            DisplayUtils.LogDebug(_logger, String.format("=> YES - NegationOfAntecedent:Entailed; We skip and consider the relevant subsets"));
+        } else {
+            _logger.debug("  NOT - NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
+            isQueryEntailed = _reasoner.query(materialisedKb, materialisedQueryFormula);
+
+            if (isQueryEntailed) {
+                continueProcessing = false;
+            }
+        }
+
+        if (!continueProcessing) {
+
+            return CreateResponse(
+                    baseRank,
+                    queryFormula,
+                    materialisedKb,
+                    new ModelRankCollection(),
+                    baseRankCollection,
+                    isQueryEntailed,
+                    startTime);
+        }
+
+        List<KnowledgeBase> relevantPowersets = ReasonerUtils.toPowerSetOrdered(relevantRanking);
+        relevantPowersets.add(baseRank.getRanking().getInfinityRank().getFormulas());
+
+        int counter = 1;
+        for (KnowledgeBase powerKb : relevantPowersets) {
+
+            if (!continueProcessing) {
+                break;
+            }
+
+            DisplayUtils.LogDebug(_logger, String.format("=> Powerset %s := %s", counter, powerKb));
+
+            var combinedKb = ReasonerUtils.toCombinedKnowledgeBases(nonRelevantRanking.getKnowledgeBase(), powerKb);
+
+            materialisedKb = ReasonerUtils.toMaterialisedKnowledgeBase(combinedKb);
+
+            DisplayUtils.LogDebug(_logger, String.format("=> Materialised KB := %s", materialisedKb));
+
+            isNegationEntailed = _reasoner.query(materialisedKb, negationOfAntecedent);
+
+            if (isNegationEntailed) {
+                DisplayUtils.LogDebug(_logger, String.format("=> YES - NegationOfAntecedent:Entailed; We skip and move next subset: %s", powerKb));
+            } else {
+                _logger.debug("  NOT - NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
+                isQueryEntailed = _reasoner.query(materialisedKb, materialisedQueryFormula);
+                if (isQueryEntailed) {
+                    continueProcessing = false;
+                }
+            }
+
+            counter++;
+        }
+
+        return CreateResponse(
+                baseRank,
+                queryFormula,
+                materialisedKb,
+                relevantRankingAll,
+                irrelevantRankingAll,
+                isQueryEntailed,
+                startTime);
+
+    }
+
+    private ModelEntailment CreateResponse(
+            ModelBaseRank baseRank,
+            PlFormula queryFormula,
+            KnowledgeBase materialisedKb,
+            ModelRankCollection relevantRanking,
+            ModelRankCollection irrelevantRanking,
+            boolean isQueryEntailed,
+            long startTime) {
+
+        ModelRankCollection remainingRanking = new ModelRankCollection();
+        ModelRankCollection removedRanking = new ModelRankCollection();
+
+        if (isQueryEntailed) {
+            remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKb, false);
+            removedRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, remainingRanking.getKnowledgeBase(), true);
+        } else {
+            var infinityRank = baseRank.getRanking().clone().getInfinityRank();
+            isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
+
+            if (isQueryEntailed) {
+                remainingRanking = new ModelRankCollection(infinityRank);
+                removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+            }
+        }
+
+        if (isQueryEntailed) {
+            _logger.debug(String.format("-> YES, %s entails %s", materialisedKb, queryFormula));
+        } else {
+            _logger.debug(String.format("-> NO, %s does not entail %s", materialisedKb, queryFormula));
+        }
+
+        var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
+
+        return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
+                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withQueryFormula(queryFormula)
+                .withBaseRanking(baseRank.getRanking())
+                .withRemovedRanking(removedRanking)
+                .withRemainingRanking(remainingRanking)
+                .withRelevantRankCollection(relevantRanking)
+                .withIrrelevantRankCollection(irrelevantRanking)
+                .withEntailmentKnowledgeBase(remainingRanking.getKnowledgeBase())
+                .withEntailed(isQueryEntailed)
+                .withTimeTaken(finalTime)
+                .build();
+    }
+
+    protected ModelEntailment determineEntailment2(
+            ReasonerType reasonerType,
+            ModelBaseRank baseRank,
+            PlFormula queryFormula) {
+
+        long startTime = System.nanoTime();
+
+        PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
+        PlFormula materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
+
+        ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking().clone());
+        Collections.sort(baseRankCollection, (o1, o2) -> Integer.compare(o1.getRankNumber(), o2.getRankNumber()));
+
+        _logger.debug(String.format("->Query: %s", queryFormula));
+        _logger.debug(String.format("->Query Antecedent Negation: %s", negationOfAntecedent));
 
         var materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(baseRankCollection);
 
@@ -91,17 +258,17 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             _logger.debug("R+All: {}", relevanceResult.getRelevantRanking().getKnowledgeBase());
             _logger.debug("R+: {}", relevantRanking.getKnowledgeBase());
 
-            System.out.println("->R+ Ranking");
+            _logger.debug("->R+ Ranking");
             for (ModelRank rank : relevantRanking) {
-                System.out.println(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+                _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
             }
 
             _logger.debug("R-All: {}", relevanceResult.getIrrelevantRanking().getKnowledgeBase());
             _logger.debug("R-: {}", irrelevantRanking.getKnowledgeBase());
 
-            System.out.println("->R- Ranking");
+            _logger.debug("->R- Ranking");
             for (ModelRank rank : irrelevantRanking) {
-                System.out.println(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
+                _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
             }
 
             ModelRankCollection otherRankCollection = new ModelRankCollection();
@@ -130,8 +297,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     }
 
                     int rankNumber = currentRank.getRankNumber();
-                    var relevantRank = relevantRanking.getRank(rankNumber);                  
-                   
+                    var relevantRank = relevantRanking.getRank(rankNumber);
+
                     if (relevantRank == null || relevantRank.isEmpty()) {
                         continue;
                     }
@@ -139,7 +306,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     if (currentRank == null || currentRank.isEmpty()) {
                         continue;
                     }
-                    
+
                     var powerKnowledgeBase = ReasonerUtils.removeFormulasFromKnowledgeBase(
                             relevantRanking.getKnowledgeBase(),
                             relevantRank.getFormulas());
@@ -169,8 +336,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                         counter++;
                     }
                      */
-                    currentPowerset.add(new ArrayList<>());  
-                    
+                    currentPowerset.add(new ArrayList<>());
+
                     for (var powerset : currentPowerset) {
 
                         DisplayUtils.LogDebug(_logger, String.format("=> Current Powerset Set Before := %s: %s", rankNumber, powerset));
@@ -195,7 +362,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
                         isNegationEntailed = _reasoner.query(materialisedKB, negationOfAntecedent);
                         if (isNegationEntailed) {
-                            DisplayUtils.LogDebug(_logger, String.format("=> YES-NegationOfAntecedent:Entailed; We discard and move NEXT: %s", powerset));                           
+                            DisplayUtils.LogDebug(_logger, String.format("=> YES-NegationOfAntecedent:Entailed; We discard and move NEXT: %s", powerset));
                         } else {
                             _logger.debug("  NOT-NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
                             isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
@@ -221,35 +388,32 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                 if (!continueProcessing) {
                     break;
                 }
-                
-                 _logger.debug("=> FINAL IsQueryEntailed Check with irrelevantKb");
+
+                _logger.debug("=> FINAL IsQueryEntailed Check with irrelevantKb");
                 materialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(irrelevantKb);
                 isQueryEntailed = _reasoner.query(materialisedKB, materialisedQueryFormula);
                 continueProcessing = false;
             }
 
         }
-              
-        if(isQueryEntailed)
-        {     
-            remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKB, false);           
+
+        if (isQueryEntailed) {
+            remainingRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, materialisedKB, false);
             removedRanking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, remainingRanking.getKnowledgeBase(), true);
         }
-                              
-        if(!isQueryEntailed)
-        {           
+
+        if (!isQueryEntailed) {
             var infinityRank = baseRankCollection.getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
-            
-            if(isQueryEntailed)
-            {                           
+
+            if (isQueryEntailed) {
                 remainingRanking = new ModelRankCollection(infinityRank);
                 removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
             }
         }
-       
+
         String hasEntailed = "NO";
-        if (isQueryEntailed) {          
+        if (isQueryEntailed) {
             hasEntailed = "YES";
         }
 
@@ -259,7 +423,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             _logger.debug("Finally checking if {} is entailed by {}", materialisedQueryFormula, materialisedKB);
             _logger.debug("Is Entailed: {} in {}", hasEntailed, finalTime);
         }
-      
+
         return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBase())
                 .withQueryFormula(queryFormula)
@@ -331,7 +495,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                 }
             }
 
-            System.out.println(String.format("   Mini := %s", miniKb.getFormulas()));
+            _logger.debug(String.format("   Mini := %s", miniKb.getFormulas()));
         }
 
         ModelRankCollection resultIncosistentRank = new ModelRankCollection();
@@ -394,9 +558,9 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             }
         }
 
-        System.out.println(String.format("   I := %s", resultIncosistentRank.getKnowledgeBase().getFormulas()));
-        System.out.println(String.format("   R := %s", resultRelevantRank.getKnowledgeBase().getFormulas()));
-        System.out.println(String.format("   R- := %s", resultIrrelevantRank.getKnowledgeBase().getFormulas()));
+        _logger.debug(String.format("   I := %s", resultIncosistentRank.getKnowledgeBase().getFormulas()));
+        _logger.debug(String.format("   R := %s", resultRelevantRank.getKnowledgeBase().getFormulas()));
+        _logger.debug(String.format("   R- := %s", resultIrrelevantRank.getKnowledgeBase().getFormulas()));
 
         return new ModelRelevanceResult(resultIncosistentRank, resultRelevantRank, resultIrrelevantRank);
     }

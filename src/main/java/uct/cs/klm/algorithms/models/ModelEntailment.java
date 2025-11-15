@@ -8,7 +8,6 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import java.util.*;
 
-
 /**
  * This class represents a model entailment for a given query.
  * 

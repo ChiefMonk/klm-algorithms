@@ -37,9 +37,9 @@ public class AppConsole {
             if(args.length == 0)
             {
                 args = new String[2];
-                args[0] = "kb7.txt";
+                args[0] = "data/kb7.txt";
                 //args[1] = "p ~> w";
-                args[1] = "cats ~> legs";
+                args[1] = "cats ~> wild";
             }
             
             if (args == null || args.length != 2) {

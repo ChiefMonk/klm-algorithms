@@ -1,5 +1,6 @@
 package uct.cs.klm.algorithms.utils;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import uct.cs.klm.algorithms.models.DefeasibleImplication;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.models.ModelFormulaRanked;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
@@ -586,6 +588,110 @@ public final class ReasonerUtils {
             result = result.reversed();
         }
         return result;
+    }
+
+    public static List<KnowledgeBase> toPowerSetOrdered(ModelRankCollection rankCollection) {
+
+        rankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
+
+        List<ModelFormulaRanked> entries = new ArrayList<>();
+
+        for (ModelRank rank : rankCollection) {
+
+            for (PlFormula formula : rank.getFormulas()) {
+                entries.add(new ModelFormulaRanked(rank.getRankNumber() + 1, formula));
+            }
+        }
+
+        // Generate subsets of ModelFormulaRanked
+        List<List<ModelFormulaRanked>> subsets = new ArrayList<>();
+        powersetGenerate(0, entries, new ArrayList<>(), subsets);
+
+        // Sort formulas inside each subset by rank descending
+        for (List<ModelFormulaRanked> subset : subsets) {
+            subset.sort(
+                    Comparator.comparingInt(ModelFormulaRanked::rank).reversed()
+                            .thenComparing(m -> m.formula().toString())
+            );
+        }
+
+        // Sort subsets
+        subsets.sort((a, b) -> {
+            // 1. Size descending
+            int cmpSize = Integer.compare(b.size(), a.size());
+            if (cmpSize != 0) {
+                return cmpSize;
+            }
+
+            // 2. Lexicographic comparison of ranks
+            for (int i = 0; i < a.size(); i++) {
+                int cmpRank = Integer.compare(b.get(i).rank(), a.get(i).rank());
+                if (cmpRank != 0) {
+                    return cmpRank;
+                }
+            }
+
+            // 3. Tie-breaker: string comparison of formulas
+            for (int i = 0; i < a.size(); i++) {
+                int cmpFormula = a.get(i).formula().toString()
+                        .compareTo(b.get(i).formula().toString());
+                if (cmpFormula != 0) {
+                    return cmpFormula;
+                }
+            }
+
+            return 0;
+        });
+
+        // Convert to List<List<PlFormula>>
+        var resultList = subsets.stream()
+                .map(list -> list.stream()
+                .map(ModelFormulaRanked::formula)
+                .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+
+        List<KnowledgeBase> finalKb = new ArrayList<>();
+        for (List<PlFormula> subset : resultList) {
+            if (subset.isEmpty()) {
+                continue;
+            }
+            KnowledgeBase kb = new KnowledgeBase();
+            for (PlFormula formula : subset) {
+                kb.add(formula);
+            }
+
+            finalKb.add(kb);
+        }
+
+        int counter = 1;
+        DisplayUtils.LogDebug(_logger, String.format("=>Powersets of %s", rankCollection.getKnowledgeBase()));
+        for (KnowledgeBase subset : finalKb) {
+            DisplayUtils.LogDebug(_logger, String.format("  --> %s: %s", counter, subset));
+            counter++;
+        }
+
+        return finalKb;
+    }
+
+    // Standard power-set generator
+    private static void powersetGenerate(
+            int index,
+            List<ModelFormulaRanked> entries,
+            List<ModelFormulaRanked> current,
+            List<List<ModelFormulaRanked>> result
+    ) {
+        if (index == entries.size()) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        // Exclude
+        powersetGenerate(index + 1, entries, current, result);
+
+        // Include
+        current.add(entries.get(index));
+        powersetGenerate(index + 1, entries, current, result);
+        current.remove(current.size() - 1);  // backtrack
     }
 
     public static ModelRank removeFormulasFromRank(ModelRank currentRank, KnowledgeBase knowledgeBase) {

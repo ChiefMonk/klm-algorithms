@@ -7,6 +7,13 @@ import java.util.Map;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
+/**
+ * This class represents a model node for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 
 public class ModelNode {
     
