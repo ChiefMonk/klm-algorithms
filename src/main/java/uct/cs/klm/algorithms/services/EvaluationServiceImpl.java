@@ -133,7 +133,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         PlFormula formula = formulaService.getQueryFormula();
 
-        for (String testQuery : List.of("First Rank", "Last Rank", "Random Rank", "Same Antecedents", "Different Antecedents", "Mixed Antecedents")) {
+        for (String testQuery : List.of("QuerySet_1", "QuerySet_2", "QuerySet_3", "QuerySet_4", "QuerySet_5")) {
             EvaluationData data = new EvaluationData(testQuery, operator);
 
             for (Algorithm algo : selectedAlgorithms) {
