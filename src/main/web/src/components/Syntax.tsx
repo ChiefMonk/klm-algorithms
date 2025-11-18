@@ -59,7 +59,7 @@ const symbols: LogicalSymbol[] = [
     plainTextSymbol: "<=>",
     mathSymbol: toTex("<=>"),
     plainTextExample: "p <=> q",
-    mathExample: toTex("p <=> q"),
+    mathExample: toTex("q <=> q"),
   }
 ];
 
