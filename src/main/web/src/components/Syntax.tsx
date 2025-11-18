@@ -60,21 +60,7 @@ const symbols: LogicalSymbol[] = [
     mathSymbol: toTex("<=>"),
     plainTextExample: "p <=> q",
     mathExample: toTex("p <=> q"),
-  },
-  {
-    name: "Tautology",
-    plainTextSymbol: "+",
-    mathSymbol: toTex("+"),
-    plainTextExample: "+",
-    mathExample: toTex("+"),
-  },
-  {
-    name: "Contradiction",
-    plainTextSymbol: "-",
-    mathSymbol: toTex("-"),
-    plainTextExample: "-",
-    mathExample: toTex("-"),
-  },
+  }
 ];
 
 export function Syntax() {
