@@ -11,6 +11,10 @@ import uct.cs.klm.algorithms.utils.Symbols;
 
 /**
  * This class represents ranking of formulas.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class ModelRankCollection extends ArrayList<ModelRank> implements Cloneable {
   

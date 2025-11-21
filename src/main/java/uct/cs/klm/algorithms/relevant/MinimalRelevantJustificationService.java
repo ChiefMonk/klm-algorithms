@@ -11,9 +11,13 @@ import uct.cs.klm.algorithms.ranking.ModelRank;
 
 
 /**
- *
- * @author Chipo Hamayobe
+ * This class represents a minimal relevant justification service for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
+
 public class MinimalRelevantJustificationService extends JustificationServiceBase implements IJustificationService 
 {   
     public MinimalRelevantJustificationService()

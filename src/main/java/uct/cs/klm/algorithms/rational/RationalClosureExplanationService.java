@@ -3,13 +3,12 @@ package uct.cs.klm.algorithms.rational;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
-import uct.cs.klm.algorithms.rational.RCRankEntailmentCheck;
-import uct.cs.klm.algorithms.rational.RationalClosureExplanation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import uct.cs.klm.algorithms.services.IReasonerExplanationService;
+
 
 public class RationalClosureExplanationService implements IReasonerExplanationService<RationalClosureExplanation> {
     @Override

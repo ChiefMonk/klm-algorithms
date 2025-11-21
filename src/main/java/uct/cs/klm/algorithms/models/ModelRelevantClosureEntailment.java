@@ -3,6 +3,13 @@ package uct.cs.klm.algorithms.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
+/**
+ * This class represents a model relevant closure entailment for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelRelevantClosureEntailment extends ModelEntailment {
     

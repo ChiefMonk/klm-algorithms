@@ -26,6 +26,14 @@ import uct.cs.klm.algorithms.utils.ReasonerFactory;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 import uct.cs.klm.algorithms.utils.Symbols;
 
+/**
+ * This class represents a relevant closure entailment base for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
     private static final Logger _logger = LoggerFactory.getLogger(RelevantClosureEntailmentBase.class);

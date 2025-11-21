@@ -19,6 +19,14 @@ import uct.cs.klm.algorithms.utils.DisplayUtils;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 import uct.cs.klm.algorithms.utils.Symbols;
 
+/**
+ * This class represents a rational closure reasoner implementation for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class RationalClosureReasonerImpl extends KlmReasonerBase implements IReasonerService {
 
     private static final Logger _logger = LoggerFactory.getLogger(RationalClosureReasonerImpl.class);

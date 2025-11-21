@@ -8,9 +8,13 @@ import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
- *
- * @author ChipoHamayobe
+ * This class represents a KLM reasoner base for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
+
 public abstract class KlmReasonerBase {
 
     protected final SatReasoner _reasoner;

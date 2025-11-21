@@ -21,14 +21,16 @@ import uct.cs.klm.algorithms.utils.DisplayUtils;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;
 import uct.cs.klm.algorithms.utils.Symbols;
 
-/**
- *
- * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
- *
+
+ /**
  * Key optimizations: - Reduced logging (remove or gate debug prints for
  * production). - Use of stream collectors to partition formulas. - Pre-caching
  * exceptional formulas in a HashSet for fast membership tests. - Submission of
  * parallel tasks to a custom ForkJoinPool.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public final class BaseRankService implements IBaseRankService {
 

@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class represents a base rank explanation service for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 public class BaseRankExplanationService implements IBaseRankExplanationService {
     @Override
     public BaseRankExplanation generateExplanation(ModelBaseRank baseRank) {

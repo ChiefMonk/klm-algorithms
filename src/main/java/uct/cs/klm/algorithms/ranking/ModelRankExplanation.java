@@ -11,6 +11,8 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
  * This class represents a ranked knowledge base.
  * 
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelRankExplanation 

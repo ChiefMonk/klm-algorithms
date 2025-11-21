@@ -20,6 +20,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * This class represents a evaluation service implementation for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class EvaluationServiceImpl implements EvaluationService {
 
     private final ObjectMapper mapper = JavalinJackson.defaultMapper();

@@ -8,6 +8,14 @@ import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.models.ModelEntailment;
 import uct.cs.klm.algorithms.services.IReasonerService;
 
+/**
+ * This class represents a basic relevant reasoner implementation for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class BasicRelevantReasonerImpl extends RelevantClosureEntailmentBase implements IReasonerService {
 
     private static final Logger _logger = LoggerFactory.getLogger(BasicRelevantReasonerImpl.class);

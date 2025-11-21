@@ -30,10 +30,10 @@ function RationalClosureExplanation({
     <Card className="w-full h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Rational Closure</CardTitle>
-        <CardDescription className="text-base text-lg">            
+        <CardDescription className="text-base text-medium">            
 <b>Rational Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b> and <b>Magidor</b>, and the entailment algorithms implemented here
  build on the version proposed by <b>Casini et al</b>. 
- The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>RationalClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the knowledge base. 
+ The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>RationalClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the statements in the knowledge base. 
  When an inconsistency arises during entailment computation, the algorithm removes the most typical information from the knowledge base to restore consistency. 
  The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
 

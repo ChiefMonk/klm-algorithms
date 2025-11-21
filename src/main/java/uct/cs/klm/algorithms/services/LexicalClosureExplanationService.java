@@ -10,6 +10,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class represents a lexical closure explanation service for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class LexicalClosureExplanationService implements IReasonerExplanationService<RationalClosureExplanation> {
     @Override
     public RationalClosureExplanation generateExplanation(ModelEntailment entailment) {
