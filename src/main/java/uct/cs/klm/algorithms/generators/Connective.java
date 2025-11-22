@@ -1,12 +1,12 @@
 package uct.cs.klm.algorithms.generators;
 
 /**
- *
- * @author Chipo Hamayobe
- */
-/**
  * The Connective class is responsible for managing the logical connective symbols.
  * It provides default symbols and allows customization of the symbols.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class Connective {
     private static Connective instance;

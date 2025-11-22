@@ -14,6 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uct.cs.klm.algorithms.services.IKnowledgeBaseService;
 
+/**
+ * This class represents a knowledge base controller for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class KnowledgeBaseController {
 
     private static final Logger _logger = LoggerFactory.getLogger(KnowledgeBaseController.class);

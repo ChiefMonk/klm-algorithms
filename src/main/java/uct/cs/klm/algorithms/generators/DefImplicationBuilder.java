@@ -6,6 +6,10 @@ import java.util.Collections;
 /**
  * The DefImplicationBuilder class provides methods for generating defeasible implications (DIs)
  * and their associated structures within a knowledge base.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class DefImplicationBuilder{
 

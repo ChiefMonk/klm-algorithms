@@ -1,9 +1,6 @@
 package uct.cs.klm.algorithms.relevant;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.utils.Symbols;
 import uct.cs.klm.algorithms.ranking.*;
 

@@ -4,6 +4,10 @@ import java.util.HashMap;
 
 /**
  * The Rules class defines and manages the rules controlling the generation of complex defeasible implications.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class Rules{
     

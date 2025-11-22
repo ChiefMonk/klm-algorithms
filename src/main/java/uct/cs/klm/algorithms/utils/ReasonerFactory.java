@@ -7,6 +7,14 @@ import uct.cs.klm.algorithms.enums.*;
 import uct.cs.klm.algorithms.explanation.*;
 import uct.cs.klm.algorithms.services.*;
 
+/**
+ * This class represents a reasoner factory for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class ReasonerFactory {
 
     public static ReasonerType createReasonerType(String type) {

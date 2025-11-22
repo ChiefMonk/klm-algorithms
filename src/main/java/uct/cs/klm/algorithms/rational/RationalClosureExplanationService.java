@@ -10,6 +10,14 @@ import java.util.List;
 import uct.cs.klm.algorithms.services.IReasonerExplanationService;
 
 
+/**
+ * This class represents a rational closure explanation service for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class RationalClosureExplanationService implements IReasonerExplanationService<RationalClosureExplanation> {
     @Override
     public RationalClosureExplanation generateExplanation(ModelEntailment entailment) {

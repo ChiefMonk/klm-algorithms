@@ -21,6 +21,10 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * Utility class for generating random consistent defeasible knowledge bases for testing and benchmarking.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class RandomKnowledgeBaseGenerator {
     

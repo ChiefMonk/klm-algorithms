@@ -2,6 +2,10 @@ package uct.cs.klm.algorithms.generators;
 
 /**
  * The DefImplication class represents a defeasible implication and provides functions to manipulate and access its components
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class DefImplication {
 

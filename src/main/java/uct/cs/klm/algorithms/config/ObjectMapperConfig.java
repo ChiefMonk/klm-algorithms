@@ -8,6 +8,14 @@ import uct.cs.klm.algorithms.serializers.FormulaDeserializer;
 import uct.cs.klm.algorithms.serializers.FormulaKeyDeserializer;
 import uct.cs.klm.algorithms.serializers.FormulaSerializer;
 
+/**
+ * This class represents a object mapper config for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class ObjectMapperConfig {
   public static ObjectMapper createObjectMapper() {
     ObjectMapper mapper = new ObjectMapper();

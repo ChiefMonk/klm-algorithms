@@ -8,7 +8,12 @@ import java.util.concurrent.*;
 import uct.cs.klm.algorithms.generators.*;
 /**
  * The App class is responsible for generating a knowledge base (KB) of defeasible implications based on user-defined parameters.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
+
 public class AppGenerator 
 {
     private static Connective con = Connective.getInstance();

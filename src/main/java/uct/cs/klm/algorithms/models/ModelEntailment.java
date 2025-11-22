@@ -27,7 +27,7 @@ public abstract class ModelEntailment {
     
     protected ModelRankCollection _removedRanking;       
     protected ModelRankCollection _remainingRanking; 
-    private ModelRankCollection _relevantRanking;
+    protected ModelRankCollection _relevantRanking;
          
     protected KnowledgeBase _entailmentKnowledgeBase;       
     protected ArrayList<KnowledgeBase> _justification;

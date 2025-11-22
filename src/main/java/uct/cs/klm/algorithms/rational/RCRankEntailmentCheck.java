@@ -6,8 +6,6 @@ import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
-import java.util.List;
-
 /**
  * This class represents a rational closure rank entailment check for a given query.
  * 

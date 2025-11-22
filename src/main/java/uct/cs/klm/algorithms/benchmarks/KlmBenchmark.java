@@ -10,6 +10,14 @@ import uct.cs.klm.algorithms.services.KnowledgeBaseServiceImpl;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class represents a KLM benchmark for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 1, time = 1)

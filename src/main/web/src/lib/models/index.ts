@@ -34,6 +34,7 @@ type EntailmentModelBase = {
   removedRanking: Ranking[];
   remainingRanking: Ranking[];
   relevantRanking: Ranking[];
+  powersetRanking: Ranking[];
   justification: string[][];
   type: EntailmentType;
 };
@@ -180,6 +181,7 @@ abstract class EntailmentModel {
   private _removedRanking: Ranking[];
   private _remainingRanking: Ranking[];
   private _relevantRanking: Ranking[];
+  private _powersetRanking: Ranking[];
   private _justification: string[][];
   private _entailmentKnowledgeBase: string[];
   private _removedKnowledgeBase: string[];
@@ -199,6 +201,7 @@ abstract class EntailmentModel {
     removedRanking,
     remainingRanking,
     relevantRanking,
+    powersetRanking,
     justification,
     entailmentKnowledgeBase,
     removedKnowledgeBase,
@@ -224,6 +227,7 @@ abstract class EntailmentModel {
     this._remainingRanking = remainingRanking ?? [];
     this._relevantRanking = relevantRanking ?? [];
     this._justification = justification ?? [];
+    this._powersetRanking = powersetRanking ?? [];
     this._type = type;
   }
 
@@ -269,6 +273,10 @@ abstract class EntailmentModel {
 
   public get relevantRanking(): Ranking[] {
     return this._relevantRanking;
+  }
+
+  public get powersetRanking(): Ranking[] {
+    return this._powersetRanking;
   }
 
   public get timeTaken(): number {
@@ -317,6 +325,7 @@ abstract class EntailmentModel {
       removedRanking: this._removedRanking,
       remainingRanking: this._remainingRanking,
       relevantRanking: this._relevantRanking,
+      powersetRanking: this._powersetRanking,
       justification: this._justification,
       justificationTime: this._justificationTime,
       type: this._type,

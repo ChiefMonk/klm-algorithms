@@ -7,6 +7,10 @@ import java.util.*;
 
 /**
  * The KBGenerator class controls the generation of defeasible knowledge bases.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
 */
 public class KBGenerator{
     

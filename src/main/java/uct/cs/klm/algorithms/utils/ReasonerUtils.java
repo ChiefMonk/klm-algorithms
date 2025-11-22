@@ -1,6 +1,5 @@
 package uct.cs.klm.algorithms.utils;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -19,13 +18,17 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.models.DefeasibleImplication;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.models.ModelFormulaRanked;
+import uct.cs.klm.algorithms.models.ModelRankResponse;
 import uct.cs.klm.algorithms.ranking.ModelBaseRank;
 import uct.cs.klm.algorithms.ranking.ModelRank;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
 /**
+ * This class represents a reasoner utils for a given query.
  *
- * @author ChipoHamayobe
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public final class ReasonerUtils {
 
@@ -710,5 +713,44 @@ public final class ReasonerUtils {
         }
 
         return resultRank;
+    }
+
+    public static ArrayList<ModelRankResponse> toResponseRanks(ModelBaseRank baseRank, List<KnowledgeBase> powersets) {
+
+        ArrayList<ModelRankResponse> powersetRanking = new ArrayList<>();
+        
+        int counter = 1;
+        var infinityKb = baseRank.getRanking().getInfinityRank().getFormulas();
+        
+        for (KnowledgeBase powerKb : powersets) {
+
+            var rankKb = new KnowledgeBase();
+            rankKb.addKnowledgeBase(infinityKb);
+            rankKb.addKnowledgeBase(powerKb);
+          
+            powersetRanking.add(toResponseKnowledgebase(baseRank,rankKb,  counter));
+            counter++;
+        }
+        
+        return powersetRanking;
+    }
+    
+    public static ModelRankResponse toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase, int rankNumber) {              
+        return new ModelRankResponse(rankNumber, toResponseKnowledgebase(baseRank, knowledgeBase));
+    }
+    
+    public static ArrayList<String> toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase) {
+       
+        ModelRankCollection ranking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, knowledgeBase, false);
+
+        ArrayList<String> formulas = new ArrayList<>();
+
+        for (ModelRank rr : ranking) {
+            for (PlFormula ff : rr.getFormulas()) {
+                formulas.add(ff.toString());
+            }
+        }
+      
+        return formulas;
     }
 }

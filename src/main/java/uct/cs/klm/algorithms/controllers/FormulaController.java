@@ -13,6 +13,14 @@ import uct.cs.klm.algorithms.services.FormulaService;
 
 import io.javalin.http.Context;
 
+/**
+ * This class represents a formula controller for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class FormulaController 
 {
   private final static FormulaService formulaService = new FormulaServiceImpl();

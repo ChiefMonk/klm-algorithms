@@ -31,9 +31,9 @@ function LexicographicClosure({
         <CardTitle className="text-2xl font-bold">
           Lexicographic Closure
         </CardTitle>
-        <CardDescription className="text-base text-medium">           
-        <b>Lexicographic Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>LexicographicClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the statements in the knowledge base. 
-        Lexicographic Closure can be seen as a refinement of Rational Closure, where we remove single statements instead of entire ranks when inconsistencies arise during the reasoning process, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
+        <CardDescription className="text-base text-medium">
+          <b>Lexicographic Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Lehmann</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>LexicographicClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the statements in the knowledge base.
+          Lexicographic Closure can be seen as a refinement of Rational Closure, where we remove single statements instead of entire ranks when inconsistencies arise during the reasoning process, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -50,10 +50,17 @@ function LexicographicClosure({
               </p>
 
               <p className="font-medium">
-              Base Rank of statements in <Formula formula="\mathcal{K}" />:             
+                Base Rank of statements in <Formula formula="\mathcal{K}" />
               </p>
               <RankingTableWithout
                 ranking={lexicalEntailment.baseRanking}
+              />
+
+              <p className="font-medium">
+                Lexicographic Powerset of statements in <Formula formula="\mathcal{K}" />
+              </p>
+              <RankingTableWithout
+                ranking={lexicalEntailment.powersetRanking}
               />
 
               <p className="font-medium">Discarded Statements by Lexigraphic Closure Algorithm</p>
@@ -65,7 +72,7 @@ function LexicographicClosure({
               <RankingTableWithout
                 ranking={lexicalEntailment.remainingRanking}
               />
-             
+
             </div>
             <Explanation
               entailment={lexicalEntailment}

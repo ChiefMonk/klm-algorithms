@@ -18,8 +18,11 @@ import uct.cs.klm.algorithms.utils.DisplayUtils;
 import uct.cs.klm.algorithms.utils.ReasonerFactory;
 
 /**
- *
- * @author ChipoHamayobe
+ * This class represents the main application for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class AppConsole {
 

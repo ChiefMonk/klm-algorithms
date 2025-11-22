@@ -1,11 +1,11 @@
 package uct.cs.klm.algorithms.generators;
 
 /**
- *
- * @author Chipo Hamayobe
- */
-/**
- * The Atom class represents an atomic proposition and encapsulates the properties and behavior associated with individual atoms.
+ *  The Atom class represents an atomic proposition and encapsulates the properties and behavior associated with individual atoms.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class Atom {
     private static Connective con = Connective.getInstance();

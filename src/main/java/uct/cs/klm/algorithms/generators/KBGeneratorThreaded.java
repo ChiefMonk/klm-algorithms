@@ -6,6 +6,10 @@ import java.util.concurrent.*;
 /**
  * The KBGeneratorThreaded class provides an optimised version of defeasible knowledge base generation
  * using multithreading for parallel processing.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class KBGeneratorThreaded{
 

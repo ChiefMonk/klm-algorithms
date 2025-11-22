@@ -8,6 +8,14 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Collection;
 
+/**
+ * This class represents a JMH runner for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class JmhRunner {
 
     public static Collection<RunResult> runBenchmark(String algorithm, String operator, String query) throws RunnerException {

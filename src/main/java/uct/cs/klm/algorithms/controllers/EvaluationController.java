@@ -7,6 +7,14 @@ import uct.cs.klm.algorithms.models.*;
 import uct.cs.klm.algorithms.services.*;
 import java.io.IOException;
 
+/**
+ * This class represents a evaluation controller for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class EvaluationController {
     private static final Logger logger = LoggerFactory.getLogger(EvaluationController.class);
 

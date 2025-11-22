@@ -8,6 +8,14 @@ import uct.cs.klm.algorithms.ranking.*;
 
 import io.javalin.http.Context;
 
+/**
+ * This class represents a base rank controller for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class BaseRankController {
   private static final Logger logger = LoggerFactory.getLogger(BaseRankController.class);
   private static final IBaseRankService baseRankService = new BaseRankService();

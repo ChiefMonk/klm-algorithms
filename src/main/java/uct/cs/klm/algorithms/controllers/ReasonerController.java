@@ -18,6 +18,14 @@ import uct.cs.klm.algorithms.services.*;
 import uct.cs.klm.algorithms.utils.*;
 import uct.cs.klm.algorithms.services.IReasonerService;
 
+/**
+ * This class represents a reasoner controller for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class ReasonerController {
     private static final Logger logger = LoggerFactory.getLogger(ReasonerController.class);
 

@@ -6,6 +6,14 @@ import org.slf4j.LoggerFactory;
 import uct.cs.klm.algorithms.config.ObjectMapperConfig;
 import uct.cs.klm.algorithms.controllers.*;
 
+/**
+ * This class represents the main application for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
+
 public class App {
   
   private static final org.slf4j.Logger _logger = LoggerFactory.getLogger(App.class);

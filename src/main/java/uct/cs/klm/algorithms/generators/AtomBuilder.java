@@ -6,6 +6,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The AtomBuilder class provides functions for generating and keeping track of atoms in a knowledge base.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class AtomBuilder {
     private static AtomBuilder gen;

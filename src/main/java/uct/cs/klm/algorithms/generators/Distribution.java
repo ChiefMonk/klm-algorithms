@@ -5,6 +5,10 @@ import java.util.Arrays;
 
 /**
  * The Distribution class provides methods for calculating the distribution of defeasible implications (DIs) over ranks.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
  */
 public class Distribution{
 
