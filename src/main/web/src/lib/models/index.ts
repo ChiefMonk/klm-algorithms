@@ -1,11 +1,12 @@
 type Ranking = {
   rankNumber: number;
   formulas: string[];
+  discarded?: boolean;
 };
 
 type RankingOfRank = {
   rankNumber: number;
-  formulas: Ranking[];
+  formulas: Ranking[];  
 };
 
 type BaseRanking = {
@@ -35,6 +36,7 @@ type EntailmentModelBase = {
   remainingRanking: Ranking[];
   relevantRanking: Ranking[];
   powersetRanking: Ranking[];
+  consistentRank: number;
   justification: string[][];
   type: EntailmentType;
 };
@@ -182,6 +184,7 @@ abstract class EntailmentModel {
   private _remainingRanking: Ranking[];
   private _relevantRanking: Ranking[];
   private _powersetRanking: Ranking[];
+  private _consistentRank: number;
   private _justification: string[][];
   private _entailmentKnowledgeBase: string[];
   private _removedKnowledgeBase: string[];
@@ -202,6 +205,7 @@ abstract class EntailmentModel {
     remainingRanking,
     relevantRanking,
     powersetRanking,
+    consistentRank,
     justification,
     entailmentKnowledgeBase,
     removedKnowledgeBase,
@@ -228,6 +232,7 @@ abstract class EntailmentModel {
     this._relevantRanking = relevantRanking ?? [];
     this._justification = justification ?? [];
     this._powersetRanking = powersetRanking ?? [];
+    this._consistentRank = consistentRank ?? 0;
     this._type = type;
   }
 
@@ -279,6 +284,10 @@ abstract class EntailmentModel {
     return this._powersetRanking;
   }
 
+  public get consistentRank(): number {
+    return this._consistentRank;
+  }
+
   public get timeTaken(): number {
     return this._timeTaken;
   }
@@ -326,6 +335,7 @@ abstract class EntailmentModel {
       remainingRanking: this._remainingRanking,
       relevantRanking: this._relevantRanking,
       powersetRanking: this._powersetRanking,
+      consistentRank: this._consistentRank,
       justification: this._justification,
       justificationTime: this._justificationTime,
       type: this._type,

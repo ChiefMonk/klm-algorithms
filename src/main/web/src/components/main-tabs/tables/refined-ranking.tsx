@@ -19,7 +19,7 @@ const rankColumns: ColumnDef<RefinedRanking>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Rank Number
+        Rank
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -65,7 +65,7 @@ const rankColumns: ColumnDef<RefinedRanking>[] = [
   },
   {
     accessorKey: "formulas",
-    header: "Fomulas",
+    header: "Fomulas or Statements",
     cell: ({ row }) => {
       const formulas = row.getValue<string[]>("formulas");
       return <Kb formulas={formulas} />;

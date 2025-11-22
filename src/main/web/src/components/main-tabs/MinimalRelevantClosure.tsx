@@ -48,7 +48,7 @@ function MinimalRelevantClosure({
                 Basic Relevant Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
               </p>
               <p className="font-medium">
-                Base Rank of statements in <Formula formula="\mathcal{K}" />:
+                Base Rank of statements in <Formula formula="\mathcal{K}" />
               </p>
               <RankingTableWithout
                 ranking={minimalRelevantEntailment.baseRanking}

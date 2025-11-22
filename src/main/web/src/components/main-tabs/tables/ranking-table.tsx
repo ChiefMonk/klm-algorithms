@@ -5,12 +5,24 @@ import { Ranking, ConstantValues } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Kb } from "../common/formulas";
-//import { toTex } from "@/lib/formula";
 
+// -------------------------------
+// Helper: Convert rank to TeX
+// -------------------------------
+const rankToTex = (idx: number, symbol = "R") => {
+  const base = `\\mathcal{${symbol}}`;
+  return idx === ConstantValues.INFINITY_RANK_NUMBER
+    ? `${base}_{\\infty}`
+    : `${base}_{${idx.toString()}}`;
+};
+
+// -------------------------------
+// Formulas column
+// -------------------------------
 const formulas = (label: string): ColumnDef<Ranking> => ({
   accessorKey: "formulas",
   header: () => {
-    if (!label) return "Fomulas";
+    if (!label) return "Formulas or Statements";
     return (
       <span>
         Statements (<TexFormula>{label}</TexFormula>)
@@ -22,13 +34,16 @@ const formulas = (label: string): ColumnDef<Ranking> => ({
     return <Kb formulas={formulas} />;
   },
   meta: {
-    headerClassName: "min-w-max w-full", // min-width, taking
+    headerClassName: "min-w-max w-full",
     cellClassName: "whitespace-nowrap",
   },
   filterFn: "includesString",
 });
 
-const rankColumns: ColumnDef<Ranking>[] = [
+// -------------------------------
+// Factory: Ranking columns with dynamic symbol
+// -------------------------------
+const createRankColumns = (symbol = "R"): ColumnDef<Ranking>[] => [
   {
     accessorKey: "rankNumber",
     header: ({ column }) => (
@@ -36,7 +51,7 @@ const rankColumns: ColumnDef<Ranking>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Rank Number
+        Rank
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -46,21 +61,17 @@ const rankColumns: ColumnDef<Ranking>[] = [
     },
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
-      return (
-        //<TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
-        <TexFormula>
-        {idx === ConstantValues.INFINITY_RANK_NUMBER
-          ? '\\mathcal{R}_{\\infty}'
-          : `\\mathcal{R}_{${idx.toString()}}`}
-      </TexFormula>
-      );
+      return <TexFormula>{rankToTex(idx, symbol)}</TexFormula>;
     },
     filterFn: "weakEquals",
   },
   formulas(""),
 ];
 
-const sequenceColumns: ColumnDef<Ranking>[] = [
+// -------------------------------
+// Factory: Sequence columns with dynamic symbol
+// -------------------------------
+const createSequenceColumns = (symbol = "R"): ColumnDef<Ranking>[] => [
   {
     accessorKey: "rankNumber",
     header: ({ column }) => (
@@ -78,66 +89,86 @@ const sequenceColumns: ColumnDef<Ranking>[] = [
     },
     cell: ({ row }) => {
       const idx = row.getValue("rankNumber") as number;
-      return (
-        //<TexFormula>{idx == ConstantValues.INFINITY_RANK_NUMBER ? "\\infty" : idx.toString()}</TexFormula>
-        <TexFormula>
-        {idx === ConstantValues.INFINITY_RANK_NUMBER
-          ? '\\mathcal{R}_{\\infty}'
-          : `\\mathcal{R}_{${idx.toString()}}`}
-      </TexFormula>
-      );
+      return <TexFormula>{rankToTex(idx, symbol)}</TexFormula>;
     },
     filterFn: "weakEquals",
   },
   formulas("*_i^\\mathcal{K}"),
 ];
 
+// -------------------------------
+// RankingTable
+// -------------------------------
 function RankingTable({
   ranking,
   caption = "",
+  symbol = "R",
 }: {
   ranking: Ranking[];
   caption?: string;
+  symbol?: string;
 }) {
-  
   return (
     <DataTable
-      columns={rankColumns}
-      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
-      filter={ranking.length != 0}
+      columns={createRankColumns(symbol)}
+      data={[...ranking].sort((a, b) => b.rankNumber - a.rankNumber)}
+      filter={ranking.length !== 0}
       caption={caption}
     />
   );
 }
 
+// -------------------------------
+// RankingTableWithout (with sorting + discard strikeout)
+// -------------------------------
 function RankingTableWithout({
-  ranking, 
+  ranking,
+  sortOrder = "desc",
+  symbol = "R",
 }: {
   ranking: Ranking[];
+  sortOrder?: "asc" | "desc";
+  symbol?: string;
 }) {
-  
+  const sorted = [...ranking].sort((a, b) =>
+    sortOrder === "asc"
+      ? a.rankNumber - b.rankNumber
+      : b.rankNumber - a.rankNumber
+  );
+
   return (
-    <DataTable
-      columns={rankColumns}
-      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
-      filter={ranking.length != 0}    
+    <DataTable<Ranking, unknown>
+      columns={createRankColumns(symbol)}
+      data={sorted}
+      filter={ranking.length !== 0}
+      rowClassName={(row) =>
+        row.original.discarded
+          ? "line-through decoration-red-500 decoration-2"
+          : ""
+      }
     />
   );
 }
 
+// -------------------------------
+// RankingOfRanksTable
+// -------------------------------
 function RankingOfRanksTable({
   ranking,
   caption = "",
+  symbol = "R",
 }: {
   ranking: Ranking[];
   caption?: string;
+  symbol?: string;
 }) {
   const rankingData: Ranking[] = [];
-
   let index = 0;
 
   ranking.forEach((item) => {
-    const existingRank = rankingData.find((r) => r.rankNumber === item.rankNumber);
+    const existingRank = rankingData.find(
+      (r) => r.rankNumber === item.rankNumber
+    );
 
     if (existingRank) {
       index++;
@@ -146,13 +177,16 @@ function RankingOfRanksTable({
     } else {
       index = 0;
       const rankFormulas = `A*${item.rankNumber}.${index}*A:* ${item.formulas} *:`;
-      rankingData.push({ rankNumber: item.rankNumber, formulas: [rankFormulas] });
+      rankingData.push({
+        rankNumber: item.rankNumber,
+        formulas: [rankFormulas],
+      });
     }
   });
- 
+
   return (
     <DataTable
-      columns={rankColumns}
+      columns={createRankColumns(symbol)}
       data={rankingData.sort((a, b) => b.rankNumber - a.rankNumber)}
       filter={rankingData.length !== 0}
       caption={caption}
@@ -160,19 +194,23 @@ function RankingOfRanksTable({
   );
 }
 
-
+// -------------------------------
+// SequenceTable
+// -------------------------------
 function SequenceTable({
   ranking,
   caption = "",
+  symbol = "R",
 }: {
   ranking: Ranking[];
   caption?: string;
+  symbol?: string;
 }) {
   return (
     <DataTable
-      columns={sequenceColumns}
-      data={ranking.sort((a, b) => b.rankNumber - a.rankNumber)}
-      filter={ranking.length != 0}
+      columns={createSequenceColumns(symbol)}
+      data={[...ranking].sort((a, b) => b.rankNumber - a.rankNumber)}
+      filter={ranking.length !== 0}
       caption={caption}
       filters={[
         { id: "rankNumber", search: "filter index . . ." },
@@ -182,4 +220,10 @@ function SequenceTable({
   );
 }
 
-export { RankingTable, RankingOfRanksTable, SequenceTable, RankingTableWithout };
+export {
+  RankingTable,
+  RankingOfRanksTable,
+  SequenceTable,
+  RankingTableWithout,
+};
+

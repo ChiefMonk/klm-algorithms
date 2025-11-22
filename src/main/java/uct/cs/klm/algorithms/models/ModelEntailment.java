@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
  * This class represents a model entailment for a given query.
- * 
+ *
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  * @version 1.0.1
  * @since 2024-01-01
@@ -19,20 +19,23 @@ public abstract class ModelEntailment {
 
     protected KnowledgeBase _knowledgeBase;
     protected PlFormula _queryFormula;
-    protected ModelRankCollection _baseRanking;   
+    protected ModelRankCollection _baseRanking;
     protected boolean _entailed;
     protected double _timeTaken;
 
     protected double _justificationTime;
-    
-    protected ModelRankCollection _removedRanking;       
-    protected ModelRankCollection _remainingRanking; 
-    protected ModelRankCollection _relevantRanking;
-         
-    protected KnowledgeBase _entailmentKnowledgeBase;       
-    protected ArrayList<KnowledgeBase> _justification;
 
-    public  ModelEntailment() {}
+    protected ModelRankCollection _removedRanking;
+    protected ModelRankCollection _remainingRanking;
+    protected ModelRankCollection _relevantRanking;
+
+    protected KnowledgeBase _entailmentKnowledgeBase;
+    protected ArrayList<KnowledgeBase> _justification;
+    protected ArrayList<ModelRankResponse> _powersetRanking;
+    protected int _consistentRank;
+
+    public ModelEntailment() {
+    }
 
     protected ModelEntailment(EntailmentBuilder<?> builder) {
         _knowledgeBase = builder._knowledgeBase;
@@ -44,8 +47,10 @@ public abstract class ModelEntailment {
         _removedRanking = builder._removedRanking;
         _justification = new ArrayList<>();
         _remainingRanking = builder._remainingRanking;
-        _entailmentKnowledgeBase = builder._entailmentKnowledgeBase;   
+        _entailmentKnowledgeBase = builder._entailmentKnowledgeBase;
         _relevantRanking = builder._relevantRanking;
+        _powersetRanking = builder._powersetRanking;
+        _consistentRank = builder._consistentRank;
     }
 
     public KnowledgeBase getKnowledgeBase() {
@@ -57,30 +62,27 @@ public abstract class ModelEntailment {
     }
 
     public PlFormula getNegation() {
-        return _queryFormula == null 
-                ? null 
+        return _queryFormula == null
+                ? null
                 : new Negation(((Implication) _queryFormula).getFirstFormula());
     }
 
     public ModelRankCollection getRemovedRanking() {
-        if(_removedRanking == null || _removedRanking.isEmpty())
-        {
+        if (_removedRanking == null || _removedRanking.isEmpty()) {
             return new ModelRankCollection();
         }
         return _removedRanking;
     }
 
     public ModelRankCollection getRemainingRanking() {
-        if(_remainingRanking == null || _remainingRanking.isEmpty())
-        {
+        if (_remainingRanking == null || _remainingRanking.isEmpty()) {
             return new ModelRankCollection();
         }
         return _remainingRanking;
     }
-    
-     public ModelRankCollection getRelevantRanking() {
-        if(_relevantRanking == null || _relevantRanking.isEmpty())
-        {
+
+    public ModelRankCollection getRelevantRanking() {
+        if (_relevantRanking == null || _relevantRanking.isEmpty()) {
             return new ModelRankCollection();
         }
         return _relevantRanking;
@@ -93,15 +95,15 @@ public abstract class ModelEntailment {
     public KnowledgeBase getEntailmentKnowledgeBase() {
         return _entailmentKnowledgeBase;
     }
-    
+
     public KnowledgeBase getRemovedKnowledgeBase() {
         return getRemovedRanking().getKnowledgeBase();
     }
-    
+
     public KnowledgeBase getRemainingKnowledgeBase() {
         return getRemainingRanking().getKnowledgeBase();
     }
-    
+
     public KnowledgeBase getRelevantKnowledgeBase() {
         return getRelevantRanking().getKnowledgeBase();
     }
@@ -109,7 +111,15 @@ public abstract class ModelEntailment {
     public ModelRankCollection getRemainingRanks() {
         return _baseRanking;
     }
-    
+
+    public ArrayList<ModelRankResponse> getPowersetRanking() {
+        return _powersetRanking;
+    }
+
+    public int getConsistentRank() {       
+        return _consistentRank;
+    }
+
     public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
         _knowledgeBase = knowledgeBase;
     }
@@ -121,7 +131,7 @@ public abstract class ModelEntailment {
     public void setBaseRanking(ModelRankCollection baseRanking) {
         _baseRanking = baseRanking;
     }
-   
+
     public void setEntailed(boolean entailed) {
         _entailed = entailed;
     }
@@ -148,6 +158,10 @@ public abstract class ModelEntailment {
 
     public void setEntailmentKnowledgeBase(KnowledgeBase entailmentKnowledgeBase) {
         _entailmentKnowledgeBase = entailmentKnowledgeBase;
+    }
+    
+    public void setPowersetRanking(ArrayList<ModelRankResponse> powersetRanking) {
+        _powersetRanking = powersetRanking;
     }
 
     public void setJustification(ArrayList<KnowledgeBase> justification) {
@@ -196,16 +210,18 @@ public abstract class ModelEntailment {
 
         private KnowledgeBase _knowledgeBase;
         private PlFormula _queryFormula;
-        private ModelRankCollection _baseRanking;      
+        private int _consistentRank;
+        private ModelRankCollection _baseRanking;
         private boolean _entailed;
         private double _timeTaken;
         private double _justificationTime;
 
         private ModelRankCollection _removedRanking;
         private ModelRankCollection _remainingRanking;
-        private KnowledgeBase _entailmentKnowledgeBase;           
+        private KnowledgeBase _entailmentKnowledgeBase;
         private ModelRankCollection _relevantRanking;
- 
+        private ArrayList<ModelRankResponse> _powersetRanking;
+
         public T withRemovedRanking(ModelRankCollection removedRanking) {
 
             if (removedRanking != null && !removedRanking.isEmpty()) {
@@ -225,8 +241,8 @@ public abstract class ModelEntailment {
             _remainingRanking = remainingRanking;
             return self();
         }
-        
-         public T withRelevantRanking(ModelRankCollection relevantRanking) {
+
+        public T withRelevantRanking(ModelRankCollection relevantRanking) {
 
             if (relevantRanking != null && !relevantRanking.isEmpty()) {
                 relevantRanking.sort(Comparator.comparing(ModelRank::getRankNumber).reversed());
@@ -251,6 +267,11 @@ public abstract class ModelEntailment {
             return self();
         }
 
+        public T withConsistentRank(int consistentRank) {
+            _consistentRank = consistentRank;
+            return self();
+        }
+
         public T withBaseRanking(ModelRankCollection baseRanking) {
 
             if (baseRanking != null && !baseRanking.isEmpty()) {
@@ -260,7 +281,7 @@ public abstract class ModelEntailment {
             _baseRanking = baseRanking;
             return self();
         }
-               
+
         public T withEntailed(boolean entailed) {
             _entailed = entailed;
             return self();
@@ -273,6 +294,11 @@ public abstract class ModelEntailment {
 
         public T withJustificationTime(double justificationTime) {
             _justificationTime = justificationTime;
+            return self();
+        }
+
+        public T withPowersetRanking(ArrayList<ModelRankResponse> powersetRanking) {
+            _powersetRanking = powersetRanking;
             return self();
         }
 

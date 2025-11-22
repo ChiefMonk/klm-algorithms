@@ -16,36 +16,25 @@ import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelLexicographicEntailment extends ModelEntailment {
   private final ModelRankCollection weakenedRanking;  
-  private final ArrayList<ModelRankResponse> _powersetRanking;
+ 
 
   private ModelLexicographicEntailment(ModelLexicographicEntailmentBuilder builder) {
     super(builder);
-    this.weakenedRanking = builder.weakenedRanking;
-     this._powersetRanking = builder._powersetRanking;
+    this.weakenedRanking = builder.weakenedRanking;   
   }
 
   public ModelRankCollection getWeakenedRanking() {
     return weakenedRanking;
   }
-  
-   public ArrayList<ModelRankResponse> getPowersetRanking() {
-    return _powersetRanking;
-  }
-
+   
   public static class ModelLexicographicEntailmentBuilder extends EntailmentBuilder<ModelLexicographicEntailmentBuilder> {
-    private ModelRankCollection weakenedRanking;
-    private ArrayList<ModelRankResponse> _powersetRanking;
+    private ModelRankCollection weakenedRanking;  
 
     public ModelLexicographicEntailmentBuilder withWeakenedRanking(ModelRankCollection weakenedRanking) {
       this.weakenedRanking = weakenedRanking;
       return this;
     }
-    
-     public ModelLexicographicEntailmentBuilder withPowersetRanking(ArrayList<ModelRankResponse> powersetRanking) {
-      this._powersetRanking = powersetRanking;
-      return this;
-    }
-
+       
     @Override
     protected ModelLexicographicEntailmentBuilder self() {
       return this;

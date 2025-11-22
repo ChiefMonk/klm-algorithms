@@ -162,7 +162,7 @@ function EntailmentCheck({
         Thats is, does <Formula formula={"\\mathcal{\\overrightarrow{K^\\prime}}"} /> {" "}={" "} <Formula formula="\{" /><Formula formula={classicalRemaining} /><Formula formula="\}" /> <Formula formula={"\\models"} />  <Formula formula={classical} />?
       </p>
       <p>
-        If follows that {" "} <EntailResultPrime formula={queryFormula} entailed={entailed} />.
+        If follows that {" "} <EntailResultPrime formula={classical} entailed={entailed} />.
       </p>
       <p>
        Therefore, we conclude that the knowledge base <EntailResult formula={queryFormula} entailed={entailed} />. 

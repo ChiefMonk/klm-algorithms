@@ -58,6 +58,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
 
         _logger.debug(String.format("-> Checking if full KB is consistent with query %s", materialisedKb));
 
+        int consistentRank = 1;
         boolean continueProcessing = true;
         boolean isQueryEntailed = false;
         boolean isNegationEntailed = _reasoner.query(materialisedKb, negationOfAntecedent);
@@ -82,18 +83,19 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                     queryFormula,
                     materialisedKb,
                     relevantPowersets,
+                    consistentRank,
                     isQueryEntailed,
                     startTime);
         }
 
-        int counter = 1;
+        consistentRank = 0;
         for (KnowledgeBase powerKb : relevantPowersets) {
 
             if (!continueProcessing) {
                 break;
             }
 
-            DisplayUtils.LogDebug(_logger, String.format("=> Powerset %s := %s", counter, powerKb));
+            DisplayUtils.LogDebug(_logger, String.format("=> Powerset %s := %s", consistentRank+1, powerKb));
 
             var combinedKb = ReasonerUtils.toCombinedKnowledgeBases(nonRelevantRanking.getFormulas(), powerKb);
 
@@ -115,7 +117,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 }
             }
 
-            counter++;
+            consistentRank++;
         }
 
         return CreateResponse(
@@ -123,6 +125,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 queryFormula,
                 materialisedKb,
                 relevantPowersets,
+                consistentRank,
                 isQueryEntailed,
                 startTime);
 
@@ -133,6 +136,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
             PlFormula queryFormula,
             KnowledgeBase materialisedKb,
             List<KnowledgeBase> powersets,
+            int consistentRank,
             boolean isQueryEntailed,
             long startTime) {
 
@@ -144,8 +148,16 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
 
             if (isQueryEntailed) {
+                consistentRank = powersets.size()-1;
                 remainingRanking = new ModelRankCollection(infinityRank);
                 removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+            }
+            else
+            {
+                if(consistentRank == powersets.size())
+                {
+                    consistentRank = 0;
+                }
             }
         }
 
@@ -164,6 +176,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)
+                .withConsistentRank(consistentRank)
                 .withRemainingRanking(remainingRanking)
                 .withWeakenedRanking(new ModelRankCollection())
                 .withPowersetRanking(powersetRanking)
