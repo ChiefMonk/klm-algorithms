@@ -7,10 +7,9 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTableWithout } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import { LexicalEntailmentModel } from "@/lib/models";
-import { EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { BaseRankingExplanation, EntailmentExplanation, DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { Formula } from "./common/formulas";
@@ -47,24 +46,21 @@ function LexicographicClosure({
             <div className="my-6">
 
               <p className="font-medium">
-              <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
+                <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
-              <p className="mb-3">
-                Lexicographic Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
-              </p>
-
-              <RankingTableWithout
-                ranking={lexicalEntailment.baseRanking}
+              <BaseRankingExplanation
+                entailment={lexicalEntailment}
+                className="mb-6 space-y-4"
               />
 
               <p className="font-medium bold">
-               <strong>Lexicographic powerset of statements in <Formula formula="\mathcal{K}" />:</strong> 
+                <strong>Lexicographic powerset of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
               <LexicographicPowersetExplanation
                 entailment={lexicalEntailment}
                 className="mb-6 space-y-4"
               />
-                         
+
               <p className="font-medium bold"> <strong>Discarded statements from <Formula formula="\mathcal{K}" /> shown per rank:</strong></p>
               <DiscardedRankingExplanation
                 entailment={lexicalEntailment}
@@ -75,7 +71,7 @@ function LexicographicClosure({
               <RemainingRankingExplanation
                 entailment={lexicalEntailment}
                 className="mb-6 space-y-4"
-              />            
+              />
 
               <p className="font-medium bold"> <strong>Entailment check: Does <Formula formula="\mathcal{K}" /> defeasibly entail <Formula formula={lexicalEntailment.queryFormula} />?:</strong></p>
               <EntailmentExplanation

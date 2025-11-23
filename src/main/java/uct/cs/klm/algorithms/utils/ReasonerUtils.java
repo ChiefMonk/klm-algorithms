@@ -715,32 +715,49 @@ public final class ReasonerUtils {
         return resultRank;
     }
 
+    public static ArrayList<ModelRankResponse> toResponseRanks(ModelBaseRank baseRank, ModelRankCollection irrelevantRanking, List<KnowledgeBase> powersets) {
+
+        List<KnowledgeBase> powerResult = new ArrayList<>();
+
+        var irrelevantKb = irrelevantRanking.getKnowledgeBase();
+        for (KnowledgeBase powerKb : powersets) {
+
+            var kb = new KnowledgeBase();
+            kb.addKnowledgeBase(irrelevantKb);
+            kb.addKnowledgeBase(powerKb);
+            
+            powerResult.add(kb);
+        }
+
+        return toResponseRanks(baseRank, powerResult);
+    }
+
     public static ArrayList<ModelRankResponse> toResponseRanks(ModelBaseRank baseRank, List<KnowledgeBase> powersets) {
 
         ArrayList<ModelRankResponse> powersetRanking = new ArrayList<>();
-        
+
         int counter = 1;
         var infinityKb = baseRank.getRanking().getInfinityRank().getFormulas();
-        
+
         for (KnowledgeBase powerKb : powersets) {
 
             var rankKb = new KnowledgeBase();
             rankKb.addKnowledgeBase(infinityKb);
             rankKb.addKnowledgeBase(powerKb);
-          
-            powersetRanking.add(toResponseKnowledgebase(baseRank,rankKb,  counter));
+
+            powersetRanking.add(toResponseKnowledgebase(baseRank, rankKb, counter));
             counter++;
         }
-        
+
         return powersetRanking;
     }
-    
-    public static ModelRankResponse toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase, int rankNumber) {              
+
+    public static ModelRankResponse toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase, int rankNumber) {
         return new ModelRankResponse(rankNumber, toResponseKnowledgebase(baseRank, knowledgeBase));
     }
-    
+
     public static ArrayList<String> toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase) {
-       
+
         ModelRankCollection ranking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, knowledgeBase, false);
 
         ArrayList<String> formulas = new ArrayList<>();
@@ -750,7 +767,7 @@ public final class ReasonerUtils {
                 formulas.add(ff.toString());
             }
         }
-      
+
         return formulas;
     }
 }

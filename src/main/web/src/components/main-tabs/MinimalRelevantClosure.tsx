@@ -7,9 +7,8 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTableWithout } from "./tables/ranking-table";
 import { MinimalRelevantEntailmentModel } from "@/lib/models";
-import { EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { BaseRankingExplanation, EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
 import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
@@ -49,12 +48,9 @@ function MinimalRelevantClosure({
               <p className="font-medium">
                 <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
-              <p className="mb-3">
-              <b>Minimal Relevant Closure</b> starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
-              </p>
-
-              <RankingTableWithout
-                ranking={minimalRelevantEntailment.baseRanking}
+              <BaseRankingExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
               />
 
               <p className="font-medium bold">

@@ -15,7 +15,7 @@ interface RankCheckProps {
   entailment: EntailmentModel;
 }
 
-const inferenceOperatorMap: Record<EntailmentType, string> =  {
+const inferenceOperatorMap: Record<EntailmentType, string> = {
   [EntailmentType.Unknown]: "Unknown",
   [EntailmentType.RationalClosure]: "Rational Closure",
   [EntailmentType.LexicographicClosure]: "Lexicographic Closure",
@@ -152,6 +152,29 @@ interface EntailmentCheckProps {
   entailment: EntailmentModel;
 }
 
+function BaseRankingCheck({
+  entailment: { type, baseRanking, queryFormula },
+}: EntailmentCheckProps) {
+
+  const inferenceOp = inferenceOperatorMap[type];
+  return (
+    <div className="space-y-4">
+      <p className="mb-3">
+        <ul className="list-disc list-inside">
+          <li> The <i>{inferenceOp}</i> defeasible entailment algorithm starts with the base rankings of statements in <Formula formula="\mathcal{K}" />, constructed by the <i>BaseRank</i> algorithm.</li>
+          <li>Note that the query formula <Formula formula={queryFormula} /> is not used in the <i>BaseRank</i> algorithm.</li>
+          <li> The <i>BaseRank</i> algorithm takes the defeasible knowledge base <Formula formula="\mathcal{K}" /> as input and returns the following ranking of statements based on how exceptional they are relative to one another.</li>       
+        </ul>
+      </p>
+
+      <RankingTableWithout
+        ranking={baseRanking}
+      />
+    </div>
+  );
+}
+
+
 function LexicographicPowersetCheck({
   entailment: { powersetRanking, negation, queryFormula, consistentRank },
 }: EntailmentCheckProps) {
@@ -209,7 +232,7 @@ function DiscardedRankingCheck({
         <ul className="list-disc list-inside">
           <li>These are the statements in <Formula formula="\mathcal{K}" /> (if any) causing the inconsistency with the query antecedent, <Formula formula={queryFormula.split("~>")[0].replaceAll("(", "").replaceAll(")", "")} />.</li>
           <li>If the whole lexicographic powerset (all the sub-knowledge bases above) is inconsistent with the query antecedent, then this is the set of all statements in  <Formula formula="\mathcal{K}" /> minus those assigned to <Formula formula={`\\mathcal{R}_{\\infty}`} />.</li>
-          <li>They are therefore discarded by the <i>{inferenceOp}</i> defeasible entailment algorithm and are excluded from entailment checking and determining if <Formula formula={`\\overrightarrow{\\mathcal{K}} \\vapprox ${queryFormula}`} />?</li>
+          <li>They are therefore discarded by the <i>{inferenceOp}</i> defeasible entailment algorithm and are excluded from entailment checking and determining if <Formula formula={`\\mathcal{K} \\vapprox ${queryFormula}`} />?</li>
           <li>For easy reference, we denoted this set as <Formula formula={`\\mathcal{K}_{d}`} />, and will be referred to as the <i>discarded sub knowledge base</i>.</li>
         </ul>
       </p>
@@ -232,7 +255,7 @@ function RemainingRankingCheck({
         <ul className="list-disc list-inside">
           <li>These are the remaining statements in <Formula formula="\mathcal{K}" /> (if any) consistency with the query antecedent, <Formula formula={queryFormula.split("~>")[0].replaceAll("(", "").replaceAll(")", "")} />.</li>
           <li>If the whole lexicographic powerset (all the sub-knowledge bases above) is inconsistent with the query antecedent, then this set consists of only the statements assigned to <Formula formula={`\\mathcal{R}_{\\infty}`} />.</li>
-          <li>They are therefore employed by the <i>{inferenceOp}</i> defeasible entailment algorithm for entailment checking and determining if <Formula formula={`\\overrightarrow{\\mathcal{K}} \\vapprox ${queryFormula}`} />?</li>
+          <li>They are therefore employed by the <i>{inferenceOp}</i> defeasible entailment algorithm for entailment checking and determining if <Formula formula={`\\mathcal{K} \\vapprox ${queryFormula}`} />?</li>
           <li>For easy reference, we denoted this set as <Formula formula={`\\mathcal{K}_{r}`} />, and will be referred to as the <i>remaining sub knowledge base</i>.</li>
           <li>If <Formula formula={`\\mathcal{K}_{r}`} /> entails the query <Formula formula={queryFormula} />, then <Formula formula={`\\mathcal{K}_{r}`} /> is the <i>deciding knowledge base</i> <Formula formula="\mathcal{D}" />, to be used for justification-based explanation.</li>
         </ul>
@@ -246,7 +269,7 @@ function RemainingRankingCheck({
 
 
 function EntailmentCheck({
-  entailment: {type, baseRanking, remainingRanks, removedRanking, queryFormula, entailed },
+  entailment: { type, baseRanking, remainingRanks, removedRanking, queryFormula, entailed },
 }: EntailmentCheckProps) {
   const classical = queryFormula.replaceAll("~>", "=>");
   const classicalAll = baseRanking.flatMap(rank => rank.formulas).join(", ").replaceAll("~>", "=>");
@@ -281,7 +304,7 @@ function EntailmentCheck({
                 The classical entailment logic concludes that the knowledge base <EntailResult formula={queryFormula} entailed={entailed} />.
               </li>
               <li>
-                Therefore, the modified and optimised <i>{inferenceOp}</i> defeasible entailment algorithm for <i>justication</i> returns <strong>true</strong> and the defeasible entailment knowledge base <Formula formula={"\\mathcal{K}_{r}"} />.                
+                Therefore, the modified and optimised <i>{inferenceOp}</i> defeasible entailment algorithm for <i>justication</i> returns <strong>true</strong> and the defeasible entailment knowledge base <Formula formula={"\\mathcal{K}_{r}"} />.
               </li>
               <li>
                 Since, <EntailResult formula={queryFormula} entailed={entailed} />, the <i>deciding knowledge base</i> <Formula formula="\mathcal{D}" /> = <Formula formula={"\\mathcal{K}_{r}"} /> = <Formula formula="\{" /><Formula formula={decidingKb} /><Formula formula="\}" />.
@@ -293,10 +316,10 @@ function EntailmentCheck({
                 If follows that <Formula formula={"\\overrightarrow{\\mathcal{K}_{r}} \\subseteq \\overrightarrow{\\mathcal{K}}"} /> <Formula formula={"\\not \\models"} />  <Formula formula={classical} />?
               </li>
               <li>
-              The classical entailment logic concludes that the knowledge base <EntailResult formula={queryFormula} entailed={entailed} />.
+                The classical entailment logic concludes that the knowledge base <EntailResult formula={queryFormula} entailed={entailed} />.
               </li>
               <li>
-                Therefore, the modified and optimised <i>{inferenceOp}</i> defeasible entailment algorithm for <i>justication</i> returns <strong>false</strong> and an empty defeasible entailment knowledge base.                
+                Therefore, the modified and optimised <i>{inferenceOp}</i> defeasible entailment algorithm for <i>justication</i> returns <strong>false</strong> and an empty defeasible entailment knowledge base.
               </li>
               <li>
                 Since, <EntailResult formula={queryFormula} entailed={entailed} />, the <i>deciding knowledge base</i> <Formula formula="\mathcal{D}" /> = <Formula formula="\{\}" />.
@@ -413,6 +436,14 @@ export function LexicographicPowersetExplanation({ entailment, className }: Expl
   return (
     <div className={className}>
       <LexicographicPowersetCheck entailment={entailment} />
+    </div>
+  );
+}
+
+export function BaseRankingExplanation({ entailment, className }: ExplanationProps) {
+  return (
+    <div className={className}>
+      <BaseRankingCheck entailment={entailment} />
     </div>
   );
 }

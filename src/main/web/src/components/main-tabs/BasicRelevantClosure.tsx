@@ -7,13 +7,12 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTableWithout } from "./tables/ranking-table";
-import { BasicRelevantEntailmentModel } from "@/lib/models";
-import { EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { BaseRankingExplanation, EntailmentExplanation, DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
 import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { Formula } from "./common/formulas";
+import { BasicRelevantEntailmentModel } from "@/lib/models";
 
 interface BasicRelevantClosureProps {
   isLoading: boolean;
@@ -50,12 +49,9 @@ function BasicRelevantClosure({
               <p className="font-medium">
               <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
-              <p className="mb-3">
-              <b>Basic Relevant Closure</b> starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
-              </p>
-
-              <RankingTableWithout
-                ranking={basicRelevantEntailment.baseRanking}
+              <BaseRankingExplanation
+                entailment={basicRelevantEntailment}
+                className="mb-6 space-y-4"
               />
 
               <p className="font-medium bold">
