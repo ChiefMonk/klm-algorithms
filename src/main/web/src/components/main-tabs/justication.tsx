@@ -24,10 +24,10 @@ export function Justification({
   return (
     <div>
       <h1 className="text-lg font-bold mb-2">
-        Justification-based Explanation Algorithm
+        B. Entailment Explanation
       </h1>
 
-      <p className="mb-2">The Deciding Knowledge Base:</p>
+      <p className="mb-2">The deciding knowledge base <Formula formula="\mathcal{D}" /> is passed to the <i>universal justication knowledge algorithm</i> justification-based explanation algorithm to generate the justification sets <Formula formula="\mathcal{J}_{i}" />:</p>
       <Kb
         formulas={entailment.entailmentKnowledgeBase}
         name={`\\mathcal{D}`}

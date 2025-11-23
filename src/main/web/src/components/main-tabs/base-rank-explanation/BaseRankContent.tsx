@@ -22,6 +22,7 @@ function BaseRankContent({ baseRankExplanation }: BaseRankContentProps) {
         <PartitioningProcedure sequence={baseRankExplanation.sequence} />
         <p>The partitioning generates the following results:</p>
         <SequenceTable
+          symbol="E"
           ranking={getUniqueRankings(baseRankExplanation.sequence)}
         />
         <p>The ranking is constructed as follows:</p>

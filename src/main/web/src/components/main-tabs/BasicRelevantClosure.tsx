@@ -9,10 +9,11 @@ import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { RankingTableWithout } from "./tables/ranking-table";
 import { BasicRelevantEntailmentModel } from "@/lib/models";
-import { Explanation } from "./common/explanations";
-import { Kb, QueryFormula, Formula } from "./common/formulas";
+import { EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
+import { Formula } from "./common/formulas";
 
 interface BasicRelevantClosureProps {
   isLoading: boolean;
@@ -39,43 +40,51 @@ function BasicRelevantClosure({
       <CardContent>
         {!isLoading && basicRelevantEntailment && (
           <div>
-            <h1 className="text-lg font-bold mb-2">Entailment Determination</h1>
+            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+            <QueryInputContainer
+              knowledgeBase={basicRelevantEntailment.knowledgeBase}
+              queryFormula={basicRelevantEntailment.queryFormula}
+            />
+            <div className="my-6">
 
-            <Kb formulas={basicRelevantEntailment.knowledgeBase} set />
-            <div className="mb-6">
-              <QueryFormula formula={basicRelevantEntailment.queryFormula} />
-            </div>
-            <div className="mb-6">
-              <p className="mb-3">
-              Basic Relevant Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.               
-              </p>
               <p className="font-medium">
-              Base Rank of statements in <Formula formula="\mathcal{K}" />             
+              <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
+              <p className="mb-3">
+              <b>Basic Relevant Closure</b> starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
+              </p>
+
               <RankingTableWithout
                 ranking={basicRelevantEntailment.baseRanking}
               />
 
-              <p className="font-medium">Relevant Statements to the negation of Query Antecedent, <Formula formula={basicRelevantEntailment.negation} /></p>
-              <RankingTableWithout
-                ranking={basicRelevantEntailment.relevantRanking}               
+              <p className="font-medium bold">
+               <strong>Lexicographic powerset of statements in <Formula formula="\mathcal{K}" />:</strong> 
+              </p>
+              <LexicographicPowersetExplanation
+                entailment={basicRelevantEntailment}
+                className="mb-6 space-y-4"
+              />
+                         
+              <p className="font-medium bold"> <strong>Discarded statements from <Formula formula="\mathcal{K}" /> shown per rank:</strong></p>
+              <DiscardedRankingExplanation
+                entailment={basicRelevantEntailment}
+                className="mb-6 space-y-4"
               />
 
+              <p className="font-medium bold"> <strong>Remaining statements from <Formula formula="\mathcal{K}" /> shown per rank:</strong></p>
+              <RemainingRankingExplanation
+                entailment={basicRelevantEntailment}
+                className="mb-6 space-y-4"
+              />            
 
-              <p className="font-medium">Discarded Statements by Basic Relevant Closure Algorithm</p>
-              <RankingTableWithout
-                ranking={basicRelevantEntailment.removedRanking}
-              />
-
-              <p className="font-medium">Remaining Statements by Basic Relevant Closure Algorithm</p>
-              <RankingTableWithout
-                ranking={basicRelevantEntailment.remainingRanking}
+              <p className="font-medium bold"> <strong>Entailment check: Does <Formula formula="\mathcal{K}" /> defeasibly entail <Formula formula={basicRelevantEntailment.queryFormula} />?:</strong></p>
+              <EntailmentExplanation
+                entailment={basicRelevantEntailment}
+                className="mb-6 space-y-4"
               />
             </div>
-            <Explanation
-              entailment={basicRelevantEntailment}
-              className="mb-6 space-y-4"
-            />
+
             <Justification
               queryType={queryType}
               entailment={basicRelevantEntailment}

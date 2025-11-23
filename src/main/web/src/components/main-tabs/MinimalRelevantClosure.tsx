@@ -9,10 +9,11 @@ import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { RankingTableWithout } from "./tables/ranking-table";
 import { MinimalRelevantEntailmentModel } from "@/lib/models";
-import { Explanation } from "./common/explanations";
-import { Kb, QueryFormula, Formula } from "./common/formulas";
+import { EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
+import { Formula } from "./common/formulas";
 
 interface MinimalRelevantClosureProps {
   isLoading: boolean;
@@ -30,7 +31,7 @@ function MinimalRelevantClosure({
         <CardTitle className="text-2xl font-bold">
           Mininal Relevant Closure
         </CardTitle>
-        <CardDescription className="text-base text-medium">      
+        <CardDescription className="text-base text-medium">
           <b>Minimal Relevant Closure</b> is a KLM inference mechanism for non-monotonic reasoning introduced by <b>Casini et al.</b>, and the entailment algorithms implemented here build on the version proposed by <b>Casini et al</b>. The algorithm operates in two sub-phases, <b><i>BaseRank</i></b> and <b><i>MinimalRelevantClosure</i></b> algorithms. The algorithm functions by assigning a ranking of typicality to the statements in the knowledge base.
           Minimal Relevant Closure can be seen as a refinement of Rational Closure, where we only retract the statements in a less specific rank that actually disagree with more specific statements in higher ranks with respect to the antecedent of the query, starting with the most typical information. The <i>BaseRank</i> phase determines these rankings, where statements with lower ranks represent more typical information.
         </CardDescription>
@@ -38,41 +39,51 @@ function MinimalRelevantClosure({
       <CardContent>
         {!isLoading && minimalRelevantEntailment && (
           <div>
-            <h1 className="text-lg font-bold mb-2">Entailment Determination</h1>
-            <Kb formulas={minimalRelevantEntailment.knowledgeBase} set />
-            <div className="mb-6">
-              <QueryFormula formula={minimalRelevantEntailment.queryFormula} />
-            </div>
-            <div className="mb-6">
-              <p className="mb-3">
-                Basic Relevant Closure starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
-              </p>
+            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+            <QueryInputContainer
+              knowledgeBase={minimalRelevantEntailment.knowledgeBase}
+              queryFormula={minimalRelevantEntailment.queryFormula}
+            />
+            <div className="my-6">
+
               <p className="font-medium">
-                Base Rank of statements in <Formula formula="\mathcal{K}" />
+                <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
+              <p className="mb-3">
+              <b>Minimal Relevant Closure</b> starts with the base rankings of statements in <Formula formula="\mathcal{K}" /> constructed by the <i>BaseRank</i> algorithm.
+              </p>
+
               <RankingTableWithout
                 ranking={minimalRelevantEntailment.baseRanking}
               />
 
-              <p className="font-medium">Relevant Statements to the Negation of Query Antecedent, <Formula formula={minimalRelevantEntailment.negation} /></p>
-              <RankingTableWithout
-                ranking={minimalRelevantEntailment.relevantRanking}
+              <p className="font-medium bold">
+                <strong>Lexicographic powerset of statements in <Formula formula="\mathcal{K}" />:</strong>
+              </p>
+              <LexicographicPowersetExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
               />
 
-              <p className="font-medium">Discarded Statements by Minimal Relevant Closure Algorithm</p>
-              <RankingTableWithout
-                ranking={minimalRelevantEntailment.removedRanking}
+              <p className="font-medium bold"> <strong>Discarded statements from <Formula formula="\mathcal{K}" /> shown per rank:</strong></p>
+              <DiscardedRankingExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
               />
 
-              <p className="font-medium">Remaining Statements by Minimal Relevant Closure Algorithm</p>
-              <RankingTableWithout
-                ranking={minimalRelevantEntailment.remainingRanking}
+              <p className="font-medium bold"> <strong>Remaining statements from <Formula formula="\mathcal{K}" /> shown per rank:</strong></p>
+              <RemainingRankingExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
+              />
+
+              <p className="font-medium bold"> <strong>Entailment check: Does <Formula formula="\mathcal{K}" /> defeasibly entail <Formula formula={minimalRelevantEntailment.queryFormula} />?:</strong></p>
+              <EntailmentExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
               />
             </div>
-            <Explanation
-              entailment={minimalRelevantEntailment}
-              className="mb-6 space-y-4"
-            />
+
             <Justification
               queryType={queryType}
               entailment={minimalRelevantEntailment}
@@ -87,5 +98,4 @@ function MinimalRelevantClosure({
     </Card>
   );
 }
-
 export { MinimalRelevantClosure };
