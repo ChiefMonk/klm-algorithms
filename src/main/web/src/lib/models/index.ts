@@ -35,9 +35,11 @@ type EntailmentModelBase = {
   removedRanking: Ranking[];
   remainingRanking: Ranking[];
   relevantRanking: Ranking[];
+  irrelevantRanking: Ranking[];
   powersetRanking: Ranking[];
   consistentRank: number;
   justification: string[][];
+  relevantJustification: string[][];
   type: EntailmentType;
 };
 
@@ -183,9 +185,11 @@ abstract class EntailmentModel {
   private _removedRanking: Ranking[];
   private _remainingRanking: Ranking[];
   private _relevantRanking: Ranking[];
+  private _irrelevantRanking: Ranking[];
   private _powersetRanking: Ranking[];
   private _consistentRank: number;
   private _justification: string[][];
+  private _relevantJustification: string[][];
   private _entailmentKnowledgeBase: string[];
   private _removedKnowledgeBase: string[];
   private _remainingKnowledgeBase: string[];
@@ -204,9 +208,11 @@ abstract class EntailmentModel {
     removedRanking,
     remainingRanking,
     relevantRanking,
+    irrelevantRanking,
     powersetRanking,
     consistentRank,
     justification,
+    relevantJustification,
     entailmentKnowledgeBase,
     removedKnowledgeBase,
     remainingKnowledgeBase,
@@ -230,7 +236,9 @@ abstract class EntailmentModel {
     this._removedRanking = removedRanking ?? [];
     this._remainingRanking = remainingRanking ?? [];
     this._relevantRanking = relevantRanking ?? [];
+    this._irrelevantRanking = irrelevantRanking ?? [];
     this._justification = justification ?? [];
+    this._relevantJustification = relevantJustification ?? [];
     this._powersetRanking = powersetRanking ?? [];
     this._consistentRank = consistentRank ?? 0;
     this._type = type;
@@ -280,6 +288,10 @@ abstract class EntailmentModel {
     return this._relevantRanking;
   }
 
+  public get irrelevantRanking(): Ranking[] {
+    return this._irrelevantRanking;
+  }
+
   public get powersetRanking(): Ranking[] {
     return this._powersetRanking;
   }
@@ -298,6 +310,9 @@ abstract class EntailmentModel {
 
   public get justification(): string[][] {
     return this._justification;
+  }
+  public get relevantJustification(): string[][] {
+    return this._relevantJustification;
   }
 
   public get entailmentKnowledgeBase(): string[] {
@@ -334,9 +349,11 @@ abstract class EntailmentModel {
       removedRanking: this._removedRanking,
       remainingRanking: this._remainingRanking,
       relevantRanking: this._relevantRanking,
+      irrelevantRanking: this._irrelevantRanking,
       powersetRanking: this._powersetRanking,
       consistentRank: this._consistentRank,
       justification: this._justification,
+      relevantJustification: this._relevantJustification,
       justificationTime: this._justificationTime,
       type: this._type,
     };

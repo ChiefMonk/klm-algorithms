@@ -114,10 +114,12 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     baseRank,
                     queryFormula,
                     materialisedKb,
-                    new ModelRankCollection(),
+                    relevantRanking,
                     baseRankCollection,
                     relevantPowersets,
                     consistentRank,
+                    relevanceResult.getRelevantKnowledgeBase(),
+                    relevanceResult.getJustification(),
                     isQueryEntailed,
                     startTime);
         }
@@ -160,10 +162,12 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                 baseRank,
                 queryFormula,
                 materialisedKb,
-                relevantRankingAll,
+                relevantRanking,
                 irrelevantRankingAll,
                 relevantPowersets,
                 consistentRank,
+                relevanceResult.getRelevantKnowledgeBase(),
+                relevanceResult.getJustification(),
                 isQueryEntailed,
                 startTime);
 
@@ -177,6 +181,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             ModelRankCollection irrelevantRanking,
             List<KnowledgeBase> powersets,
             int consistentRank,
+            KnowledgeBase relevantKnowledgeBase,
+            ArrayList<KnowledgeBase> relevantJustification,
             boolean isQueryEntailed,
             long startTime) {
 
@@ -223,6 +229,8 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                 .withConsistentRank(consistentRank)
                 .withPowersetRanking(powersetRanking)
                 .withEntailmentKnowledgeBase(remainingRanking.getKnowledgeBase())
+                .withRelevantJustification(relevantJustification)
+                .withRelevantKnowledgeBase(relevantKnowledgeBase)
                 .withEntailed(isQueryEntailed)
                 .withTimeTaken(finalTime)
                 .build();
@@ -244,7 +252,12 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
         KnowledgeBase incosistentKb = new KnowledgeBase();
 
+        KnowledgeBase relevantKb = new KnowledgeBase();
+
         for (var justificationEntry : justificationCollection) {
+
+            relevantKb.addKnowledgeBase(justificationEntry);
+
             for (var formula : justificationEntry) {
 
                 var formulaMaterialised = ReasonerUtils.toMaterialisedFormula(formula);
@@ -352,6 +365,11 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         _logger.debug(String.format("   R := %s", resultRelevantRank.getKnowledgeBase().getFormulas()));
         _logger.debug(String.format("   R- := %s", resultIrrelevantRank.getKnowledgeBase().getFormulas()));
 
-        return new ModelRelevanceResult(resultIncosistentRank, resultRelevantRank, resultIrrelevantRank);
+        return new ModelRelevanceResult(
+                resultIncosistentRank,
+                resultRelevantRank,
+                resultIrrelevantRank,
+                relevantKb,
+                justificationCollection);
     }
 }

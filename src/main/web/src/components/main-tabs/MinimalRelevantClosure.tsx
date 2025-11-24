@@ -8,7 +8,7 @@ import {
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { MinimalRelevantEntailmentModel } from "@/lib/models";
-import { BaseRankingExplanation, EntailmentExplanation,DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
+import { BaseRankingExplanation, EntailmentExplanation, DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation, RelevancePartitionExplanation } from "./common/explanations";
 import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
@@ -49,6 +49,14 @@ function MinimalRelevantClosure({
                 <strong> Base Rank of statements in <Formula formula="\mathcal{K}" />:</strong>
               </p>
               <BaseRankingExplanation
+                entailment={minimalRelevantEntailment}
+                className="mb-6 space-y-4"
+              />
+
+              <p className="font-medium">
+                <strong> Computation of the Relevance Partition, <Formula formula="\mathcal{R}^{+}" /> and <Formula formula="\mathcal{R}^{-}" />:</strong>
+              </p>
+              <RelevancePartitionExplanation
                 entailment={minimalRelevantEntailment}
                 className="mb-6 space-y-4"
               />

@@ -1,48 +1,66 @@
 package uct.cs.klm.algorithms.relevant;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import uct.cs.klm.algorithms.models.KnowledgeBase;
 import uct.cs.klm.algorithms.utils.Symbols;
 import uct.cs.klm.algorithms.ranking.*;
 
 /**
  * This class represents a model relevance result for a given query.
- * 
+ *
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  * @version 1.0.1
  * @since 2024-01-01
  */
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelRelevanceResult {
-    
+
     private final ModelRankCollection _inconsistentRanking;
     private final ModelRankCollection _relevantRanking;
     private final ModelRankCollection _irrelevantRanking;
-    
-    public ModelRelevanceResult(ModelRankCollection inconsistentRanking, ModelRankCollection relevantRanking, ModelRankCollection irrelevantRanking) {
-    _inconsistentRanking = inconsistentRanking;
-    _relevantRanking = relevantRanking;
-    _irrelevantRanking = irrelevantRanking;
-  }
-    
-     public ModelRankCollection getInconsistentRanking() {
+    private final KnowledgeBase _relevantKnowledgeBase;
+    private final ArrayList<KnowledgeBase> _justification;
+
+    public ModelRelevanceResult(
+            ModelRankCollection inconsistentRanking,
+            ModelRankCollection relevantRanking,
+            ModelRankCollection irrelevantRanking,
+            KnowledgeBase relevantKnowledgeBase,
+            ArrayList<KnowledgeBase> justification) {
+        _inconsistentRanking = inconsistentRanking;
+        _relevantRanking = relevantRanking;
+        _irrelevantRanking = irrelevantRanking;
+        _justification = justification;
+        _relevantKnowledgeBase = relevantKnowledgeBase;
+    }
+
+    public ArrayList<KnowledgeBase> getJustification() {
+        return _justification;
+    }
+
+    public KnowledgeBase getRelevantKnowledgeBase() {
+        return _relevantKnowledgeBase;
+    }
+
+    public ModelRankCollection getInconsistentRanking() {
         return _inconsistentRanking;
     }
-    
+
     public ModelRankCollection getRelevantRanking() {
         return _relevantRanking;
     }
-       
-    public ModelRankCollection getCorrectRelevantRanking() {                
+
+    public ModelRankCollection getCorrectRelevantRanking() {
         return _relevantRanking.getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
-    }       
-    
+    }
+
     public ModelRankCollection getIrrelevantRanking() {
         return _irrelevantRanking;
     }
-    
+
     public ModelRankCollection getCorrectIrrelevantRanking() {
-        
+
         ModelRank relInfinity = _relevantRanking.getRank(Symbols.INFINITY_RANK_NUMBER);
         if (relInfinity == null) {
             return _irrelevantRanking;

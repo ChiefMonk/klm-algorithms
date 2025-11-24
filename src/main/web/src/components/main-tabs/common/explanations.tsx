@@ -8,6 +8,7 @@ import { AllRanksEntail, EntailResult, Formula } from "./formulas";
 import { RankingTable } from "../tables/ranking-table";
 import { RefinedRankingTable } from "../tables/refined-ranking";
 import { RankingTableWithout } from "../tables/ranking-table";
+import { Kb } from "./formulas";
 
 interface RankCheckProps {
   value: Ranking;
@@ -22,6 +23,23 @@ const inferenceOperatorMap: Record<EntailmentType, string> = {
   [EntailmentType.BasicRelevantClosure]: "Basic Relevant Closure",
   [EntailmentType.MinimalRelevantClosure]: "Minimal Relevant Closure",
 };
+
+const inferenceOperatorRelevant: Record<EntailmentType, boolean> = {
+  [EntailmentType.Unknown]: false,
+  [EntailmentType.RationalClosure]: false,
+  [EntailmentType.LexicographicClosure]: false,
+  [EntailmentType.BasicRelevantClosure]: true,
+  [EntailmentType.MinimalRelevantClosure]: true,
+};
+
+const inferenceRelevantNumber: Record<EntailmentType, number> = {
+  [EntailmentType.Unknown]: 0,
+  [EntailmentType.RationalClosure]: 0,
+  [EntailmentType.LexicographicClosure]: 0,
+  [EntailmentType.BasicRelevantClosure]: 1,
+  [EntailmentType.MinimalRelevantClosure]: 2,
+};
+
 
 
 function RankCheck({
@@ -163,12 +181,84 @@ function BaseRankingCheck({
         <ul className="list-disc list-inside">
           <li> The <i>{inferenceOp}</i> defeasible entailment algorithm starts with the base rankings of statements in <Formula formula="\mathcal{K}" />, constructed by the <i>BaseRank</i> algorithm.</li>
           <li>Note that the query formula <Formula formula={queryFormula} /> is not used in the <i>BaseRank</i> algorithm.</li>
-          <li> The <i>BaseRank</i> algorithm takes the defeasible knowledge base <Formula formula="\mathcal{K}" /> as input and returns the following ranking of statements based on how exceptional they are relative to one another.</li>       
+          <li> The <i>BaseRank</i> algorithm takes the defeasible knowledge base <Formula formula="\mathcal{K}" /> as input and returns the following ranking of statements based on how exceptional they are relative to one another.</li>
         </ul>
       </p>
 
       <RankingTableWithout
         ranking={baseRanking}
+      />
+    </div>
+  );
+}
+
+function RelevancePartitionCheck({
+  entailment: { type, negation, relevantKnowledgeBase, relevantJustification, relevantRanking, irrelevantRanking, queryFormula },
+}: EntailmentCheckProps) {
+
+  const relevantNumber = inferenceRelevantNumber[type];
+
+  return (
+    <div className="space-y-4">
+      <p className="mb-3">
+        <ul className="list-disc list-inside">
+          <li>Determination of the <i>relevance</i> with respect to <Formula formula="\mathcal{K}" /> and the query <Formula formula={`${queryFormula}`} /> involves locating the statements within <Formula formula="\mathcal{K}" /> responsible for the inconsistency with the query antecedent.</li>
+          <li>The set <Formula formula="\mathcal{R}^{+}" /> of the <i>relevant partition</i> is minimal subset of <Formula formula="\mathcal{K}" /> <i>relevant</i> for concluding <Formula formula={`${negation}`} />. In literature and the dissertation, this is simply denoted as <Formula formula="\mathcal{R}" />.</li>
+          <li>The set <Formula formula="\mathcal{R}^{-}" /> of the <i>relevant partition</i> is the subset of <Formula formula="\mathcal{K}" /> <i> not relevant</i> for concluding <Formula formula={`${negation}`} />. Therefore, <Formula formula="\mathcal{R}^{-}" /> is the complement of <Formula formula="\mathcal{R}^{+}" />.</li>
+          <li>The process of determining <Formula formula="\mathcal{R}^{+}" /> starts by first finding the minimal sets of statements responsible for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} />.</li>
+          <li>The set responsible for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} /> is <Formula formula="\{" /><Formula formula={relevantKnowledgeBase.join(", ")} /><Formula formula="\}" /> .</li>
+        </ul>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "1rem",
+            alignItems: "center",
+          }}
+        >
+          <span>
+            The justification sets for{" "}
+            <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} />{" "}
+            are:
+          </span>
+
+          {relevantJustification.map((just, index) => (
+            <Kb
+              key={index}
+              formulas={just}
+              name={`\\mathcal{J}_{${index + 1}}`}
+              set
+            />
+          ))}
+        </div>
+
+        
+
+      </p>
+
+      <p>The Relevant set of statements, <Formula formula="\mathcal{R}^{+}" />, shown per rank:</p>
+      <ul className="list-disc list-inside">
+        {relevantNumber == 0 ? (
+            <p>
+              <li> This is the union of statements in all justification sets, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>            
+            </p>
+          ) : (
+            <p>
+               <li> For each justification set, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>    
+            </p>
+          )}
+        </ul>
+      <RankingTableWithout
+        ranking={relevantRanking}
+      />
+
+      <p>The Irrelevant set of statements, <Formula formula="\mathcal{R}^{-}" />, shown per rank:</p>
+    <ul className="list-disc list-inside">           
+              <li> This is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>                      
+        </ul>
+      <RankingTableWithout
+        ranking={irrelevantRanking}
       />
     </div>
   );
@@ -226,12 +316,15 @@ function DiscardedRankingCheck({
 }: EntailmentCheckProps) {
 
   const inferenceOp = inferenceOperatorMap[type];
+  const isRelevant = inferenceOperatorRelevant[type];
+  const relevantSet = isRelevant ? "\\mathcal{R}^{-}" : "\\mathcal{R}_{\\infty}";
+
   return (
     <div className="space-y-4">
       <p className="mb-3">
         <ul className="list-disc list-inside">
           <li>These are the statements in <Formula formula="\mathcal{K}" /> (if any) causing the inconsistency with the query antecedent, <Formula formula={queryFormula.split("~>")[0].replaceAll("(", "").replaceAll(")", "")} />.</li>
-          <li>If the whole lexicographic powerset (all the sub-knowledge bases above) is inconsistent with the query antecedent, then this is the set of all statements in  <Formula formula="\mathcal{K}" /> minus those assigned to <Formula formula={`\\mathcal{R}_{\\infty}`} />.</li>
+          <li>If the whole lexicographic powerset (all the sub-knowledge bases above) is inconsistent with the query antecedent, then this is the set of all statements in  <Formula formula="\mathcal{K}" /> minus those assigned to <Formula formula={relevantSet} />.</li>
           <li>They are therefore discarded by the <i>{inferenceOp}</i> defeasible entailment algorithm and are excluded from entailment checking and determining if <Formula formula={`\\mathcal{K} \\vapprox ${queryFormula}`} />?</li>
           <li>For easy reference, we denoted this set as <Formula formula={`\\mathcal{K}_{d}`} />, and will be referred to as the <i>discarded sub knowledge base</i>.</li>
         </ul>
@@ -444,6 +537,14 @@ export function BaseRankingExplanation({ entailment, className }: ExplanationPro
   return (
     <div className={className}>
       <BaseRankingCheck entailment={entailment} />
+    </div>
+  );
+}
+
+export function RelevancePartitionExplanation({ entailment, className }: ExplanationProps) {
+  return (
+    <div className={className}>
+      <RelevancePartitionCheck entailment={entailment} />
     </div>
   );
 }

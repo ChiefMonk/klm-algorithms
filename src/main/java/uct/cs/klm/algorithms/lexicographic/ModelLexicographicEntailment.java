@@ -1,9 +1,7 @@
 package uct.cs.klm.algorithms.lexicographic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.ArrayList;
 import uct.cs.klm.algorithms.models.ModelEntailment;
-import uct.cs.klm.algorithms.models.ModelRankResponse;
 import uct.cs.klm.algorithms.ranking.ModelRankCollection;
 
 /**

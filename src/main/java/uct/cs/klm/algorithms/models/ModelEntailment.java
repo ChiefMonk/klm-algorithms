@@ -32,6 +32,8 @@ public abstract class ModelEntailment {
     protected KnowledgeBase _entailmentKnowledgeBase;
     protected ArrayList<KnowledgeBase> _justification;
     protected ArrayList<ModelRankResponse> _powersetRanking;
+    protected KnowledgeBase _relevantKnowledgeBase;
+    protected ArrayList<KnowledgeBase> _relevantJustification;
     protected int _consistentRank;
 
     public ModelEntailment() {
@@ -51,6 +53,8 @@ public abstract class ModelEntailment {
         _relevantRanking = builder._relevantRanking;
         _powersetRanking = builder._powersetRanking;
         _consistentRank = builder._consistentRank;
+        _relevantKnowledgeBase = builder._relevantKnowledgeBase;
+        _relevantJustification = builder._relevantJustification;
     }
 
     public KnowledgeBase getKnowledgeBase() {
@@ -96,6 +100,10 @@ public abstract class ModelEntailment {
         return _entailmentKnowledgeBase;
     }
 
+    public KnowledgeBase getRelevanKnowledgeBase() {
+        return _relevantKnowledgeBase;
+    }
+
     public KnowledgeBase getRemovedKnowledgeBase() {
         return getRemovedRanking().getKnowledgeBase();
     }
@@ -116,7 +124,7 @@ public abstract class ModelEntailment {
         return _powersetRanking;
     }
 
-    public int getConsistentRank() {       
+    public int getConsistentRank() {
         return _consistentRank;
     }
 
@@ -159,7 +167,11 @@ public abstract class ModelEntailment {
     public void setEntailmentKnowledgeBase(KnowledgeBase entailmentKnowledgeBase) {
         _entailmentKnowledgeBase = entailmentKnowledgeBase;
     }
-    
+
+    public void setRelevantKnowledgeBase(KnowledgeBase relevantKnowledgeBase) {
+        _relevantKnowledgeBase = relevantKnowledgeBase;
+    }
+
     public void setPowersetRanking(ArrayList<ModelRankResponse> powersetRanking) {
         _powersetRanking = powersetRanking;
     }
@@ -174,6 +186,18 @@ public abstract class ModelEntailment {
 
     public ArrayList<KnowledgeBase> getJustification() {
         return _justification;
+    }
+
+    public void setRelevantJustification(ArrayList<KnowledgeBase> relevantJustification) {
+        if (relevantJustification != null && !relevantJustification.isEmpty()) {
+            relevantJustification.sort(Comparator.comparingInt(a -> a.size()));
+        }
+
+        _relevantJustification = relevantJustification;
+    }
+
+    public ArrayList<KnowledgeBase> getRelevantJustification() {
+        return _relevantJustification;
     }
 
     public ModelRankCollection getEntailmentRanking() {
@@ -221,6 +245,8 @@ public abstract class ModelEntailment {
         private KnowledgeBase _entailmentKnowledgeBase;
         private ModelRankCollection _relevantRanking;
         private ArrayList<ModelRankResponse> _powersetRanking;
+        private KnowledgeBase _relevantKnowledgeBase;
+        private ArrayList<KnowledgeBase> _relevantJustification;
 
         public T withRemovedRanking(ModelRankCollection removedRanking) {
 
@@ -254,6 +280,11 @@ public abstract class ModelEntailment {
 
         public T withEntailmentKnowledgeBase(KnowledgeBase entailmentKnowledgeBase) {
             _entailmentKnowledgeBase = entailmentKnowledgeBase;
+            return self();
+        }
+
+        public T withRelevantKnowledgeBase(KnowledgeBase relevantKnowledgeBase) {
+            _relevantKnowledgeBase = relevantKnowledgeBase;
             return self();
         }
 
@@ -299,6 +330,11 @@ public abstract class ModelEntailment {
 
         public T withPowersetRanking(ArrayList<ModelRankResponse> powersetRanking) {
             _powersetRanking = powersetRanking;
+            return self();
+        }
+
+        public T withRelevantJustification(ArrayList<KnowledgeBase> relevantJustification) {
+            _relevantJustification = relevantJustification;
             return self();
         }
 

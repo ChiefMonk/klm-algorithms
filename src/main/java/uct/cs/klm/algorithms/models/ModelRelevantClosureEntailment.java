@@ -12,8 +12,7 @@ import uct.cs.klm.algorithms.ranking.ModelRankCollection;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelRelevantClosureEntailment extends ModelEntailment {
-    
-    private ModelRankCollection _relevantRanking;
+      
     private ModelRankCollection _irrelevantRanking;
     
     public ModelRelevantClosureEntailment() {
@@ -25,11 +24,7 @@ public class ModelRelevantClosureEntailment extends ModelEntailment {
       
       this._relevantRanking = builder._relevantRanking;
       this._irrelevantRanking = builder._irrelevantRanking;
-    }
-
-    public ModelRankCollection getRelevantRanking() {
-        return _relevantRanking;
-    }
+    }  
   
     public ModelRankCollection getIrrelevantRanking() {
         return _irrelevantRanking;
