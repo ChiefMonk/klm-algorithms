@@ -55,7 +55,7 @@ public class ReasonerController {
             
             var justificationKb = justification.computeAllJustifications(
                     entailment.getBaseRanking().getInfinityRank(), 
-                    entailment.getEntailmentKnowledgeBase(), 
+                    entailment.getEntailmentKnowledgeBaseKb(), 
                     queryFormula,
                     true);
             

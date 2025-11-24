@@ -45,13 +45,13 @@ public class BasicRelevantClosureExplanationService implements IReasonerExplanat
 
         return new RationalClosureExplanation(
                 entailment.getQueryFormula(),
-                entailment.getKnowledgeBase(),
+                entailment.getKnowledgeBaseKb(),
                 entailment.getEntailed(),
                 checks,
                 baseRanking,
                 removedRanking,
                 remainingRanking,
-                entailment.getJustification()
+                entailment.getJustificationKb()
         );
     }
 }

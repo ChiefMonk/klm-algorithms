@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
 import org.tweetyproject.logics.pl.sat.SatSolver;
@@ -23,13 +25,15 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a justification service base for a given query.
- * 
+ *
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  * @version 1.0.1
  * @since 2024-01-01
  */
 public abstract class JustificationServiceBase {
 
+    private static final Logger _logger = LoggerFactory.getLogger(JustificationServiceBase.class);
+    
     protected final SatReasoner _reasoner;
 
     public JustificationServiceBase() {
@@ -37,25 +41,25 @@ public abstract class JustificationServiceBase {
         _reasoner = new SatReasoner();
     }
 
-    protected ArrayList<KnowledgeBase> computeAllJustifications(
+    protected ArrayList<KnowledgeBase> computeAllJustifications(          
             ModelRank infinityRank,
             ReasonerType reasonerType,
             KnowledgeBase remainingKnowledgeBase,
             PlFormula queryFormula,
             boolean convertDefeasible) {
 
-        System.out.println();
-        System.out.println(String.format("%s Justifications", reasonerType));
-        System.out.println(String.format("Query: %s", queryFormula));
+        _logger.debug("");
+        _logger.debug(String.format("%s Justifications", reasonerType));
+        _logger.debug(String.format("Query: %s", queryFormula));
 
         if (remainingKnowledgeBase == null || remainingKnowledgeBase.isEmpty()) {
-            System.out.println("KB = {}");
-            System.out.println("J = {}");
+            _logger.debug("KB = {}");
+            _logger.debug("J = {}");
 
             return new ArrayList<>();
         }
 
-        System.out.println(String.format("KB = %s", remainingKnowledgeBase));
+        _logger.debug(String.format("KB = %s", remainingKnowledgeBase));
 
         remainingKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(remainingKnowledgeBase);
         queryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
@@ -90,6 +94,7 @@ public abstract class JustificationServiceBase {
         }
 
         ArrayList<KnowledgeBase> allJustifications = new ArrayList<>();
+              
         var infinityRankKb = infinityRank.getFormulas();
 
         if (infinityRankKb.isEmpty()) {
@@ -113,10 +118,10 @@ public abstract class JustificationServiceBase {
 
         allJustifications.sort(Comparator.comparingInt(a -> a.size()));
 
-        System.out.println(String.format("Number of Justifications = %s", allJustifications.size()));
+        _logger.debug(String.format("Number of Justifications = %s", allJustifications.size()));
         int counter = 1;
         for (KnowledgeBase kb : allJustifications) {
-            System.out.println(String.format(" --> %s. J_%s = %s", counter, counter, kb));
+            _logger.debug(String.format(" --> %s. J_%s = %s", counter, counter, kb));
             counter++;
         }
 
@@ -156,6 +161,13 @@ public abstract class JustificationServiceBase {
 
         KnowledgeBase sPrime = new KnowledgeBase();
         List<Proposition> sigma = getSignature(query);
+        
+        int counter = 1;
+        _logger.debug(String.format("->Signature for %s:", query));
+         for (Proposition prop : sigma) {
+            _logger.debug(String.format(" %s: %s", counter, prop));
+            counter++;
+        }
 
         while (result != sPrime) {
             sPrime = result;

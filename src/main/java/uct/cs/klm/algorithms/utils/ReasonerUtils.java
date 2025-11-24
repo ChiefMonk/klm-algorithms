@@ -336,12 +336,15 @@ public final class ReasonerUtils {
     }
 
     public static ModelRankCollection toRanksFromKnowledgeBase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase, boolean opposite) {
+        return toRanksFromKnowledgeBase(baseRank.getRanking(), knowledgeBase, opposite);
+    }
+
+    public static ModelRankCollection toRanksFromKnowledgeBase(ModelRankCollection baseRankCollection, KnowledgeBase knowledgeBase, boolean opposite) {
 
         if (knowledgeBase == null || knowledgeBase.isEmpty()) {
             return new ModelRankCollection();
         }
 
-        ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking());
         ModelRankCollection result = new ModelRankCollection();
 
         var materialknowledgeBase = toMaterialisedKnowledgeBase(knowledgeBase);
@@ -725,7 +728,7 @@ public final class ReasonerUtils {
             var kb = new KnowledgeBase();
             kb.addKnowledgeBase(irrelevantKb);
             kb.addKnowledgeBase(powerKb);
-            
+
             powerResult.add(kb);
         }
 
@@ -757,6 +760,11 @@ public final class ReasonerUtils {
     }
 
     public static ArrayList<String> toResponseKnowledgebase(ModelBaseRank baseRank, KnowledgeBase knowledgeBase) {
+
+        return toResponseKnowledgebase(baseRank.getRanking(), knowledgeBase);
+    }
+
+    public static ArrayList<String> toResponseKnowledgebase(ModelRankCollection baseRank, KnowledgeBase knowledgeBase) {
 
         ModelRankCollection ranking = ReasonerUtils.toRanksFromKnowledgeBase(baseRank, knowledgeBase, false);
 

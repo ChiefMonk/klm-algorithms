@@ -44,13 +44,13 @@ public class LexicalClosureExplanationService implements IReasonerExplanationSer
 
         return new RationalClosureExplanation(
                 entailment.getQueryFormula(),
-                entailment.getKnowledgeBase(),
+                entailment.getKnowledgeBaseKb(),
                 entailment.getEntailed(),
                 checks,
                 baseRanking,
                 removedRanking,
                 remainingRanking,
-                entailment.getJustification()
+                entailment.getJustificationKb()
         );
 
     }

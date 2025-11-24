@@ -7,6 +7,7 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import java.util.*;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a model entailment for a given query.
@@ -57,7 +58,11 @@ public abstract class ModelEntailment {
         _relevantJustification = builder._relevantJustification;
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public ArrayList<String> getKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, _knowledgeBase);
+    }
+
+    public KnowledgeBase getKnowledgeBaseKb() {
         return _knowledgeBase;
     }
 
@@ -96,24 +101,28 @@ public abstract class ModelEntailment {
         return _baseRanking;
     }
 
-    public KnowledgeBase getEntailmentKnowledgeBase() {
+    public ArrayList<String> getEntailmentKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, _entailmentKnowledgeBase);
+    }
+
+    public KnowledgeBase getEntailmentKnowledgeBaseKb() {
         return _entailmentKnowledgeBase;
     }
 
-    public KnowledgeBase getRelevanKnowledgeBase() {
-        return _relevantKnowledgeBase;
+    public ArrayList<String> getDecidingKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, _entailmentKnowledgeBase);
     }
 
-    public KnowledgeBase getRemovedKnowledgeBase() {
-        return getRemovedRanking().getKnowledgeBase();
+    public ArrayList<String> getRelevantKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, _relevantKnowledgeBase);
     }
 
-    public KnowledgeBase getRemainingKnowledgeBase() {
-        return getRemainingRanking().getKnowledgeBase();
+    public ArrayList<String> getRemovedKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, getRemovedRanking().getKnowledgeBase());
     }
 
-    public KnowledgeBase getRelevantKnowledgeBase() {
-        return getRelevantRanking().getKnowledgeBase();
+    public ArrayList<String> getRemainingKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(_baseRanking, getRemainingRanking().getKnowledgeBase());
     }
 
     public ModelRankCollection getRemainingRanks() {
@@ -184,7 +193,23 @@ public abstract class ModelEntailment {
         _justification = justification;
     }
 
-    public ArrayList<KnowledgeBase> getJustification() {
+    public ArrayList<ArrayList<String>> getJustification() {
+
+        ArrayList<ArrayList<String>> just = new ArrayList<>();
+
+        for (var kb : _justification) {
+            just.add(ReasonerUtils.toResponseKnowledgebase(_baseRanking, kb));
+        }
+
+        return just;
+    }
+
+    public ArrayList<KnowledgeBase> getJustificationKb() {
+        
+        if (_justification == null || _justification.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
         return _justification;
     }
 
@@ -196,8 +221,18 @@ public abstract class ModelEntailment {
         _relevantJustification = relevantJustification;
     }
 
-    public ArrayList<KnowledgeBase> getRelevantJustification() {
-        return _relevantJustification;
+    public ArrayList<ArrayList<String>> getRelevantJustification() {
+
+        if (_relevantJustification == null || _relevantJustification.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<String>> just = new ArrayList<>();
+
+        for (var kb : _relevantJustification) {
+            just.add(ReasonerUtils.toResponseKnowledgebase(_baseRanking, kb));
+        }
+
+        return just;
     }
 
     public ModelRankCollection getEntailmentRanking() {

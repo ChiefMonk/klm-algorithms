@@ -162,7 +162,7 @@ public class AppConsole {
             IJustificationService justification = ReasonerFactory.createJustification(reasonerType);
             var justificationKb = justification.computeAllJustifications(
                      entailment.getBaseRanking().getInfinityRank(), 
-                    entailment.getEntailmentKnowledgeBase(), 
+                    entailment.getEntailmentKnowledgeBaseKb(), 
                     queryFormula,
                     true);
             
