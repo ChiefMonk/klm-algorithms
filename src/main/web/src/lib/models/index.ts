@@ -164,8 +164,8 @@ enum EntailmentType {
   Unknown = 0,
   RationalClosure,
   LexicographicClosure,
-  MinimalRelevantClosure,
   BasicRelevantClosure,
+  MinimalRelevantClosure,
 }
 
 /**

@@ -32,16 +32,6 @@ const inferenceOperatorRelevant: Record<EntailmentType, boolean> = {
   [EntailmentType.MinimalRelevantClosure]: true,
 };
 
-const inferenceRelevantNumber: Record<EntailmentType, number> = {
-  [EntailmentType.Unknown]: 0,
-  [EntailmentType.RationalClosure]: 0,
-  [EntailmentType.LexicographicClosure]: 0,
-  [EntailmentType.BasicRelevantClosure]: 1,
-  [EntailmentType.MinimalRelevantClosure]: 2,
-};
-
-
-
 function RankCheck({
   value: { rankNumber },
   array,
@@ -196,8 +186,8 @@ function RelevancePartitionCheck({
   entailment: { type, negation, relevantKnowledgeBase, relevantJustification, relevantRanking, irrelevantRanking, queryFormula },
 }: EntailmentCheckProps) {
 
-  const relevantNumber = inferenceRelevantNumber[type];
-
+  console.log(type);
+  
   return (
     <div className="space-y-4">
       <p className="mb-3">
@@ -233,30 +223,27 @@ function RelevancePartitionCheck({
           ))}
         </div>
 
-        
+
 
       </p>
 
-      <p>The Relevant set of statements, <Formula formula="\mathcal{R}^{+}" />, shown per rank:</p>
+      <p>1. The Relevant set of statements, <Formula formula="\mathcal{R}^{+}" />, shown per rank:</p>
       <ul className="list-disc list-inside">
-        {relevantNumber == 0 ? (
-            <p>
-              <li> This is the union of statements in all justification sets, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>            
-            </p>
-          ) : (
-            <p>
-               <li> For each justification set, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>    
-            </p>
-          )}
-        </ul>
+        {type == EntailmentType.BasicRelevantClosure ? (
+          <li> This is the union of statements in all justification sets, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
+        ) : (
+        
+          <li> For each justification set, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>
+        )}
+      </ul>
       <RankingTableWithout
         ranking={relevantRanking}
       />
 
-      <p>The Irrelevant set of statements, <Formula formula="\mathcal{R}^{-}" />, shown per rank:</p>
-    <ul className="list-disc list-inside">           
-              <li> This is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>                      
-        </ul>
+      <p>2. The Irrelevant set of statements, <Formula formula="\mathcal{R}^{-}" />, shown per rank:</p>
+      <ul className="list-disc list-inside">
+        <li> This is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
+      </ul>
       <RankingTableWithout
         ranking={irrelevantRanking}
       />
