@@ -489,7 +489,7 @@ class MinimalRelevantEntailmentModel extends EntailmentModel {
  */
 class BasicRelevantEntailmentModel extends EntailmentModel {
   constructor(obj: BasicRelevantEntailment) {
-    super({ ...obj, type: EntailmentType.MinimalRelevantClosure });
+    super({ ...obj, type: EntailmentType.BasicRelevantClosure });
   }
 
   public get remainingRanks(): Ranking[] {
