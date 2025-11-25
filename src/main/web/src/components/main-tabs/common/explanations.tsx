@@ -187,7 +187,7 @@ function RelevancePartitionCheck({
 }: EntailmentCheckProps) {
 
   console.log(type);
-  
+
   return (
     <div className="space-y-4">
       <p className="mb-3">
@@ -197,51 +197,35 @@ function RelevancePartitionCheck({
           <li>The set <Formula formula="\mathcal{R}^{-}" /> of the <i>relevant partition</i> is the subset of <Formula formula="\mathcal{K}" /> <i> not relevant</i> for concluding <Formula formula={`${negation}`} />. Therefore, <Formula formula="\mathcal{R}^{-}" /> is the complement of <Formula formula="\mathcal{R}^{+}" />.</li>
           <li>The process of determining <Formula formula="\mathcal{R}^{+}" /> starts by first finding the minimal sets of statements responsible for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} />.</li>
           <li>The set responsible for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} /> is <Formula formula="\{" /><Formula formula={relevantKnowledgeBase.join(", ")} /><Formula formula="\}" /> .</li>
+          <li>The Justification sets for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} /> from the entailment sub knowledge base are:</li>
         </ul>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "1rem",
-            alignItems: "center",
-          }}
-        >
-          <span>
-            The justification sets for{" "}
-            <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${negation}`} />{" "}
-            are:
-          </span>
-
-          {relevantJustification.map((just, index) => (
+        {relevantJustification.map((just, index) => (
+          <div key={index} style={{ marginLeft: '3rem' }}>
             <Kb
-              key={index}
               formulas={just}
-              name={`\\mathcal{J}_{${index + 1}}`}
+              name={`\\mathcal{J}^{+}_{${index + 1}}`}
               set
             />
-          ))}
-        </div>
-
-
-
+          </div>
+        ))}
       </p>
 
-      <p>1. The Relevant set of statements, <Formula formula="\mathcal{R}^{+}" />, shown per rank:</p>
       <ul className="list-disc list-inside">
+        <li>The <strong>relevant</strong> set of statements, <Formula formula="\mathcal{R}^{+}" />, are shown below, grouped by rank:</li>
         {type == EntailmentType.BasicRelevantClosure ? (
-          <li> This is the union of statements in all justification sets, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
+          <li> This is the union of statements in all justification sets above, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
         ) : (
-        
-          <li> For each justification set, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>
+
+          <li> For each justification set above, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>
         )}
       </ul>
       <RankingTableWithout
         ranking={relevantRanking}
       />
 
-      <p>2. The Irrelevant set of statements, <Formula formula="\mathcal{R}^{-}" />, shown per rank:</p>
       <ul className="list-disc list-inside">
+        <li>The <strong>irrelevant</strong> set of statements, <Formula formula="\mathcal{R}^{-}" />, are shown below, grouped by rank:</li>
         <li> This is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
       </ul>
       <RankingTableWithout
