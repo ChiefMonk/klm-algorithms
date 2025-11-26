@@ -288,6 +288,10 @@ abstract class EntailmentModel {
     return this._queryFormula;
   }
 
+  public get antecedent(): string {
+    return this._queryFormula.split("~>")[0].replaceAll("(", "").replaceAll(")", "");
+  }
+
   public get negation(): string {
     return this._negation;
   }

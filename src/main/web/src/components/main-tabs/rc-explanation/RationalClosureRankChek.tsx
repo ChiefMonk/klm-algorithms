@@ -4,7 +4,6 @@ import {
   buildRankCheck,
   buildRankUnion,
 } from "@/lib/build-formula/rational-closure";
-import { RankingTable } from "../tables/ranking-table";
 
 function RationalClosureRankChek({
   explanation,
@@ -12,10 +11,9 @@ function RationalClosureRankChek({
   explanation: IRationalClosureExplanation;
 }) {
   return (
-    <div className="space-y-6">
+    <div>
       {explanation.checks.map((check, index) => (
-        <div key={index}>
-          <RankingTable ranking={check.ranks} />
+        <div key={index}>       
           <div className="ml-8 py-4 space-y-2">
             <p>
               We check and determine if the above union of ranks entails the negation of the query antecedent,{" "}

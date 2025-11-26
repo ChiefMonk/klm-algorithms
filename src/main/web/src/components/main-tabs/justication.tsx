@@ -44,7 +44,7 @@ export function Justification({
               </li>
               <li>The computation of all classical justication sets for <EntailResult formula={queryFormula} entailed={entailed} /> employs a <i>hitting set tree</i> algorithm constructed in a <i>breadth-first</i> manner.</li>
               <li>This involves a recursive algorithm that finds a single justification set at a time, incoporating the <i>expansion</i> and <i>contraction</i> stages, starting with the query <i>signature</i>, <Formula formula="\{" /><Formula formula={signature} /> <Formula formula="\}" />.</li>
-              <li>If the query <Formula formula={`${queryFormula}`} />  <Formula formula="\lor" /> <Formula formula={`${queryFormula}`} /> <Formula formula="\in \mathcal{D}" />, then a set with only that one statement is one of the defeasible justifications sets for <Formula formula={`\\overrightarrow{\\mathcal{K}} \\models ${classical}`} />.</li>
+              <li>If the query <Formula formula={`${classical}`} />  <Formula formula="\lor" /> <Formula formula={`${queryFormula}`} /> <Formula formula="\in \mathcal{D}" />, then a set with only that one statement is one of the defeasible justifications sets for <EntailResult formula={queryFormula} entailed={entailed} />.</li>
               <li>The Justification sets for <EntailResult formula={queryFormula} entailed={entailed} /> from <Formula formula={"\\mathcal{D} \\subseteq \\mathcal{K}"} /> are:</li>
             </ul>
 

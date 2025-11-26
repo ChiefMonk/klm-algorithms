@@ -40,6 +40,6 @@ export function buildFinalEntailmentCheck(
     unionRanksName(check.ranks) +
     (explanation.isEntailed ? "" : "\\not") +
     "\\models " +
-    explanation.queryFormula
+    explanation.queryFormula.replaceAll("~>", "=>")
   );
 }

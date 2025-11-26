@@ -6,10 +6,10 @@ import { MinimalRelevantClosure } from "./main-tabs/MinimalRelevantClosure";
 import { QueryInputs } from "./inputs/QueryInputs";
 import { SyncLoader } from "react-spinners";
 import { BaseRankExplanation } from "./main-tabs/base-rank-explanation/BaseRankExplanation";
-import { RationalClosureExplanation } from "./main-tabs/rc-explanation/RationalClosureExplanation";
 import { InferenceOperator } from "@/lib/models";
 import { useEffect } from "react";
 import { useReasonerContext } from "@/state/reasoner.context";
+import { RationalClosure } from "./main-tabs/RationalClosure";
 
 export function MainContent() {
   const reasoner = useReasonerContext();
@@ -84,15 +84,27 @@ export function MainContent() {
               />
             </TabsContent>
             {inferenceOperators.includes(InferenceOperator.RationalClosure) && (
+              <TabsContent value="rationaClosure">              
+                 <RationalClosure
+                  isLoading={reasoner.resultPending}              
+                  rationalEntailment={reasoner.entailmentQueryResult?.rationalEntailment || null}
+                  rationalExplanation={reasoner.entailmentQueryResult?.rationalExplanation || null}
+                />
+              </TabsContent>
+              
+            )}
+            {/*
+             {inferenceOperators.includes(InferenceOperator.RationalClosure) && (
               <TabsContent value="rationaClosure">
                 <RationalClosureExplanation
                   isLoading={reasoner.resultPending}
-                  rationalExplanation={
-                    reasoner.entailmentQueryResult?.rationalExplanation || null
-                  }
-                />
+                  rationalExplanation={reasoner.entailmentQueryResult?.rationalExplanation || null}
+                  rationalEntailment={reasoner.entailmentQueryResult?.rationalEntailment || null}
+                />                 
               </TabsContent>
-            )}
+              
+            )} */
+            }
             {inferenceOperators.includes(
               InferenceOperator.LexicographicClosure
             ) && (
