@@ -29,7 +29,7 @@ function PartitioningProcedure({ sequence }: PartitioningProcedureProps) {
                   Since <Formula formula={`*_{${i}}`} /> = <Formula formula={`*_{${i - 1}}`} />, partitioning procedure terminates with <Formula formula={`*_{${i}}`} />.
                 </li>
                 <li>
-                  If <Formula formula="\mathcal{K}" /> contains classical statements or contradictory statements, then <Formula formula={`*_{${i}}`} /> = <Formula formula={`*_{\\infty}`} />.
+                  If <Formula formula="\mathcal{K}" /> contains any classical statements and/or contradictory statements, then <Formula formula={`*_{${i}}`} /> = <Formula formula={`*_{\\infty}`} />.
                 </li>
                 </>
               )}

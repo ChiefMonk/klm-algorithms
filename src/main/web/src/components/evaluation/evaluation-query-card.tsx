@@ -268,7 +268,7 @@ export function EvaluationQueryCard(): JSX.Element {
               <RadioGroupField
                 form={form}
                 name="inferenceOperator"
-                label="Entailment Algorithm"
+                label="Inference Operator"
                 options={operatorOptions}
                 handleChange={() => handleChange(true)}
               />

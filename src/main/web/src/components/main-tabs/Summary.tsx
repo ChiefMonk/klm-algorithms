@@ -55,14 +55,14 @@ function Summary(): JSX.Element {
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           {queryType === QueryType.Justification
-            ? "Summary of Entailment and Explanation Algorithm Results"
-            : "Summary of Entailment Algorithm Results"}
+            ? "Summary of Defeasible Entailment and Explanation Results"
+            : "Summary of Defeasible Entailment Results"}
         </CardTitle>
 
-        <CardDescription className="text-base">
+        <CardDescription className="text-base text-medium">
           {queryType === QueryType.Justification
-            ? "A summary of defeasible entailment and justification algorithm results"
-            : "A summary of defeasible entailment algorithm results"}
+            ? "This summary presents the results of defeasible entailment algorithms, which determine whether a query formula can be inferred from a knowledge base using various inference operators (Rational Closure, Lexicographic Closure, Basic Relevant Closure, and Minimal Relevant Closure). The explanation results provide minimal sets of formulas that justify the entailment, showing which knowledge base statements are necessary to support the conclusion. Additionally, the summary includes the base rank of statements produced by the BaseRank algorithm, detailed algorithm results, and execution times for performance analysis."
+            : "This summary presents the results of defeasible entailment algorithms, which determine whether a query formula can be inferred from a knowledge base using various inference operators (Rational Closure, Lexicographic Closure, Basic Relevant Closure, and Minimal Relevant Closure). The summary includes the base rank of statements produced by the BaseRank algorithm, showing how knowledge base statements are ranked according to their exceptionality. Additionally, detailed algorithm results and execution times are provided for each inference operator to enable performance analysis and comparison."}
         </CardDescription>
       </CardHeader>
       <CardContent>
