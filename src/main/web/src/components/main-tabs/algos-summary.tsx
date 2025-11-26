@@ -51,15 +51,14 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
                   if (isLast) {
                     return (
                       <span key={i}>
-                        and{" "}
-                        <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
+                        <Formula formula="\cup" /> <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
                       </span>
                     );
                   } else {
                     return (
                       <span key={i}>
                         <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
-                        {i < items.length - 2 ? ", " : " "}
+                        {i < items.length - 2 ? <Formula formula="\cup" /> : " "}
                       </span>
                     );
                   }
@@ -95,12 +94,12 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
                   const isLast = i === items.length - 1;
                   return isLast ? (
                     <span key={rank.rankNumber ?? i}>
-                      and <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
+                      <Formula formula="\cup" /> <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
                     </span>
                   ) : (
                     <span key={rank.rankNumber ?? i}>
                       <Formula formula={`\\mathcal{R}_{${rank.rankNumber}}`} />
-                      {i < items.length - 2 ? ", " : " "}
+                      {i < items.length - 2 ? <Formula formula="\cup" /> : " "}
                     </span>
                   );
                 });
