@@ -176,7 +176,7 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         }                   
 
         return new ModelRationalClosureEntailment.RationalClosureEntailmentBuilder()
-                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withKnowledgeBase(baseRank.getKnowledgeBaseKb())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)

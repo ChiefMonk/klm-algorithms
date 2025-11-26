@@ -219,7 +219,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 
         return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
-                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withKnowledgeBase(baseRank.getKnowledgeBaseKb())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)

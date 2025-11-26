@@ -1,5 +1,12 @@
 import { InferenceOperator, Algorithm } from "./common";
 
+/**
+ * An enum representing a distribution type.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 enum Distribution {
   Uniform = "Uniform",
   Linear = "Linear",
@@ -8,12 +15,26 @@ enum Distribution {
   ReversedExponential = "ReversedExponential",
 }
 
+/**
+ * An enum representing a complexity type.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 enum Complexity {
   Low = "Low",
   Medium = "Medium",
   High = "High",
 }
 
+/**
+ * An enum representing a connective type.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 enum Connective {
   Disjunction = "Disjunction",
   Conjunction = "Conjunction",
@@ -21,6 +42,13 @@ enum Connective {
   BiImplication = "BiImplication",
 }
 
+/**
+ * An enum representing a character set type.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 enum CharacterSet {
   LowerLatin = "LowerLatin" 
 }

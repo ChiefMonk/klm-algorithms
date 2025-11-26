@@ -1,14 +1,35 @@
+/**
+ * An interface representing a ranking.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 type Ranking = {
   rankNumber: number;
   formulas: string[];
   discarded?: boolean;
 };
 
+/**
+ * An interface representing a ranking of ranks.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 type RankingOfRank = {
   rankNumber: number;
   formulas: Ranking[];  
 };
 
+/**
+ * An interface representing a base ranking.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 type BaseRanking = {
   knowledgeBase: string[];
   signature: string[];
@@ -18,6 +39,13 @@ type BaseRanking = {
   timeTaken: number;
 };
 
+/**
+ * An interface representing a base model for entailment.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 type EntailmentModelBase = {
   queryFormula: string;
   negation: string;
@@ -61,6 +89,10 @@ type ErrorData = {
 
 /**
  * A base model for managing rankings within a knowledge base.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
  */
 class BaseRankModel {
   // Private fields holding the data for the model.
@@ -171,6 +203,10 @@ enum EntailmentType {
 /**
  * An abstract class representing a model for entailment,
  * which determines whether a query is entailed by a knowledge base.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
  */
 abstract class EntailmentModel {
   private _type: EntailmentType = EntailmentType.Unknown;

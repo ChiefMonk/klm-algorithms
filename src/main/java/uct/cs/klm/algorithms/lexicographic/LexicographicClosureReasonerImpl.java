@@ -172,7 +172,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 
         return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
-                .withKnowledgeBase(baseRank.getKnowledgeBase())
+                .withKnowledgeBase(baseRank.getKnowledgeBaseKb())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
                 .withRemovedRanking(removedRanking)

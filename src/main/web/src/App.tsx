@@ -12,6 +12,13 @@ import { EvaluationContent } from "./components/evaluation/evaluation-content";
 import { InfoPage } from "./components/info-page";
 import { ReasonerProvider } from "./state/reasoner.context";
 
+/**
+ * The main app component.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2025-01-26
+ */
 function App() {
   return (
     <Router>

@@ -2,7 +2,6 @@ package uct.cs.klm.algorithms.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 import uct.cs.klm.algorithms.utils.ReasonerUtils;

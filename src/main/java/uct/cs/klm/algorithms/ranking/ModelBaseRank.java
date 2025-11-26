@@ -1,9 +1,11 @@
 package uct.cs.klm.algorithms.ranking;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import uct.cs.klm.algorithms.models.KnowledgeBase;
+import uct.cs.klm.algorithms.utils.ReasonerUtils;
 
 /**
  * This class represents a model base rank for a given query.
@@ -32,7 +34,7 @@ public class ModelBaseRank {
     }
 
     public ModelBaseRank(ModelBaseRank baseRank) {
-        this(baseRank.getKnowledgeBase(), baseRank.getSequence(), baseRank.getRanking(), baseRank.getTimeTaken());
+        this(baseRank.getKnowledgeBaseKb(), baseRank.getSequence(), baseRank.getRanking(), baseRank.getTimeTaken());
     }
 
     public ModelRankCollection getRanking() {
@@ -50,8 +52,12 @@ public class ModelBaseRank {
         return timeTaken;
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKnowledgeBaseKb() {
         return new KnowledgeBase(knowledgeBase);
+    }
+    
+    public ArrayList<String> getKnowledgeBase() {
+        return ReasonerUtils.toResponseKnowledgebase(ranking, getKnowledgeBaseKb());
     }
     
     @Override

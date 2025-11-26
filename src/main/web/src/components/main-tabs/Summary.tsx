@@ -16,7 +16,7 @@ import { AlgosSummary } from "./algos-summary";
 import { InferenceOperator, QueryType } from "@/lib/models";
 import { Formula } from "./common/formulas";
 
-function Summary(): JSX.Element { 
+function Summary(): JSX.Element {
   const {
     queryType,
     resultPending: isLoading,
@@ -27,31 +27,49 @@ function Summary(): JSX.Element {
   const baseRank = entailmentQueryResult?.baseRank ?? null;
   const rationalEntailment = entailmentQueryResult?.rationalEntailment ?? null;
   const lexicalEntailment = entailmentQueryResult?.lexicalEntailment ?? null;
-  const minimalRelevantEntailment =
-    entailmentQueryResult?.minimalRelevantEntailment ?? null;
-  const basicRelevantEntailment =
-    entailmentQueryResult?.basicRelevantEntailment ?? null;
+  const minimalRelevantEntailment =  entailmentQueryResult?.minimalRelevantEntailment ?? null;
+  const basicRelevantEntailment = entailmentQueryResult?.basicRelevantEntailment ?? null;
 
+  let knowledgeBase: string[] = [];
+
+  const sources = [
+    rationalEntailment,
+    lexicalEntailment,
+    basicRelevantEntailment,
+    minimalRelevantEntailment
+  ];
+  
+  for (const src of sources) {
+    if (src != null && src?.knowledgeBase?.length > 0) {
+      knowledgeBase = src.knowledgeBase;
+      break;
+    }
+  }
+
+  if (knowledgeBase.length === 0 && queryInput?.knowledgeBase != null && queryInput?.knowledgeBase?.length > 0) {
+    knowledgeBase = queryInput?.knowledgeBase;
+  }
+   
   return (
     <Card className="w-full h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
-        {queryType === QueryType.Justification
-        ? "Summary of Entailment and Explanation Algorithm Results"
-        : "Summary of Entailment Algorithm Results"}        
-          </CardTitle>
+          {queryType === QueryType.Justification
+            ? "Summary of Entailment and Explanation Algorithm Results"
+            : "Summary of Entailment Algorithm Results"}
+        </CardTitle>
 
         <CardDescription className="text-base">
-        {queryType === QueryType.Justification
-        ? "A summary of defeasible entailment and justification algorithm results"
-        : "A summary of defeasible entailment algorithm results"}             
+          {queryType === QueryType.Justification
+            ? "A summary of defeasible entailment and justification algorithm results"
+            : "A summary of defeasible entailment algorithm results"}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {!isLoading && (
           <div className="space-y-6">
             <QueryInputContainer
-              knowledgeBase={queryInput?.knowledgeBase || []}
+              knowledgeBase={knowledgeBase}
               queryFormula={queryInput?.queryFormula || ""}
             />
 
@@ -76,9 +94,9 @@ function Summary(): JSX.Element {
             <div>
               <h4 className="scroll-m-20 mb-4 text-lg font-bold tracking-tight">
 
-                  {queryType === QueryType.Justification
-        ? "Results of Entailment and Explanation Algorithms"
-        : "Results of Entailment Algorithms"}        
+                {queryType === QueryType.Justification
+                  ? "Results of Entailment and Explanation Algorithms"
+                  : "Results of Entailment Algorithms"}
               </h4>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 mb-12">
                 {rationalEntailment && (
@@ -88,6 +106,14 @@ function Summary(): JSX.Element {
                   />
                 )}
 
+                {basicRelevantEntailment && (
+                  <AlgosSummary
+                    operator={InferenceOperator.BasicRelevantClosure}
+                    entailment={basicRelevantEntailment}
+                  />
+                )}
+
+
                 {lexicalEntailment && (
                   <AlgosSummary
                     operator={InferenceOperator.LexicographicClosure}
@@ -95,12 +121,6 @@ function Summary(): JSX.Element {
                   />
                 )}
 
-                {basicRelevantEntailment && (
-                  <AlgosSummary
-                    operator={InferenceOperator.BasicRelevantClosure}
-                    entailment={basicRelevantEntailment}
-                  />
-                )}
 
                 {minimalRelevantEntailment && (
                   <AlgosSummary

@@ -24,10 +24,10 @@ function PartitioningCheck({ check, index }: PartitioningCheckProps) {
 
   return (
     <>
-      <Formula formula={exceptionalityCheckFormula} />
-      <span className="ml-8">
-        <Formula formula={result.formula} /> {result.text}.
-      </span>
+       <div style={{ display: 'inline-block', width: '20ch' }}>
+  <Formula formula={result.formula.trim()} />
+</div>: Since <Formula formula={exceptionalityCheckFormula.trim()} />, therefore <Formula formula={result.formula.trim()} /> {result.text.trim()}.    
+      
     </>
   );
 }

@@ -10,8 +10,8 @@ interface PartitioningProcedureProps {
 function PartitioningProcedure({ sequence }: PartitioningProcedureProps) {
   return (
     <>
-      <p>The partitioning procedure is described as follows:</p>
-      <ul className="ml-8 list-disc space-y-6">
+      <p>For the given <Formula formula="\mathcal{K}" /> above, we describe the partitioning procedure as follows:</p>
+      <ol className="ml-8 list-disc space-y-6">
         {sequence.map((element, i) => (
           <li key={i}>
             <Formula formula={buildExceptionalityElementFormula(i, element)} />
@@ -23,16 +23,20 @@ function PartitioningProcedure({ sequence }: PartitioningProcedureProps) {
                   </li>
                 ))}
               {element.isLastElement && (
+<>
+
                 <li>
-                  <Formula formula="\therefore\;\;" />
-                  partitioning procedure ends with{" "}
-                  <Formula formula={`*_{${i}}`} />.
+                  Since <Formula formula={`*_{${i}}`} /> = <Formula formula={`*_{${i - 1}}`} />, partitioning procedure terminates with <Formula formula={`*_{${i}}`} />.
                 </li>
+                <li>
+                  If <Formula formula="\mathcal{K}" /> contains classical statements or contradictory statements, then <Formula formula={`*_{${i}}`} /> = <Formula formula={`*_{\\infty}`} />.
+                </li>
+                </>
               )}
             </ul>
           </li>
         ))}
-      </ul>
+      </ol>
     </>
   );
 }

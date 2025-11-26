@@ -20,7 +20,7 @@ import java.util.List;
 public class BaseRankExplanationService implements IBaseRankExplanationService {
     @Override
     public BaseRankExplanation generateExplanation(ModelBaseRank baseRank) {
-        KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
+        KnowledgeBase knowledgeBase = baseRank.getKnowledgeBaseKb();
 
         ModelRankCollection ranks = baseRank.getRanking();
         ranks.sort(Comparator.comparingInt(ModelRank::getRankNumber));

@@ -5,8 +5,8 @@ export function buildExceptionalityCheckFormula(
   antecedentNegation: string,
   isExceptional: boolean
 ): string {
-  const symbol = isExceptional ? "\\vapprox\\top" : "\\nvapprox\\bot";
-  return `*_{${index}}${symbol}\\vsim{${antecedentNegation}}`;
+  const symbol = !isExceptional ? "\\vapprox\\top" : "\\vapprox\\bot";
+  return `*_{${index}}${symbol}\\vsim{${antecedentNegation.trim()}}`;
 }
 
 export function buildExceptionalityCheckResult(
@@ -14,8 +14,9 @@ export function buildExceptionalityCheckResult(
   isExceptional: boolean
 ): { formula: string; text: string } {
   return {
-    formula: `\\therefore\\;${formula}\\quad`,
-    text: "is" + (isExceptional ? " " : " not ") + "exceptional",
+    formula: `${formula.replace("(", "").replace(")", "").trim()}`,
+    //formula: `therefore, ${formula}\\quad`,
+    text: isExceptional ? "is <not exceptional> and hence remains in the current index" : "is <exceptional> and is moved to the next index",
   };
 }
 
