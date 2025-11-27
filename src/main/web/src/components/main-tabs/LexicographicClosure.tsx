@@ -8,7 +8,7 @@ import {
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { QueryInputContainer } from "./common/query-input";
-import { LexicalEntailmentModel } from "@/lib/models";
+import { EntailmentType, LexicalEntailmentModel } from "@/lib/models";
 import { BaseRankingExplanation, EntailmentExplanation, DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation } from "./common/explanations";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
@@ -37,9 +37,9 @@ function LexicographicClosure({
       </CardHeader>
       <CardContent>
         {!isLoading && lexicalEntailment && (
-          <div>
-            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+          <div>          
             <QueryInputContainer
+              type={EntailmentType.LexicographicClosure}
               knowledgeBase={lexicalEntailment.knowledgeBase}
               queryFormula={lexicalEntailment.queryFormula}
             />

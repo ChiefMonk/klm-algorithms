@@ -31,9 +31,11 @@ export function Justification({
   return (
     <div>
       <h1 className="text-lg font-bold mb-2">
-        B. Entailment Explanation
+        B. Defeasible Entailment Explanation
       </h1>
-
+      <p className="mb-3">
+        The <i>explanation</i> results provide minimal sets of formulas from the <i>deciding knowledge base</i>, <strong><Formula formula="\mathcal{D}" /></strong>, that justify the <i>defeasible entailment</i>, <strong><Formula formula={"\\mathcal{K} \\vapprox \\alpha"} /> </strong>, showing which knowledge base statements are necessary to support the conclusion.
+      </p>
       {entailed && hasJustifications ? (
         <div>
           <p className="mb-3">

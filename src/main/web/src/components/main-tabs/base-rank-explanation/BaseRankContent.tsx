@@ -1,8 +1,8 @@
 import { getUniqueRankings } from "@/lib/utils/unique-rankings";
-import { QueryInputContainer } from "../common/query-input";
+import { QueryInputContainerAgain } from "../common/query-input";
 import { RankingTable, SequenceTable } from "../tables/ranking-table";
 import { PartitioningProcedure } from "./PartitioningProcedure";
-import { IBaseRankExplanation } from "@/lib/models";
+import { EntailmentType, IBaseRankExplanation } from "@/lib/models";
 import { RankConstruction } from "./RankConstruction";
 import { Formula } from "../common/formulas";
 
@@ -13,7 +13,8 @@ interface BaseRankContentProps {
 function BaseRankContent({ baseRankExplanation }: BaseRankContentProps) {
   return (
     <div>
-      <QueryInputContainer
+      <QueryInputContainerAgain
+        type={EntailmentType.Unknown}
         knowledgeBase={baseRankExplanation.knowledgeBase}
         queryFormula=""
         queryFormulaHidden

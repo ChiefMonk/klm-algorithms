@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 
-import { IRationalClosureExplanation, RationalEntailmentModel } from "@/lib/models";
+import { EntailmentType, IRationalClosureExplanation, RationalEntailmentModel } from "@/lib/models";
 import { EntailResult, Formula } from "../common/formulas";
 import { NoResults } from "../NoResults";
 import { RationalClosureRankChek } from "./RationalClosureRankChek";
@@ -45,9 +45,9 @@ function RationalClosureExplanation({
       </CardHeader>
       <CardContent>
         {!isLoading && rationalExplanation && rationalEntailment && (
-          <div>
-            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+          <div>           
             <QueryInputContainer
+              type={EntailmentType.RationalClosure}
               knowledgeBase={rationalExplanation.knowledgeBase}
               queryFormula={rationalExplanation.queryFormula}
             />

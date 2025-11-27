@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { MinimalRelevantEntailmentModel } from "@/lib/models";
+import { EntailmentType, MinimalRelevantEntailmentModel } from "@/lib/models";
 import { BaseRankingExplanation, EntailmentExplanation, DiscardedRankingExplanation, RemainingRankingExplanation, LexicographicPowersetExplanation, RelevancePartitionExplanation } from "./common/explanations";
 import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
@@ -37,9 +37,9 @@ function MinimalRelevantClosure({
       </CardHeader>
       <CardContent>
         {!isLoading && minimalRelevantEntailment && (
-          <div>
-            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+          <div>         
             <QueryInputContainer
+              type={EntailmentType.MinimalRelevantClosure}
               knowledgeBase={minimalRelevantEntailment.knowledgeBase}
               queryFormula={minimalRelevantEntailment.queryFormula}
             />

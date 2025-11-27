@@ -8,8 +8,8 @@ import {
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { RankingTable, SequenceTable } from "./tables/ranking-table";
-import { QueryInputContainer } from "./common/query-input";
-import { BaseRankModel } from "@/lib/models";
+import {  QueryInputContainerAgain } from "./common/query-input";
+import { BaseRankModel, EntailmentType } from "@/lib/models";
 import { Formula, Kb } from "./common/formulas";
 
 interface BaseRankProps {
@@ -39,7 +39,8 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
       <CardContent>
         {!isLoading && baseRank && (
           <div>
-            <QueryInputContainer
+            <QueryInputContainerAgain
+              type={EntailmentType.Unknown}
               knowledgeBase={baseRank.knowledgeBase}
               queryFormula={""}
               queryFormulaHidden

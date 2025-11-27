@@ -12,7 +12,7 @@ import { QueryInputContainer } from "./common/query-input";
 import { Justification } from "./justication";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { Formula } from "./common/formulas";
-import { BasicRelevantEntailmentModel } from "@/lib/models";
+import { BasicRelevantEntailmentModel, EntailmentType } from "@/lib/models";
 
 interface BasicRelevantClosureProps {
   isLoading: boolean;
@@ -38,9 +38,9 @@ function BasicRelevantClosure({
       </CardHeader>
       <CardContent>
         {!isLoading && basicRelevantEntailment && (
-          <div>
-            <h1 className="text-lg font-bold mb-2">A. Entailment Determination</h1>
+          <div>         
             <QueryInputContainer
+              type={EntailmentType.BasicRelevantClosure}
               knowledgeBase={basicRelevantEntailment.knowledgeBase}
               queryFormula={basicRelevantEntailment.queryFormula}
             />
