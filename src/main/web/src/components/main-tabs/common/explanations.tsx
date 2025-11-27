@@ -230,7 +230,7 @@ function RelevancePartitionCheck({
 
           <li> For each justification set above, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. The <strong>relevant</strong> set, <Formula formula="\mathcal{R}^{+}" />, is the union of these statements.</li>
         )}
-        <li>The <strong>relevant</strong> set of statements, <Formula formula="\mathcal{R}^{+}" />, are shown below, grouped by rank:</li>
+        <li>The relevant set of statements, <Formula formula="\mathcal{R}^{+}" />, is shown below, grouped by rank.</li>
        
       </ul>
       <RankingTableWithout
@@ -239,7 +239,7 @@ function RelevancePartitionCheck({
 
       <ul className="list-disc list-inside">      
         <li> The <strong>irrelevant</strong> set is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
-        <li>The <strong>irrelevant</strong> set of statements, <Formula formula="\mathcal{R}^{-}" />, are shown below, grouped by rank:</li>
+        <li>The <strong>irrelevant</strong> set of statements, <Formula formula="\mathcal{R}^{-}" />, is shown below, grouped by rank.</li>
       </ul>
       <RankingTableWithout
         ranking={irrelevantRanking}
