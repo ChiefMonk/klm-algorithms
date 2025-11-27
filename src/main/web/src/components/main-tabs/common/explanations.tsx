@@ -225,10 +225,10 @@ function RelevancePartitionCheck({
 
       <ul className="list-disc list-inside">
       {type == EntailmentType.BasicRelevantClosure ? (
-          <li> This is the union of statements in all justification sets above, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
+          <li> The <strong>relevant</strong> set is the union of statements in all justification sets above, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
         ) : (
 
-          <li> For each justification set above, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>
+          <li> For each justification set above, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. The <strong>relevant</strong> set, <Formula formula="\mathcal{R}^{+}" />, is the union of these statements.</li>
         )}
         <li>The <strong>relevant</strong> set of statements, <Formula formula="\mathcal{R}^{+}" />, are shown below, grouped by rank:</li>
        
@@ -237,9 +237,9 @@ function RelevancePartitionCheck({
         ranking={relevantRanking}
       />
 
-      <ul className="list-disc list-inside">
+      <ul className="list-disc list-inside">      
+        <li> The <strong>irrelevant</strong> set is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
         <li>The <strong>irrelevant</strong> set of statements, <Formula formula="\mathcal{R}^{-}" />, are shown below, grouped by rank:</li>
-        <li> This is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
       </ul>
       <RankingTableWithout
         ranking={irrelevantRanking}
