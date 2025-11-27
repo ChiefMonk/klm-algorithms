@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.javalin.json.JavalinJackson;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-import uct.cs.klm.algorithms.benchmarks.JmhRunner;
 import uct.cs.klm.algorithms.enums.Algorithm;
 import uct.cs.klm.algorithms.enums.InferenceOperator;
 import uct.cs.klm.algorithms.enums.ReasonerType;

@@ -7,9 +7,15 @@ import uct.cs.klm.algorithms.models.EvaluationQuery;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import uct.cs.klm.algorithms.enums.ReasonerType;
 
+
+/**
+ * This interface represents a evaluation service for a given query.
+ * 
+ * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
+ * @version 1.0.1
+ * @since 2024-01-01
+ */
 public interface EvaluationService {
     EvaluationModel evaluate(EvaluationQuery query);
     SimpleEntry<String, String> exportEvaluation(EvaluationModel model) throws JsonProcessingException;

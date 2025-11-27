@@ -224,13 +224,14 @@ function RelevancePartitionCheck({
       </p>
 
       <ul className="list-disc list-inside">
-        <li>The <strong>relevant</strong> set of statements, <Formula formula="\mathcal{R}^{+}" />, are shown below, grouped by rank:</li>
-        {type == EntailmentType.BasicRelevantClosure ? (
+      {type == EntailmentType.BasicRelevantClosure ? (
           <li> This is the union of statements in all justification sets above, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />.</li>
         ) : (
 
           <li> For each justification set above, we pick only the statements in the lowest rank, minus those assigned to <Formula formula="\mathcal{R}_{\infty}" />. <Formula formula="\mathcal{R}^{+}" /> is the union of these statements.</li>
         )}
+        <li>The <strong>relevant</strong> set of statements, <Formula formula="\mathcal{R}^{+}" />, are shown below, grouped by rank:</li>
+       
       </ul>
       <RankingTableWithout
         ranking={relevantRanking}
