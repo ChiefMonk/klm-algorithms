@@ -239,7 +239,7 @@ function RelevancePartitionCheck({
 
       <ul className="list-disc list-inside">      
         <li> The <strong>irrelevant</strong> set is the set of all statements in <Formula formula="\mathcal{K}" />, including those assigned to <Formula formula="\mathcal{R}_{\infty}" />, minus those in <Formula formula="\mathcal{R}^{+}" />.</li>
-        <li>The <strong>irrelevant</strong> set of statements, <Formula formula="\mathcal{R}^{-}" />, is shown below, grouped by rank.</li>
+        <li>The irrelevant set of statements, <Formula formula="\mathcal{R}^{-}" />, is shown below, grouped by rank.</li>
       </ul>
       <RankingTableWithout
         ranking={irrelevantRanking}
