@@ -216,13 +216,44 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
             _logger.debug(String.format("=> %s: %s", k.rankNumber(), k.formulas()));
         }
 
+        var finalRemovedRanking = new ModelRankCollection();
+        var relevantKb = ReasonerUtils.toMaterialisedKnowledgeBase(relevantRanking.getKnowledgeBase());
+        // _logger.debug(String.format("=> %REL: %s", relevantKb));
+        //  _logger.debug(String.format("=> %REM: %s", removedRanking.getKnowledgeBase()));
+
+        for (var removeRank : removedRanking) {
+            ModelRank rank = new ModelRank(removeRank.getRankNumber());
+            boolean addRank = false;
+
+            for (var removeStatement : removeRank.getFormulas()) {
+
+                if (relevantKb.contains(ReasonerUtils.toMaterialisedFormula(removeStatement))) {
+                    rank.addFormula(removeStatement);
+                    addRank = true;
+                } else {
+                    var remainRank = remainingRanking.getRank(removeRank.getRankNumber());
+                    if (remainRank == null) {
+                        ModelRank newRank = new ModelRank(removeRank.getRankNumber());
+                        newRank.addFormula(removeStatement);
+                        remainingRanking.add(newRank);
+                    } else {
+                        remainingRanking.getRank(removeRank.getRankNumber()).addFormula(removeStatement);
+                    }
+                }
+            }
+
+            if (addRank) {
+                finalRemovedRanking.add(rank);
+            }
+        }
+
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 
         return new ModelRelevantClosureEntailment.ModelRelevantClosureEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBaseKb())
                 .withQueryFormula(queryFormula)
                 .withBaseRanking(baseRank.getRanking())
-                .withRemovedRanking(removedRanking)
+                .withRemovedRanking(finalRemovedRanking)
                 .withRemainingRanking(remainingRanking)
                 .withRelevantRankCollection(relevantRanking)
                 .withIrrelevantRankCollection(irrelevantRanking)
@@ -271,17 +302,72 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
         KnowledgeBase miniKb = new KnowledgeBase();
 
         if (reasonerType == ReasonerType.MinimalRelevantClosure) {
-            int counter = 0;
+
+            var allRanks = baseRankCollection.getRankingCollectonExceptInfinity();
+            List<Integer> justList = new ArrayList<>();
+
+            for (ModelRank rank : allRanks) {
+
+                var rankFomulas = rank.getFormulas();
+
+                _logger.debug(String.format("=> Rel Rank %s: %s", rank.getRankNumber(), rankFomulas));
+
+                int justCounter = 0;
+                for (var just : justificationCollection) {
+
+                    if (justList.contains(justCounter)) {
+                        continue;
+                    }
+
+                    var rankNumber = -1;
+                    _logger.debug(String.format("=> Rel Just %s: %s", justCounter, just.getFormulas()));
+
+                    for (var formula : just.getFormulas()) {
+
+                        var deMaterialised = ReasonerUtils.toDematerialisedFormula(formula);
+                        _logger.debug(String.format("=> Rel Formula %s: %s IN %s", justCounter, deMaterialised, rankFomulas));
+
+                        if (rankFomulas.contains(deMaterialised)) {
+                            if (rankNumber == -1) {
+                                rankNumber = rank.getRankNumber();
+                                justList.add(justCounter);
+                            }
+
+                            if (rank.getRankNumber() == rankNumber) {
+                                miniKb.add(formula);
+                            }
+                        }
+                    }
+
+                    justCounter++;
+                }
+            }
+
+            _logger.debug(String.format("   Mini := %s", miniKb.getFormulas()));
+
+            /*
+              
             for (int i = 0; i < justificationCollection.size(); i++) {
 
-                var rank = baseRankCollection.getRank(counter);
+                var rank = baseRankCollection.getRank(counter);               
+
+                if (rank == null || counter == Symbols.INFINITY_RANK_NUMBER) {
+                    counter++;
+                    continue;
+                }
+                              
+                var rankdeMaterialised = ReasonerUtils.toMaterialisedKnowledgeBase(rank.getFormulas());
                 var rankNumber = -1;
+                
+                  _logger.debug(String.format("=> Rel Rank %s: %s", counter, rankdeMaterialised));
 
                 for (var formula : justificationCollection.get(i)) {
 
+                    _logger.debug(String.format("=> Rel Formula %s: %s", counter, formula));
+                    
                     var deMaterialised = ReasonerUtils.toDematerialisedFormula(formula);
 
-                    if (rank != null && rank.getFormulas().contains(deMaterialised)) {
+                    if (rankdeMaterialised.contains(deMaterialised)) {
                         if (rankNumber == -1) {
                             rankNumber = rank.getRankNumber();
                         }
@@ -297,8 +383,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
                     counter++;
                 }
             }
-
-            _logger.debug(String.format("   Mini := %s", miniKb.getFormulas()));
+             */
         }
 
         ModelRankCollection resultIncosistentRank = new ModelRankCollection();
