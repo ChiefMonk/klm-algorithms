@@ -281,7 +281,7 @@ public abstract class RelevantClosureEntailmentBase extends KlmReasonerBase {
 
                     var deMaterialised = ReasonerUtils.toDematerialisedFormula(formula);
 
-                    if (rank.getFormulas().contains(deMaterialised)) {
+                    if (rank != null && rank.getFormulas().contains(deMaterialised)) {
                         if (rankNumber == -1) {
                             rankNumber = rank.getRankNumber();
                         }
