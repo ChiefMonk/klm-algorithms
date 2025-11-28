@@ -34,7 +34,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
               <div className="text-slate-500 font-medium">Relevant statements</div>
               <div>
                 <KbSimple
-                  formulas={entailment.relevantKnowledgeBase}
+                  formulas={entailment.relevantRanking.flatMap(rank => rank.formulas)}
                   set
                 />
               </div>
