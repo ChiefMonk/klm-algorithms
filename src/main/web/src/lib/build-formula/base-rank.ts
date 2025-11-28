@@ -16,7 +16,7 @@ export function buildExceptionalityCheckResult(
   return {
     formula: `${formula.replace("(", "").replace(")", "").trim()}`,
     //formula: `therefore, ${formula}\\quad`,
-    text: isExceptional ? "is <not exceptional> and hence remains in the current index" : "is <exceptional> and is moved to the next index",
+    text: isExceptional ? "is <not exceptional> and hence remains in the current index" : "is <exceptional> and hence is moved to the next index",
   };
 }
 

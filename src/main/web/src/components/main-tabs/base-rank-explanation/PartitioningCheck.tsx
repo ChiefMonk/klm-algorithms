@@ -24,9 +24,9 @@ function PartitioningCheck({ check, index }: PartitioningCheckProps) {
 
   return (
     <>
-       <div style={{ display: 'inline-block', width: '20ch' }}>
+       <div style={{ display: 'inline-block', width: '18ch' }}>
   <Formula formula={result.formula.trim()} />
-</div>: Since <Formula formula={exceptionalityCheckFormula.trim()} />, therefore <Formula formula={result.formula.trim()} /> {result.text.trim()}.    
+</div>: Since {"  "} <Formula formula={exceptionalityCheckFormula.trim()} />, therefore <Formula formula={result.formula.trim()} /> {result.text.trim()}.    
       
     </>
   );
