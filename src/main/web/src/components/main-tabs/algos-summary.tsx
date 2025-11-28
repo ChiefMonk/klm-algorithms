@@ -29,6 +29,17 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
           className="grid items-baseline"
           style={{ gridTemplateColumns: "auto 1fr", gap: "0.5rem 2rem" }}
         >
+          {operator === InferenceOperator.BasicRelevantClosure || operator === InferenceOperator.MinimalRelevantClosure ? (
+            <>
+              <div className="text-slate-500 font-medium">Relevant statements</div>
+              <div>
+                <KbSimple
+                  formulas={entailment.relevantKnowledgeBase}
+                  set
+                />
+              </div>
+            </>
+          ) : null}
 
           <div className="text-slate-500 font-medium">
             {operator === InferenceOperator.RationalClosure
@@ -66,7 +77,7 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
               })()
             ) : (
               <KbSimple
-                formulas={entailment.removedKnowledgeBase}               
+                formulas={entailment.removedKnowledgeBase}
                 set
               />
             )}
@@ -106,12 +117,12 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
               })()
             ) : (
               <KbSimple
-                formulas={entailment.remainingKnowledgeBase}               
+                formulas={entailment.remainingKnowledgeBase}
                 set
               />
             )}
           </div>
-          
+
           <div className="text-slate-500 font-medium">Entailment result</div>
           <div>
             <Formula formula={entailmentResultFormula} />
@@ -119,14 +130,15 @@ export function AlgosSummary({ operator, entailment }: AlgosSummaryProps) {
 
           {queryType === QueryType.Justification && (
             <>
-            <div className="text-slate-500 font-medium">Deciding Statements</div>
-          <div>
-            <Kb
-              formulas={entailment.entailmentKnowledgeBase}
-              name={`\\mathcal{D}`}
-              set
-            />
-          </div>
+              <div className="text-slate-500 font-medium">Deciding Statements</div>
+              <div>
+                
+                <Kb
+                  formulas={entailment.entailmentKnowledgeBase}
+                  name={`\\mathcal{D}`}
+                  set
+                />
+              </div>
               <div className="text-slate-500 font-medium">Justifcation Sets</div>
               <div className="space-y-2">
                 {entailment.justification.map((just, index) => (
