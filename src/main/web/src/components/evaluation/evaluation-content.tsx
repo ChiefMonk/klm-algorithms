@@ -17,6 +17,14 @@ import { EvaluationQueryCard } from "./evaluation-query-card";
 import { useReasonerContext } from "@/state/reasoner.context";
 import { Separator } from "../ui/separator";
 
+const descriptionMap: Record<string, string> = {
+  'Category 1 Test Cases': "The first set of test cases measures how long each algorithm takes to locate query antecedents within a ranked defeasible knowledge base with 300 statements distributed linearly across 60 ranks with some classical statements in rank infinity.",
+  'Category 2 Test Cases': "This second set of test cases measures how long each algorithm takes to locate query antecedents within a ranked defeasible knowledge base with 300 statements distributed reversed-linearly across 60 ranks with no classical statements.",
+  'Category 3 Test Cases': "This third set of test cases extends the first and second tests by measuring not only the time to locate matching antecedents within the ranks but also the duration required to identify the subset of statements that renders a query antecedent consistent with defeasible knowledge base of 1400 statements distributed uniformly across 100 ranks with some classical statements in rank infinity.",
+  'Category 4 Test Cases': "This fourth set of test cases recursively combines the datasets from the first and second test but randomly selecting only a ranked defeasible knowledge base with 1400 statements distributed linearly across 300.",
+  'Category 5 Test Cases': "This fifth set of test cases measures how long each algorithm takes to locate query antecedents within a ranked defeasible knowledge base with 300 statements distributed linearly across 60 ranks with some classical statements in rank infinity.",
+};
+
 export function EvaluationContent() {
   const reasoner = useReasonerContext();
 
@@ -35,6 +43,7 @@ export function EvaluationContent() {
       setActiveTab("group0");
     }
   }, [activeTab, evaluationData.length]);
+
 
   return (
     <>
@@ -67,6 +76,7 @@ export function EvaluationContent() {
 
             {evaluationData.map(
               (evaluation) =>
+
                 evaluation.data.length > 0 && (
                   <TabsContent key={evaluation.key} value={evaluation.key}>
                     <Card>
@@ -78,7 +88,7 @@ export function EvaluationContent() {
                           - {evaluation.label}
                         </CardTitle>
                         <CardDescription>
-                          Description for {evaluation.label}
+                          {descriptionMap[evaluation.label] ?? `Description for ${evaluation.label}`}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="grid grid-cols-1 gap-6 xl:grid-cols-12">
