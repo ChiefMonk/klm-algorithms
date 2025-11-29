@@ -20,20 +20,20 @@ import uct.cs.klm.algorithms.utils.ReasonerUtils;
 import uct.cs.klm.algorithms.utils.Symbols;
 
 /**
- * This class represents a rational closure reasoner implementation for a given query.
- * 
+ * This class represents a rational closure reasoner implementation for a given
+ * query.
+ *
  * @author Chipo Hamayobe (chipo@cs.uct.ac.za)
  * @version 1.0.1
  * @since 2024-01-01
  */
-
 public class RationalClosureReasonerImpl extends KlmReasonerBase implements IReasonerService {
 
     private static final Logger _logger = LoggerFactory.getLogger(RationalClosureReasonerImpl.class);
-    
+
     public RationalClosureReasonerImpl() {
         super();
-    }          
+    }
 
     @Override
     public ModelEntailment getEntailment(
@@ -41,17 +41,17 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
             PlFormula queryFormula) {
 
         long startTime = System.nanoTime();
-                 
-        DisplayUtils.LogDebug(_logger, "==> Rational Closure Entailment Algorithm");       
-             
-         // Get the negation of the antecedent from the query.
+
+        DisplayUtils.LogDebug(_logger, "==> Rational Closure Entailment Algorithm");
+
+        // Get the negation of the antecedent from the query.
         PlFormula negationOfAntecedent = new Negation(((Implication) queryFormula).getFirstFormula());
-        
-         // Create a sorted copy (ascending) of the base ranking.
+
+        // Create a sorted copy (ascending) of the base ranking.
         ModelRankCollection baseRankCollection = new ModelRankCollection(baseRank.getRanking());
         baseRankCollection.sort(Comparator.comparingInt(ModelRank::getRankNumber));
-               
-        if (_logger.isDebugEnabled()) {            
+
+        if (_logger.isDebugEnabled()) {
             _logger.debug("->BaseRank");
             for (ModelRank rank : baseRankCollection) {
                 _logger.debug(String.format("   %s:%s", DisplayUtils.toRankNumberString(rank.getRankNumber()), rank.getFormulas()));
@@ -65,22 +65,22 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         // we determine an index (removalBoundary) up to which ranks should be removed.
         int removalBoundary = 0;
         int stepNumber = 1;
-        
+
         while (removalBoundary < baseRankCollection.size()) {
-            
+
             // Create a view of the remaining ranks.
             var currentRemaining = baseRankCollection.subList(removalBoundary, baseRankCollection.size());
             var materialisedKnowledgeBase = ReasonerUtils.toMaterialisedKnowledgeBase(currentRemaining);
-            
+
             ModelRank currentRank = currentRemaining.get(0);
-            
+
             // Stop if the current rank is the infinity rank.
             if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
                 _logger.debug("  Because current rank is ∞; stopping with current K = {}", materialisedKnowledgeBase);
                 break;
             }
-                                 
-           if (_logger.isDebugEnabled()) {
+
+            if (_logger.isDebugEnabled()) {
                 _logger.debug("-> Checking Entailment Step {}", stepNumber++);
                 _logger.debug("  Current BaseRank:");
                 for (ModelRank rank : currentRemaining) {
@@ -91,15 +91,15 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
             }
 
             boolean isNegationEntailed = _reasoner.query(materialisedKnowledgeBase, negationOfAntecedent);
-             
+
             if (!isNegationEntailed) {
                 if (_logger.isDebugEnabled()) {
                     _logger.debug("  NO, it's not entailed; stopping rank removal with current K = {}", materialisedKnowledgeBase);
                 }
                 break;
             }
-            
-             // Stop if the current rank is the infinity rank.
+
+            // Stop if the current rank is the infinity rank.
             if (currentRank.getRankNumber() == Symbols.INFINITY_RANK_NUMBER) {
                 if (_logger.isDebugEnabled()) {
                     _logger.debug("  YES, it is entailed but current rank is ∞; stopping with current K = {}", materialisedKnowledgeBase);
@@ -110,10 +110,10 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
             if (_logger.isDebugEnabled()) {
                 _logger.debug("  YES, it is entailed; marking rank {}: {} for removal", currentRank.getRankNumber(), currentRank.getFormulas());
             }
-            removalBoundary++;       
+            removalBoundary++;
         }
 
-       // Partition the original collection into 'removed' and 'remaining' rankings.
+        // Partition the original collection into 'removed' and 'remaining' rankings.
         ModelRankCollection removedRanking = new ModelRankCollection();
         ModelRankCollection remainingRanking = new ModelRankCollection();
         for (int i = 0; i < baseRankCollection.size(); i++) {
@@ -123,11 +123,11 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
                 remainingRanking.add(baseRankCollection.get(i));
             }
         }
-       
-       // Sort both collections in descending order.
+
+        // Sort both collections in descending order.
         remainingRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
         removedRanking.sort((r1, r2) -> Integer.compare(r2.getRankNumber(), r1.getRankNumber()));
-        
+
         if (_logger.isDebugEnabled()) {
             _logger.debug("-> Remaining Ranks:");
             for (ModelRank rank : remainingRanking) {
@@ -142,38 +142,42 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
         // Prepare for the final query: materialise the query and the knowledge base.
         var materialisedQueryFormula = ReasonerUtils.toMaterialisedFormula(queryFormula);
         var finalMaterialisedKB = ReasonerUtils.toMaterialisedKnowledgeBase(remainingRanking);
-        
 
         // The query is entailed only if the negation is not entailed and the query is entailed.
         boolean isQueryEntailed = _reasoner.query(finalMaterialisedKB, materialisedQueryFormula);
-        
+
         KnowledgeBase entailmentKb = new KnowledgeBase();
-                
-        if(!isQueryEntailed)
-        {        
+
+        if (!isQueryEntailed) {
             var infinityRank = baseRankCollection.getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
-            
-            if(isQueryEntailed)
-            {
+
+            DisplayUtils.LogDebug(_logger, String.format("=> Checking the Infinity Rank entails the query"));
+            DisplayUtils.LogDebug(_logger, String.format("=> Infinity KB := %s", infinityRank.getFormulas()));
+
+            if (isQueryEntailed) {
                 entailmentKb = infinityRank.getFormulas();
                 remainingRanking = new ModelRankCollection(infinityRank);
                 removedRanking = baseRankCollection.getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
+                
+                DisplayUtils.LogDebug(_logger, String.format("=> Yes, Infinity KB: %s entails %s", infinityRank.getFormulas(), queryFormula));   
+                DisplayUtils.LogDebug(_logger, String.format("=> RemainingRanking := %s", remainingRanking.getKnowledgeBase()));
+                DisplayUtils.LogDebug(_logger, String.format("=> RemovedRanking := %s", removedRanking.getKnowledgeBase()));
             }
         }
-             
+
         String hasEntailed = "NO";
         if (isQueryEntailed) {
             entailmentKb = ReasonerUtils.toKnowledgeBase(remainingRanking);
             hasEntailed = "YES";
-        }               
-        
+        }
+
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
-        
+
         if (_logger.isDebugEnabled()) {
             _logger.debug("Finally checking if {} is entailed by {}", materialisedQueryFormula, finalMaterialisedKB);
             _logger.debug("Is Entailed: {} in {}", hasEntailed, finalTime);
-        }                   
+        }
 
         return new ModelRationalClosureEntailment.RationalClosureEntailmentBuilder()
                 .withKnowledgeBase(baseRank.getKnowledgeBaseKb())
@@ -185,5 +189,5 @@ public class RationalClosureReasonerImpl extends KlmReasonerBase implements IRea
                 .withEntailed(isQueryEntailed)
                 .withTimeTaken(finalTime)
                 .build();
-    }       
+    }
 }

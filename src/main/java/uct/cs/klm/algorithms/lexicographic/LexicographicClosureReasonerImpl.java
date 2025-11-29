@@ -89,35 +89,45 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
         }
 
         consistentRank = 0;
+        int nonEntailmentRank = -1;
         for (KnowledgeBase powerKb : relevantPowersets) {
+
+            consistentRank++;
 
             if (!continueProcessing) {
                 break;
             }
 
-            DisplayUtils.LogDebug(_logger, String.format("=> Powerset %s := %s", consistentRank+1, powerKb));
+            DisplayUtils.LogDebug(_logger, String.format("=> Powerset %s := %s", consistentRank, powerKb));
 
             var combinedKb = ReasonerUtils.toCombinedKnowledgeBases(nonRelevantRanking.getFormulas(), powerKb);
 
             materialisedKb = ReasonerUtils.toMaterialisedKnowledgeBase(combinedKb);
 
-            DisplayUtils.LogDebug(_logger, String.format("=> Materialised KB := %s", materialisedKb));
+            DisplayUtils.LogDebug(_logger, String.format("=> Materialised KB: %s := %s", consistentRank, materialisedKb));
 
             isNegationEntailed = _reasoner.query(materialisedKb, negationOfAntecedent);
 
             if (isNegationEntailed) {
-                DisplayUtils.LogDebug(_logger, String.format("=> YES - NegationOfAntecedent:Entailed; We skip and move next subset: %s", powerKb));
+                DisplayUtils.LogDebug(_logger, String.format("=> YES - NegationOfAntecedent:Entailed; We skip and move next subset: %s := %s", consistentRank, powerKb));
             } else {
                 _logger.debug("  NOT - NegationOfAntecedent:Entailed; We checking if materialisedKB entails query");
                 isQueryEntailed = _reasoner.query(materialisedKb, materialisedQueryFormula);
                 if (isQueryEntailed) {
                     continueProcessing = false;
                 } else {
+                    if (nonEntailmentRank == -1) {
+                        nonEntailmentRank = consistentRank;
+                    }
                     _logger.debug("  But the query is not entailed by the remaining statements");
                 }
             }
 
-            consistentRank++;
+            DisplayUtils.LogDebug(_logger, String.format(""));
+        }
+
+        if (nonEntailmentRank != -1 && !isQueryEntailed) {
+            consistentRank = nonEntailmentRank;
         }
 
         return CreateResponse(
@@ -147,15 +157,21 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
             var infinityRank = baseRank.getRanking().clone().getInfinityRank();
             isQueryEntailed = doesInfinityRankEntailQuery(infinityRank, queryFormula);
 
+            DisplayUtils.LogDebug(_logger, String.format("=> Checking the Infinity Rank entails the query"));
+            DisplayUtils.LogDebug(_logger, String.format("=> Infinity KB := %s", infinityRank.getFormulas()));
+
             if (isQueryEntailed) {
-                consistentRank = powersets.size()-1;
+                consistentRank = powersets.size();
                 remainingRanking = new ModelRankCollection(infinityRank);
                 removedRanking = baseRank.getRanking().getRankingCollectonExcept(Symbols.INFINITY_RANK_NUMBER);
-            }
-            else
-            {
-                if(consistentRank == powersets.size())
-                {
+                
+                materialisedKb = infinityRank.getFormulas();
+
+                DisplayUtils.LogDebug(_logger, String.format("=> Yes, Infinity KB: %s entails %s", materialisedKb, queryFormula));   
+                DisplayUtils.LogDebug(_logger, String.format("=> RemainingRanking := %s", remainingRanking.getKnowledgeBase()));
+                DisplayUtils.LogDebug(_logger, String.format("=> RemovedRanking := %s", removedRanking.getKnowledgeBase()));
+            } else {
+                if (consistentRank == powersets.size()) {
                     consistentRank = 0;
                 }
             }
@@ -168,7 +184,7 @@ public class LexicographicClosureReasonerImpl extends KlmReasonerBase implements
         }
 
         ArrayList<ModelRankResponse> powersetRanking = ReasonerUtils.toResponseRanks(baseRank, powersets);
-        
+
         var finalTime = ReasonerUtils.ToTimeDifference(startTime, System.nanoTime());
 
         return new ModelLexicographicEntailment.ModelLexicographicEntailmentBuilder()
